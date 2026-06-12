@@ -60,7 +60,17 @@
     "errorPassword": "> errore: password troppo corta (min 6 caratteri)",
     "errorUsername": "> errore: username richiesto (3-20 caratteri)",
     "errorGeneric": "> errore: {{message}}",
-    "checkEmail": "> controlla la tua email per confermare l'accesso"
+    "checkEmail": "> controlla la tua email per confermare l'accesso",
+    "forgot": "Password dimenticata?",
+    "backToLogin": "← Torna al login",
+    "resetTitle": "RECUPERO PASSWORD",
+    "submitReset": "INVIA LINK DI RECUPERO",
+    "resetSent": "> link inviato. controlla la tua email.",
+    "resetWaiting": "> in attesa del token di recupero dalla mail...",
+    "resetReady": "> token valido. imposta una nuova password.",
+    "newPassword": "> nuova password_",
+    "updatePassword": "AGGIORNA PASSWORD",
+    "passwordUpdated": "> password aggiornata. ridirezione..."
   },
   "onboarding": {
     "avatradeTitle": "Ultimo step per accedere alle sfide",
@@ -85,7 +95,22 @@
     "welcome": "BENVENUTO, {{username}}",
     "verifiedBadge": "VERIFICATO",
     "pendingBadge": "VERIFICA PENDING",
-    "comingSoon": "// I moduli sfide, classifica e segnali arrivano nei prossimi cicli."
+    "comingSoon": "// I moduli sfide, classifica e segnali arrivano nei prossimi cicli.",
+    "claimAdmin": {
+      "desc": "Sei il primo utente registrato. Rivendica il ruolo admin per accedere al pannello verifiche.",
+      "cta": "RIVENDICA RUOLO ADMIN"
+    }
+  },
+  "profile": {
+    "memberSince": "// membro dal {{date}}",
+    "notFound": "Nessun trader trovato con questo username.",
+    "stats": {
+      "wins": "VITTORIE",
+      "losses": "SCONFITTE",
+      "pips": "PIPS TOT",
+      "streak": "STREAK",
+      "placeholder": "// Le statistiche reali arriveranno con il modulo sfide."
+    }
   },
   "admin": {
     "title": "ADMIN — VERIFICHE AVATRADE",
