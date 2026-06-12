@@ -4,7 +4,6 @@ import { useTranslation } from "react-i18next";
 import { HttHeader } from "@/components/htt/HttHeader";
 import { TerminalCard } from "@/components/htt/TerminalCard";
 import { TerminalButton } from "@/components/htt/TerminalButton";
-import { MarketRain } from "@/components/htt/MarketRain";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -22,7 +21,6 @@ function Index() {
   const { t } = useTranslation();
   return (
     <div className="min-h-screen bg-background htt-grid-bg">
-      <MarketRain opacity={0.07} />
       <HttHeader />
       <main className="mx-auto max-w-7xl px-4 sm:px-6">
         {/* HERO */}
