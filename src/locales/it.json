@@ -177,5 +177,11 @@
       "title": "CREA SFIDA 1v1",
       "submit": "PUBBLICA SFIDA"
     }
+  },
+  "chat": {
+    "empty": "> nessun messaggio. rompi il ghiaccio.",
+    "placeholder": "scrivi un messaggio...",
+    "send": "INVIA",
+    "readOnly": "// chat in sola lettura — solo i partecipanti possono scrivere"
   }
 }

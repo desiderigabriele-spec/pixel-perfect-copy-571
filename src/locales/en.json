@@ -177,5 +177,11 @@
       "title": "CREATE 1v1 CHALLENGE",
       "submit": "PUBLISH CHALLENGE"
     }
+  },
+  "chat": {
+    "empty": "> no messages yet. break the ice.",
+    "placeholder": "type a message...",
+    "send": "SEND",
+    "readOnly": "// read-only chat — only participants can post"
   }
 }
