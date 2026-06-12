@@ -2,6 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
+import { supabase } from "@/integrations/supabase/client";
 import { useTranslation } from "react-i18next";
 import { HttHeader } from "@/components/htt/HttHeader";
 import { TerminalCard } from "@/components/htt/TerminalCard";
@@ -36,6 +37,21 @@ function ChallengeDetail() {
     refetchInterval: (q) => (q.state.data?.challenge?.status === "live" ? 5000 : 10000),
   });
   const { data: me } = useQuery({ queryKey: ["my-profile"], queryFn: () => fetchMe() });
+
+  // Realtime: invalida la query non appena il record cambia (join, settlement, cancel).
+  useEffect(() => {
+    const channel = supabase
+      .channel(`challenge-${id}`)
+      .on(
+        "postgres_changes",
+        { event: "UPDATE", schema: "public", table: "challenges", filter: `id=eq.${id}` },
+        () => queryClient.invalidateQueries({ queryKey: ["challenge", id] }),
+      )
+      .subscribe();
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [id, queryClient]);
 
   const [now, setNow] = useState(Date.now());
   useEffect(() => {
