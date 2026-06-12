@@ -25,6 +25,7 @@ import { Route as AuthenticatedOnboardingVerifyRouteImport } from './routes/_aut
 import { Route as AuthenticatedOnboardingAvatradeRouteImport } from './routes/_authenticated/onboarding.avatrade'
 import { Route as AuthenticatedChallengesNewRouteImport } from './routes/_authenticated/challenges.new'
 import { Route as AuthenticatedChallengesIdRouteImport } from './routes/_authenticated/challenges.$id'
+import { Route as ApiPublicCardUsernameRouteImport } from './routes/api/public/card.$username'
 
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
   id: '/reset-password',
@@ -109,6 +110,11 @@ const AuthenticatedChallengesIdRoute =
     path: '/$id',
     getParentRoute: () => AuthenticatedChallengesRoute,
   } as any)
+const ApiPublicCardUsernameRoute = ApiPublicCardUsernameRouteImport.update({
+  id: '/api/public/card/$username',
+  path: '/api/public/card/$username',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -126,6 +132,7 @@ export interface FileRoutesByFullPath {
   '/challenges/new': typeof AuthenticatedChallengesNewRoute
   '/onboarding/avatrade': typeof AuthenticatedOnboardingAvatradeRoute
   '/onboarding/verify': typeof AuthenticatedOnboardingVerifyRoute
+  '/api/public/card/$username': typeof ApiPublicCardUsernameRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -143,6 +150,7 @@ export interface FileRoutesByTo {
   '/challenges/new': typeof AuthenticatedChallengesNewRoute
   '/onboarding/avatrade': typeof AuthenticatedOnboardingAvatradeRoute
   '/onboarding/verify': typeof AuthenticatedOnboardingVerifyRoute
+  '/api/public/card/$username': typeof ApiPublicCardUsernameRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -162,6 +170,7 @@ export interface FileRoutesById {
   '/_authenticated/challenges/new': typeof AuthenticatedChallengesNewRoute
   '/_authenticated/onboarding/avatrade': typeof AuthenticatedOnboardingAvatradeRoute
   '/_authenticated/onboarding/verify': typeof AuthenticatedOnboardingVerifyRoute
+  '/api/public/card/$username': typeof ApiPublicCardUsernameRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -181,6 +190,7 @@ export interface FileRouteTypes {
     | '/challenges/new'
     | '/onboarding/avatrade'
     | '/onboarding/verify'
+    | '/api/public/card/$username'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -198,6 +208,7 @@ export interface FileRouteTypes {
     | '/challenges/new'
     | '/onboarding/avatrade'
     | '/onboarding/verify'
+    | '/api/public/card/$username'
   id:
     | '__root__'
     | '/'
@@ -216,6 +227,7 @@ export interface FileRouteTypes {
     | '/_authenticated/challenges/new'
     | '/_authenticated/onboarding/avatrade'
     | '/_authenticated/onboarding/verify'
+    | '/api/public/card/$username'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -228,6 +240,7 @@ export interface RootRouteChildren {
   ResetPasswordRoute: typeof ResetPasswordRoute
   LiveIdRoute: typeof LiveIdRoute
   UUsernameRoute: typeof UUsernameRoute
+  ApiPublicCardUsernameRoute: typeof ApiPublicCardUsernameRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -344,6 +357,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedChallengesIdRouteImport
       parentRoute: typeof AuthenticatedChallengesRoute
     }
+    '/api/public/card/$username': {
+      id: '/api/public/card/$username'
+      path: '/api/public/card/$username'
+      fullPath: '/api/public/card/$username'
+      preLoaderRoute: typeof ApiPublicCardUsernameRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -392,7 +412,18 @@ const rootRouteChildren: RootRouteChildren = {
   ResetPasswordRoute: ResetPasswordRoute,
   LiveIdRoute: LiveIdRoute,
   UUsernameRoute: UUsernameRoute,
+  ApiPublicCardUsernameRoute: ApiPublicCardUsernameRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}

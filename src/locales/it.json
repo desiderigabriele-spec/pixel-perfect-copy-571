@@ -219,5 +219,10 @@
     "trades": "TRADES",
     "trackRecord": "TRACK REC.",
     "equity": "EQUITY CURVE (24P)"
+  },
+  "share": {
+    "download": "SCARICA SVG",
+    "copyLink": "COPIA LINK",
+    "note": "// Sto partecipando / seguimi. Niente promesse di guadagno."
   }
 }
