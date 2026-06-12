@@ -7,7 +7,6 @@ import { TerminalCard } from "@/components/htt/TerminalCard";
 import { TerminalInput } from "@/components/htt/TerminalInput";
 import { TerminalButton } from "@/components/htt/TerminalButton";
 import { supabase } from "@/integrations/supabase/client";
-import { lovable } from "@/integrations/lovable";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({
@@ -103,15 +102,15 @@ function AuthPage() {
 
   async function googleSignIn() {
     setError(null);
-    const result = await lovable.auth.signInWithOAuth("google", {
-      redirect_uri: `${window.location.origin}/dashboard`,
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: `${window.location.origin}/dashboard`,
+      },
     });
-    if (result.error) {
-      setError(t("auth.errorGeneric", { message: String(result.error.message ?? result.error) }));
-      return;
+    if (error) {
+      setError(t("auth.errorGeneric", { message: error.message }));
     }
-    if (result.redirected) return;
-    navigate({ to: "/dashboard", replace: true });
   }
 
   return (

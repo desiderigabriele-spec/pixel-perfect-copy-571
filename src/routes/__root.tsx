@@ -10,7 +10,6 @@ import {
 import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
-import { reportLovableError } from "../lib/lovable-error-reporting";
 import { supabase } from "@/integrations/supabase/client";
 import { MarketRain } from "@/components/htt/MarketRain";
 
@@ -39,9 +38,6 @@ function NotFoundComponent() {
 function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   console.error(error);
   const router = useRouter();
-  useEffect(() => {
-    reportLovableError(error, { boundary: "tanstack_root_error_component" });
-  }, [error]);
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
@@ -99,16 +95,6 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         name: "twitter:description",
         content:
           "Piattaforma di sfide tra trader retail. Performance verificate su conto demo AvaTrade. Estetica terminale hacker.",
-      },
-      {
-        property: "og:image",
-        content:
-          "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/b486c274-fc31-48b2-89cf-516fa03e14b5/id-preview-f15ec637--3c09a3b2-35fd-4527-ab69-6937acab9ecd.lovable.app-1781284887870.png",
-      },
-      {
-        name: "twitter:image",
-        content:
-          "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/b486c274-fc31-48b2-89cf-516fa03e14b5/id-preview-f15ec637--3c09a3b2-35fd-4527-ab69-6937acab9ecd.lovable.app-1781284887870.png",
       },
     ],
     links: [
