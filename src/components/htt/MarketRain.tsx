@@ -157,7 +157,7 @@ export function MarketRain({ opacity = 0.55, className = "" }: Props) {
       ref={ref}
       aria-hidden
       className={`pointer-events-none fixed inset-0 ${className}`}
-      style={{ opacity, zIndex: -1, background: "#000" }}
+      style={{ opacity, zIndex: 9999, mixBlendMode: "screen", background: "transparent" }}
     />
   );
 }
