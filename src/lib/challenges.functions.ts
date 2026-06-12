@@ -13,6 +13,8 @@ const createSchema = z.object({
   stake_amount: z.number().int().min(0).max(100000),
   visibility: z.enum(["public", "private"]),
   side: z.enum(["long", "short"]),
+  mode: z.enum(["1v1", "solo_goal"]).default("1v1"),
+  goal_pips: z.number().min(1).max(10000).optional(),
 });
 
 function genInviteCode(): string {
@@ -58,6 +60,15 @@ export const createChallenge = createServerFn({ method: "POST" })
 
     const invite_code = data.visibility === "private" ? genInviteCode() : null;
 
+    // Sfide a obiettivo: partono già LIVE (niente attesa di avversario).
+    const isSolo = data.mode === "solo_goal";
+    if (isSolo && (!data.goal_pips || data.goal_pips < 1)) {
+      throw new Error("goal_pips_required");
+    }
+    const startsAt = isSolo ? new Date() : null;
+    const endsAt = isSolo ? new Date(Date.now() + data.duration_minutes * 60_000) : null;
+    const entry = isSolo ? priceAt(data.symbol, startsAt!.getTime(), 0) : null;
+
     const { data: row, error } = await supabaseAdmin
       .from("challenges")
       .insert({
@@ -68,8 +79,13 @@ export const createChallenge = createServerFn({ method: "POST" })
         stake_amount,
         visibility: data.visibility,
         invite_code,
-        status: "waiting",
+        status: isSolo ? "live" : "waiting",
         creator_side: data.side,
+        mode: data.mode,
+        goal_pips: isSolo ? data.goal_pips : null,
+        starts_at: startsAt?.toISOString() ?? null,
+        ends_at: endsAt?.toISOString() ?? null,
+        entry_price: entry,
       })
       .select("id, invite_code")
       .single();
@@ -255,13 +271,20 @@ export const settleChallenge = createServerFn({ method: "POST" })
     const startsAtMs = new Date(c.starts_at).getTime();
     const durationSec = (endsAtMs - startsAtMs) / 1000;
     const creatorPips = pipsFor(c.symbol, startsAtMs, durationSec, c.creator_side as "long" | "short");
-    const opponentPips = pipsFor(c.symbol, startsAtMs, durationSec, (c.opponent_side ?? "short") as "long" | "short");
+    const opponentPips = c.opponent_id
+      ? pipsFor(c.symbol, startsAtMs, durationSec, (c.opponent_side ?? "short") as "long" | "short")
+      : 0;
     const exit = priceAt(c.symbol, startsAtMs, durationSec);
 
     let winnerId: string | null = null;
-    if (creatorPips > opponentPips) winnerId = c.creator_id;
-    else if (opponentPips > creatorPips) winnerId = c.opponent_id ?? null;
-    // tie → winner_id null
+    let goalReached: boolean | null = null;
+    if (c.mode === "solo_goal") {
+      goalReached = creatorPips >= Number(c.goal_pips ?? 0);
+      winnerId = goalReached ? c.creator_id : null;
+    } else {
+      if (creatorPips > opponentPips) winnerId = c.creator_id;
+      else if (opponentPips > creatorPips) winnerId = c.opponent_id ?? null;
+    }
 
     // Trasferimento punti (se posta in punti): il vincitore prende l'intero piatto.
     if (c.stake_type === "points" && c.stake_amount > 0 && winnerId) {
@@ -295,6 +318,7 @@ export const settleChallenge = createServerFn({ method: "POST" })
         opponent_pips: Number(opponentPips.toFixed(1)),
         exit_price: exit,
         settled_at: new Date().toISOString(),
+        goal_reached: goalReached,
       })
       .eq("id", c.id)
       .eq("status", "live");

@@ -190,6 +190,10 @@
     "new": {
       "title": "CREATE 1v1 CHALLENGE",
       "submit": "PUBLISH CHALLENGE"
+    },
+    "mode": {
+      "1v1": { "label": "1v1 OPPONENT", "desc": "Challenge another trader. Most pips wins." },
+      "solo_goal": { "label": "SOLO GOAL", "desc": "Hit X pips before time runs out. Public outcome.", "goalLabel": "Goal (pips)" }
     }
   },
   "chat": {

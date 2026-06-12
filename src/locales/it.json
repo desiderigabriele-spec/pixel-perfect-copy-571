@@ -190,6 +190,10 @@
     "new": {
       "title": "CREA SFIDA 1v1",
       "submit": "PUBBLICA SFIDA"
+    },
+    "mode": {
+      "1v1": { "label": "1v1 AVVERSARIO", "desc": "Sfida un altro trader. Chi fa più pips vince." },
+      "solo_goal": { "label": "OBIETTIVO SOLITARIO", "desc": "Raggiungi X pips entro il tempo. Esito pubblico.", "goalLabel": "Obiettivo (pips)" }
     }
   },
   "chat": {
