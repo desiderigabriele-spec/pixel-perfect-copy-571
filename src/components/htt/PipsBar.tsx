@@ -1,4 +1,4 @@
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "@/lib/translate";
 
 interface Props {
   leaderName: string;

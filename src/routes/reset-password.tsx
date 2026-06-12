@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "@/lib/translate";
 import { HttHeader } from "@/components/htt/HttHeader";
 import { TerminalCard } from "@/components/htt/TerminalCard";
 import { TerminalInput } from "@/components/htt/TerminalInput";

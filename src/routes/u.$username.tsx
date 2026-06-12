@@ -1,5 +1,5 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "@/lib/translate";
 import { HttHeader } from "@/components/htt/HttHeader";
 import { TerminalCard } from "@/components/htt/TerminalCard";
 import { GlitchAvatar } from "@/components/htt/GlitchAvatar";
