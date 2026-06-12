@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as LiveDemoRouteImport } from './routes/live-demo'
 import { Route as BootRouteImport } from './routes/boot'
 import { Route as AuthRouteImport } from './routes/auth'
@@ -19,6 +20,11 @@ import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/
 import { Route as AuthenticatedOnboardingVerifyRouteImport } from './routes/_authenticated/onboarding.verify'
 import { Route as AuthenticatedOnboardingAvatradeRouteImport } from './routes/_authenticated/onboarding.avatrade'
 
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LiveDemoRoute = LiveDemoRouteImport.update({
   id: '/live-demo',
   path: '/live-demo',
@@ -71,6 +77,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/boot': typeof BootRoute
   '/live-demo': typeof LiveDemoRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/onboarding/avatrade': typeof AuthenticatedOnboardingAvatradeRoute
@@ -81,6 +88,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/boot': typeof BootRoute
   '/live-demo': typeof LiveDemoRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/onboarding/avatrade': typeof AuthenticatedOnboardingAvatradeRoute
@@ -93,6 +101,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/boot': typeof BootRoute
   '/live-demo': typeof LiveDemoRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/onboarding/avatrade': typeof AuthenticatedOnboardingAvatradeRoute
@@ -105,6 +114,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/boot'
     | '/live-demo'
+    | '/reset-password'
     | '/admin'
     | '/dashboard'
     | '/onboarding/avatrade'
@@ -115,6 +125,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/boot'
     | '/live-demo'
+    | '/reset-password'
     | '/admin'
     | '/dashboard'
     | '/onboarding/avatrade'
@@ -126,6 +137,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/boot'
     | '/live-demo'
+    | '/reset-password'
     | '/_authenticated/admin'
     | '/_authenticated/dashboard'
     | '/_authenticated/onboarding/avatrade'
@@ -138,10 +150,18 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   BootRoute: typeof BootRoute
   LiveDemoRoute: typeof LiveDemoRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/live-demo': {
       id: '/live-demo'
       path: '/live-demo'
@@ -231,7 +251,18 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   BootRoute: BootRoute,
   LiveDemoRoute: LiveDemoRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
