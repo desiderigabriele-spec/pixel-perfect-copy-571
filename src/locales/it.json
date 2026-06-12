@@ -134,7 +134,8 @@
     "empty": "> nessuna sfida aperta. crea la tua per iniziare.",
     "emptyMine": "> non hai ancora partecipato a una sfida.",
     "waitingOpponent": "in attesa di uno sfidante...",
-    "liveNote": "// La visualizzazione live dei pips arriva con il prossimo modulo (esecuzione realtime).",
+    "winner": "VINCITORE",
+    "tie": "PAREGGIO",
     "tab": { "open": "APERTE", "mine": "LE MIE" },
     "status": {
       "waiting": "IN ATTESA",
@@ -154,6 +155,12 @@
       "private": "Privata (codice)",
       "publicNote": "Visibile a tutti nella lobby.",
       "privateNote": "Solo chi ha il codice può unirsi."
+    },
+    "side": {
+      "long": "LONG",
+      "short": "SHORT",
+      "note": "La tua direzione: LONG guadagna se il prezzo sale, SHORT se scende.",
+      "opposingNote": "Il creatore è {{side}}. Scegli la tua direzione."
     },
     "new": {
       "title": "CREA SFIDA 1v1",
