@@ -1,0 +1,98 @@
+{
+  "common": {
+    "loading": "> caricamento...",
+    "error": "> errore",
+    "back": "Indietro",
+    "next": "Avanti",
+    "skip": "Salta",
+    "logout": "Esci",
+    "login": "Accedi",
+    "signup": "Registrati"
+  },
+  "nav": {
+    "live": "LIVE",
+    "dashboard": "DASHBOARD",
+    "admin": "ADMIN"
+  },
+  "landing": {
+    "tag": "// COMMUNITY TRADER VERIFICATA",
+    "title": "HACK_THE_TRADING",
+    "subtitle": "Sfide tra trader. Performance verificate. Spettacolo puro.",
+    "ctaPrimary": "INIZIA L'ACCESSO",
+    "ctaSecondary": "GUARDA LA SFIDA LIVE",
+    "feature1Title": "SFIDE 1v1",
+    "feature1Desc": "Scontri trader contro trader su conto demo. Chi fa più pips vince.",
+    "feature2Title": "DATI VERIFICATI",
+    "feature2Desc": "Performance lette in sola lettura da AvaTrade. Niente trucchi.",
+    "feature3Title": "COMMUNITY ITALIANA",
+    "feature3Desc": "Chat moderata, segnali, classifica live. Solo trader veri.",
+    "compliance": "// Avviso: HTT è una piattaforma di spettacolo e apprendimento competitivo. Non eseguiamo trade né forniamo segnali da copiare. Il trading comporta rischi."
+  },
+  "live": {
+    "title": "SFIDA LIVE",
+    "leader": "LEADER",
+    "challenger": "SFIDANTE",
+    "vs": "VS",
+    "timeLeft": "TEMPO RIMASTO",
+    "liveFeed": "LIVE_FEED",
+    "rank": "POS"
+  },
+  "boot": {
+    "line1": "> inizializzazione HTT_NET...",
+    "line2": "> connessione neurale: OK",
+    "line3": "> feed di mercato: OK",
+    "line4": "> moduli AI: OK",
+    "line5": "> sistema online.",
+    "skipHint": "tap per saltare"
+  },
+  "auth": {
+    "titleSignup": "INIZIALIZZA ACCESSO",
+    "titleLogin": "ACCESSO UTENTE",
+    "emailLabel": "> email_",
+    "usernameLabel": "> username_",
+    "passwordLabel": "> password_",
+    "submitSignup": "INIZIALIZZA ACCESSO",
+    "submitLogin": "ACCEDI",
+    "google": "Continua con Google",
+    "toggleToLogin": "Hai già un account? Accedi",
+    "toggleToSignup": "Non hai un account? Registrati",
+    "errorEmail": "> errore: email non valida",
+    "errorPassword": "> errore: password troppo corta (min 6 caratteri)",
+    "errorUsername": "> errore: username richiesto (3-20 caratteri)",
+    "errorGeneric": "> errore: {{message}}",
+    "checkEmail": "> controlla la tua email per confermare l'accesso"
+  },
+  "onboarding": {
+    "avatradeTitle": "Ultimo step per accedere alle sfide",
+    "avatradeIntro": "Per garantire performance verificate, ogni trader HTT apre un conto gratuito su AvaTrade tramite il nostro link.",
+    "step1Title": "Apri il tuo conto AvaTrade gratuito",
+    "step1Desc": "Deposito 250€, resta tuo. Conto reale + demo collegato.",
+    "step2Title": "Inserisci il tuo ID conto qui",
+    "step2Desc": "Lo verifichiamo manualmente in 24h.",
+    "step3Title": "Accedi a sfide, classifica e community",
+    "step3Desc": "Le tue performance demo diventano verificate.",
+    "openAvatrade": "APRI AVATRADE",
+    "accountIdLabel": "> ID conto AvaTrade_",
+    "submit": "INVIA VERIFICA",
+    "verifyTitle": "Verifica in corso",
+    "verifyDesc": "Il nostro team sta verificando il tuo conto. Tempo medio: 24h.",
+    "verifyStatus": "Stato: {{status}}",
+    "statusPending": "in attesa",
+    "statusVerified": "verificato",
+    "statusRejected": "rifiutato"
+  },
+  "dashboard": {
+    "welcome": "BENVENUTO, {{username}}",
+    "verifiedBadge": "VERIFICATO",
+    "pendingBadge": "VERIFICA PENDING",
+    "comingSoon": "// I moduli sfide, classifica e segnali arrivano nei prossimi cicli."
+  },
+  "admin": {
+    "title": "ADMIN — VERIFICHE AVATRADE",
+    "noRequests": "> nessuna richiesta in attesa.",
+    "approve": "APPROVA",
+    "reject": "RIFIUTA",
+    "submittedAt": "Inviata il",
+    "accountId": "ID conto"
+  }
+}
