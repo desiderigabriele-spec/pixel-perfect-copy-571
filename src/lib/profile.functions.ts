@@ -80,7 +80,7 @@ export const getLeaderboard = createServerFn({ method: "GET" })
       .limit(1000);
     if (data.scope === "language" && data.filterValue) profQ = profQ.eq("language", data.filterValue);
     if (data.scope === "country" && data.filterValue) profQ = profQ.eq("country", data.filterValue);
-    if (data.scope === "style" && data.filterValue) profQ = profQ.eq("style", data.filterValue);
+    if (data.scope === "style" && data.filterValue) profQ = profQ.eq("style", data.filterValue as any);
     if (data.scope === "asset" && data.filterValue) profQ = profQ.eq("primary_asset", data.filterValue);
     if (data.special === "rising_star") {
       const cutoff = new Date(Date.now() - 30 * 86_400_000).toISOString();
