@@ -122,5 +122,42 @@
     "reject": "RIFIUTA",
     "submittedAt": "Inviata il",
     "accountId": "ID conto"
+  },
+  "challenges": {
+    "title": "SFIDE",
+    "create": "NUOVA SFIDA",
+    "join": "ENTRA",
+    "accept": "ACCETTA",
+    "cancel": "ANNULLA SFIDA",
+    "honor": "Onore",
+    "inviteCodeLabel": "> codice invito_",
+    "empty": "> nessuna sfida aperta. crea la tua per iniziare.",
+    "emptyMine": "> non hai ancora partecipato a una sfida.",
+    "waitingOpponent": "in attesa di uno sfidante...",
+    "liveNote": "// La visualizzazione live dei pips arriva con il prossimo modulo (esecuzione realtime).",
+    "tab": { "open": "APERTE", "mine": "LE MIE" },
+    "status": {
+      "waiting": "IN ATTESA",
+      "live": "LIVE",
+      "settled": "CONCLUSA",
+      "cancelled": "ANNULLATA"
+    },
+    "cat": { "fx": "Forex", "metals": "Metalli", "crypto": "Crypto", "indices": "Indici" },
+    "stake": {
+      "honor": "Solo onore",
+      "points": "Punti HTT",
+      "amount": "Importo punti",
+      "note": "I punti vengono bloccati al join e vanno al vincitore al settlement."
+    },
+    "visibility": {
+      "public": "Pubblica",
+      "private": "Privata (codice)",
+      "publicNote": "Visibile a tutti nella lobby.",
+      "privateNote": "Solo chi ha il codice può unirsi."
+    },
+    "new": {
+      "title": "CREA SFIDA 1v1",
+      "submit": "PUBBLICA SFIDA"
+    }
   }
 }
