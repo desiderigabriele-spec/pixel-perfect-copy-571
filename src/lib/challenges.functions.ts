@@ -160,7 +160,7 @@ export const joinChallenge = createServerFn({ method: "POST" })
     z.object({
       id: z.string().uuid().optional(),
       invite_code: z.string().length(6).optional(),
-      side: z.enum(["long", "short"]),
+      side: z.enum(["long", "short"]).optional(),
     })
       .refine((v) => v.id || v.invite_code, "id or invite_code required")
       .parse(input),
@@ -200,6 +200,8 @@ export const joinChallenge = createServerFn({ method: "POST" })
     const startsAt = new Date();
     const endsAt = new Date(startsAt.getTime() + c.duration_minutes * 60_000);
     const entry = priceAt(c.symbol, startsAt.getTime(), 0);
+    // Se la side non è specificata (es. join by code rapido), prendi il lato opposto del creatore.
+    const opponentSide = data.side ?? (c.creator_side === "long" ? "short" : "long");
     const { error: updErr } = await supabaseAdmin
       .from("challenges")
       .update({
@@ -207,7 +209,7 @@ export const joinChallenge = createServerFn({ method: "POST" })
         status: "live",
         starts_at: startsAt.toISOString(),
         ends_at: endsAt.toISOString(),
-        opponent_side: data.side,
+        opponent_side: opponentSide,
         entry_price: entry,
       })
       .eq("id", c.id)
