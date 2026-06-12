@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { HttHeader } from "@/components/htt/HttHeader";
 import { TerminalCard } from "@/components/htt/TerminalCard";
 import { GlitchAvatar } from "@/components/htt/GlitchAvatar";
+import { TraderMetrics } from "@/components/htt/TraderMetrics";
 import { getPublicProfile } from "@/lib/profile.functions";
 
 export const Route = createFileRoute("/u/$username")({
@@ -90,6 +91,8 @@ function PublicProfile() {
             </p>
           )}
         </TerminalCard>
+
+        <TraderMetrics seed={profile.username} />
       </main>
     </div>
   );

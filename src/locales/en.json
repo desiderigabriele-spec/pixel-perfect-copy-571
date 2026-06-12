@@ -204,5 +204,16 @@
     "signin": "SIGN IN",
     "affiliate": "BECOME AFFILIATE",
     "delayedBadge": "DELAYED VIEW · AFFILIATE FOR LIVE"
+  },
+  "metrics": {
+    "consistency": "CONSISTENCY",
+    "winRate": "WIN RATE",
+    "profitFactor": "PROFIT FACTOR",
+    "sharpe": "SHARPE",
+    "maxDrawdown": "MAX DD",
+    "avgRR": "AVG R:R",
+    "trades": "TRADES",
+    "trackRecord": "TRACK REC.",
+    "equity": "EQUITY CURVE (24P)"
   }
 }

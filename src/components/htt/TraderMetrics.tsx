@@ -3,10 +3,11 @@ import { TerminalCard } from "./TerminalCard";
 import { useTranslation } from "react-i18next";
 
 // Card metriche di consistenza + sparkline equity. Mock deterministico per ora.
-type Props = { userId: string };
+// Seed pubblico (es. username) — non esponiamo lo user_id.
+type Props = { seed: string };
 
-export function TraderMetrics({ userId }: Props) {
-  const s = getMockStats(userId);
+export function TraderMetrics({ seed }: Props) {
+  const s = getMockStats(seed);
   const { t } = useTranslation();
 
   const cells: Array<{ k: string; v: string; tone?: string }> = [
