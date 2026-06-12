@@ -11,6 +11,7 @@
   },
   "nav": {
     "live": "LIVE",
+    "challenges": "SFIDE",
     "dashboard": "DASHBOARD",
     "admin": "ADMIN"
   },
@@ -96,6 +97,8 @@
     "verifiedBadge": "VERIFICATO",
     "pendingBadge": "VERIFICA PENDING",
     "comingSoon": "// I moduli sfide, classifica e segnali arrivano nei prossimi cicli.",
+    "challengesDesc": "Crea o accetta una sfida 1v1.",
+    "liveDesc": "Guarda la sfida in corso.",
     "claimAdmin": {
       "desc": "Sei il primo utente registrato. Rivendica il ruolo admin per accedere al pannello verifiche.",
       "cta": "RIVENDICA RUOLO ADMIN"
