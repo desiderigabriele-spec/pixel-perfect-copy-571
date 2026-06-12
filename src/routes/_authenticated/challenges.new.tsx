@@ -24,6 +24,7 @@ function NewChallenge() {
   const [stakeType, setStakeType] = useState<"honor" | "points">("honor");
   const [stakeAmount, setStakeAmount] = useState(100);
   const [visibility, setVisibility] = useState<"public" | "private">("public");
+  const [side, setSide] = useState<"long" | "short">("long");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -39,6 +40,7 @@ function NewChallenge() {
           stake_type: stakeType,
           stake_amount: stakeType === "points" ? stakeAmount : 0,
           visibility,
+          side,
         },
       });
       navigate({ to: "/challenges/$id", params: { id } });
@@ -113,6 +115,31 @@ function NewChallenge() {
                 </button>
               ))}
             </div>
+          </TerminalCard>
+
+          <TerminalCard label="> POSITION" className="p-5">
+            <div className="flex gap-2">
+              {(["long", "short"] as const).map((s) => (
+                <button
+                  key={s}
+                  type="button"
+                  onClick={() => setSide(s)}
+                  className={cn(
+                    "px-4 py-2 border font-mono text-sm transition-colors flex-1",
+                    side === s
+                      ? s === "long"
+                        ? "border-[var(--terminal)] bg-[var(--terminal)]/10 text-[var(--terminal)]"
+                        : "border-[var(--alert)] bg-[var(--alert)]/10 text-[var(--alert)]"
+                      : "border-border text-[var(--text-dim)] hover:text-foreground",
+                  )}
+                >
+                  {t(`challenges.side.${s}`)}
+                </button>
+              ))}
+            </div>
+            <p className="mt-2 font-mono text-[10px] text-[var(--text-dim)]">
+              {t("challenges.side.note")}
+            </p>
           </TerminalCard>
 
           <TerminalCard label="> STAKE" className="p-5 space-y-3">
