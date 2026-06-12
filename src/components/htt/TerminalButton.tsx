@@ -7,10 +7,14 @@ interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const variants = {
-  primary: "bg-[var(--terminal)]/10 text-[var(--terminal)] border-[var(--terminal)] hover:bg-[var(--terminal)] hover:text-background htt-text-glow-green",
-  amber: "bg-[var(--amber)]/10 text-[var(--amber)] border-[var(--amber)] hover:bg-[var(--amber)] hover:text-background",
-  danger: "bg-[var(--alert)]/10 text-[var(--alert)] border-[var(--alert)] hover:bg-[var(--alert)] hover:text-foreground",
-  ghost: "bg-transparent text-foreground border-border hover:border-[var(--terminal)] hover:text-[var(--terminal)]",
+  primary:
+    "bg-[var(--terminal)]/10 text-[var(--terminal)] border-[var(--terminal)] hover:bg-[var(--terminal)] hover:text-background htt-text-glow-green",
+  amber:
+    "bg-[var(--amber)]/10 text-[var(--amber)] border-[var(--amber)] hover:bg-[var(--amber)] hover:text-background",
+  danger:
+    "bg-[var(--alert)]/10 text-[var(--alert)] border-[var(--alert)] hover:bg-[var(--alert)] hover:text-foreground",
+  ghost:
+    "bg-transparent text-foreground border-border hover:border-[var(--terminal)] hover:text-[var(--terminal)]",
 } as const;
 
 const sizes = {

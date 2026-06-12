@@ -4,7 +4,11 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
 // Schema input ID conto AvaTrade
 const accountSchema = z.object({
-  avatrade_account_id: z.string().min(4).max(64).regex(/^[a-zA-Z0-9_-]+$/),
+  avatrade_account_id: z
+    .string()
+    .min(4)
+    .max(64)
+    .regex(/^[a-zA-Z0-9_-]+$/),
 });
 
 // L'utente invia/aggiorna la propria richiesta di verifica AvaTrade.
@@ -13,16 +17,14 @@ export const submitAvatradeAccount = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => accountSchema.parse(input))
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
-    const { error } = await supabase
-      .from("avatrade_verifications")
-      .upsert(
-        {
-          user_id: userId,
-          avatrade_account_id: data.avatrade_account_id,
-          status: "pending",
-        },
-        { onConflict: "user_id" },
-      );
+    const { error } = await supabase.from("avatrade_verifications").upsert(
+      {
+        user_id: userId,
+        avatrade_account_id: data.avatrade_account_id,
+        status: "pending",
+      },
+      { onConflict: "user_id" },
+    );
     if (error) throw new Error(error.message);
     return { ok: true };
   });
@@ -47,7 +49,11 @@ export const getMyProfile = createServerFn({ method: "GET" })
   .handler(async ({ context }) => {
     const { supabase, userId } = context;
     const [{ data: profile }, { data: roles }, { data: verif }] = await Promise.all([
-      supabase.from("profiles").select("id, username, avatar_seed, points_balance").eq("id", userId).maybeSingle(),
+      supabase
+        .from("profiles")
+        .select("id, username, avatar_seed, points_balance")
+        .eq("id", userId)
+        .maybeSingle(),
       supabase.from("user_roles").select("role").eq("user_id", userId),
       supabase.from("avatrade_verifications").select("status").eq("user_id", userId).maybeSingle(),
     ]);

@@ -90,7 +90,11 @@ function Dashboard() {
         </TerminalCard>
 
         {!isVerified && (
-          <TerminalCard label="> NEXT_STEP" glow="amber" className="p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <TerminalCard
+            label="> NEXT_STEP"
+            glow="amber"
+            className="p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
+          >
             <div>
               <div className="font-display text-xl text-[var(--amber)]">
                 {isPending ? t("onboarding.verifyTitle") : t("onboarding.avatradeTitle")}
@@ -109,23 +113,33 @@ function Dashboard() {
           <div className="grid sm:grid-cols-2 gap-3 mb-4">
             <Link to="/challenges">
               <TerminalCard className="p-4 hover:border-[var(--terminal)] transition-colors cursor-pointer">
-                <div className="font-mono text-[10px] uppercase tracking-widest text-[var(--terminal)]">// ARENA</div>
+                <div className="font-mono text-[10px] uppercase tracking-widest text-[var(--terminal)]">
+                  // ARENA
+                </div>
                 <div className="font-display text-xl mt-1">{t("challenges.title")}</div>
-                <div className="font-mono text-xs text-[var(--text-dim)] mt-1">{t("dashboard.challengesDesc")}</div>
+                <div className="font-mono text-xs text-[var(--text-dim)] mt-1">
+                  {t("dashboard.challengesDesc")}
+                </div>
               </TerminalCard>
             </Link>
             <Link to="/live-demo">
               <TerminalCard className="p-4 hover:border-[var(--amber)] transition-colors cursor-pointer">
-                <div className="font-mono text-[10px] uppercase tracking-widest text-[var(--amber)]">// SHOWCASE</div>
+                <div className="font-mono text-[10px] uppercase tracking-widest text-[var(--amber)]">
+                  // SHOWCASE
+                </div>
                 <div className="font-display text-xl mt-1">{t("nav.live")}</div>
-                <div className="font-mono text-xs text-[var(--text-dim)] mt-1">{t("dashboard.liveDesc")}</div>
+                <div className="font-mono text-xs text-[var(--text-dim)] mt-1">
+                  {t("dashboard.liveDesc")}
+                </div>
               </TerminalCard>
             </Link>
           </div>
           <p className="font-mono text-xs text-[var(--text-dim)]">{t("dashboard.comingSoon")}</p>
           {profileData?.isAdmin ? (
             <Link to="/admin" className="mt-4 inline-block">
-              <TerminalButton variant="ghost" size="sm">{t("nav.admin")}</TerminalButton>
+              <TerminalButton variant="ghost" size="sm">
+                {t("nav.admin")}
+              </TerminalButton>
             </Link>
           ) : adminAvail?.available ? (
             <div className="mt-4 border border-[var(--amber)] p-4">

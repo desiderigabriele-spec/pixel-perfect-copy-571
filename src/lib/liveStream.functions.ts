@@ -38,7 +38,9 @@ export const listLiveMessages = createServerFn({ method: "GET" })
     if (ids.length > 0) {
       const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
       const { data: profs } = await supabaseAdmin
-        .from("profiles").select("id, username").in("id", ids);
+        .from("profiles")
+        .select("id, username")
+        .in("id", ids);
       byId = new Map((profs ?? []).map((p: any) => [p.id, { username: p.username }]));
     }
     return {
@@ -50,10 +52,12 @@ export const listLiveMessages = createServerFn({ method: "GET" })
 export const postLiveMessage = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) =>
-    z.object({
-      challenge_id: z.string().uuid(),
-      body: z.string().trim().min(1).max(300),
-    }).parse(input),
+    z
+      .object({
+        challenge_id: z.string().uuid(),
+        body: z.string().trim().min(1).max(300),
+      })
+      .parse(input),
   )
   .handler(async ({ data, context }) => {
     const mod = moderate(data.body);
@@ -71,10 +75,12 @@ const REACTION_EMOJIS = ["🔥", "💎", "👏", "⚡", "💪"] as const;
 export const postLiveReaction = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) =>
-    z.object({
-      challenge_id: z.string().uuid(),
-      emoji: z.enum(REACTION_EMOJIS),
-    }).parse(input),
+    z
+      .object({
+        challenge_id: z.string().uuid(),
+        emoji: z.enum(REACTION_EMOJIS),
+      })
+      .parse(input),
   )
   .handler(async ({ data, context }) => {
     // Throttle: scarta se ne ho una < 1.5s fa

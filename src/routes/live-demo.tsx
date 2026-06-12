@@ -20,7 +20,11 @@ export const Route = createFileRoute("/live-demo")({
   head: () => ({
     meta: [
       { title: "Sfida live — HACK_THE_TRADING" },
-      { name: "description", content: "Guarda la sfida HTT live ora: trader vs trader, dati verificati AvaTrade, pips in tempo reale." },
+      {
+        name: "description",
+        content:
+          "Guarda la sfida HTT live ora: trader vs trader, dati verificati AvaTrade, pips in tempo reale.",
+      },
       { property: "og:title", content: "HTT — Sfida live" },
       { property: "og:description", content: "Trader vs trader, dati verificati AvaTrade." },
     ],
@@ -72,15 +76,25 @@ function RealMatch({ match }: { match: any }) {
               // {t("live.title")} · LIVE NOW
             </div>
             <h1 className="font-display text-3xl sm:text-4xl tracking-[0.08em]">
-              {sym?.label ?? match.symbol} / {match.duration_minutes >= 60 ? `${match.duration_minutes / 60}H` : `${match.duration_minutes}M`}
+              {sym?.label ?? match.symbol} /{" "}
+              {match.duration_minutes >= 60
+                ? `${match.duration_minutes / 60}H`
+                : `${match.duration_minutes}M`}
             </h1>
             <div className="mt-1 font-mono text-xs text-[var(--text-dim)] tabular-nums">
-              {livePrice.toLocaleString("en-US", { minimumFractionDigits: decimals, maximumFractionDigits: decimals })}
+              {livePrice.toLocaleString("en-US", {
+                minimumFractionDigits: decimals,
+                maximumFractionDigits: decimals,
+              })}
             </div>
           </div>
           <div className="text-right font-mono text-xs">
-            <div className="text-[var(--text-dim)] uppercase tracking-widest">{t("live.timeLeft")}</div>
-            <div className="text-foreground text-2xl tabular-nums">{hh}:{mm}:{ss}</div>
+            <div className="text-[var(--text-dim)] uppercase tracking-widest">
+              {t("live.timeLeft")}
+            </div>
+            <div className="text-foreground text-2xl tabular-nums">
+              {hh}:{mm}:{ss}
+            </div>
           </div>
         </div>
 
@@ -110,10 +124,18 @@ function RealMatch({ match }: { match: any }) {
         </TerminalCard>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <TerminalCard label={`> ${t("live.leader")}`} glow="green" className="p-5 flex items-center gap-4">
+          <TerminalCard
+            label={`> ${t("live.leader")}`}
+            glow="green"
+            className="p-5 flex items-center gap-4"
+          >
             <GlitchAvatar name={match.creator?.username ?? "?"} color="green" size={64} />
             <div className="min-w-0 flex-1">
-              <Link to="/u/$username" params={{ username: match.creator?.username ?? "" }} className="font-display text-2xl truncate hover:text-[var(--terminal)] block">
+              <Link
+                to="/u/$username"
+                params={{ username: match.creator?.username ?? "" }}
+                className="font-display text-2xl truncate hover:text-[var(--terminal)] block"
+              >
                 {match.creator?.username ?? "—"}
               </Link>
               <div className="font-mono text-xs text-[var(--text-dim)]">
@@ -122,10 +144,18 @@ function RealMatch({ match }: { match: any }) {
             </div>
           </TerminalCard>
 
-          <TerminalCard label={`> ${t("live.challenger")}`} glow="amber" className="p-5 flex items-center gap-4">
+          <TerminalCard
+            label={`> ${t("live.challenger")}`}
+            glow="amber"
+            className="p-5 flex items-center gap-4"
+          >
             <GlitchAvatar name={match.opponent?.username ?? "?"} color="amber" size={64} />
             <div className="min-w-0 flex-1">
-              <Link to="/u/$username" params={{ username: match.opponent?.username ?? "" }} className="font-display text-2xl truncate hover:text-[var(--amber)] block">
+              <Link
+                to="/u/$username"
+                params={{ username: match.opponent?.username ?? "" }}
+                className="font-display text-2xl truncate hover:text-[var(--amber)] block"
+              >
                 {match.opponent?.username ?? "—"}
               </Link>
               <div className="font-mono text-xs text-[var(--text-dim)]">
@@ -151,7 +181,10 @@ function DemoFallback() {
     const id = setInterval(() => {
       setSnap((prev) => ({
         leader: { ...prev.leader, pips: Math.max(0, prev.leader.pips + (Math.random() * 6 - 2.5)) },
-        challenger: { ...prev.challenger, pips: Math.max(0, prev.challenger.pips + (Math.random() * 6 - 2.5)) },
+        challenger: {
+          ...prev.challenger,
+          pips: Math.max(0, prev.challenger.pips + (Math.random() * 6 - 2.5)),
+        },
       }));
     }, 1400);
     return () => clearInterval(id);
@@ -187,7 +220,11 @@ function DemoFallback() {
 
         {/* AVATARS + FEED */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <TerminalCard label={`> ${t("live.leader")}`} glow="green" className="p-5 flex items-center gap-4">
+          <TerminalCard
+            label={`> ${t("live.leader")}`}
+            glow="green"
+            className="p-5 flex items-center gap-4"
+          >
             <GlitchAvatar name={snap.leader.username} color="green" size={64} />
             <div className="min-w-0">
               <div className="font-display text-2xl truncate">{snap.leader.username}</div>
@@ -197,7 +234,11 @@ function DemoFallback() {
             </div>
           </TerminalCard>
 
-          <TerminalCard label={`> ${t("live.challenger")}`} glow="amber" className="p-5 flex items-center gap-4">
+          <TerminalCard
+            label={`> ${t("live.challenger")}`}
+            glow="amber"
+            className="p-5 flex items-center gap-4"
+          >
             <GlitchAvatar name={snap.challenger.username} color="amber" size={64} />
             <div className="min-w-0">
               <div className="font-display text-2xl truncate">{snap.challenger.username}</div>

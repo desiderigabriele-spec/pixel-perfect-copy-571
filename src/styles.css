@@ -121,7 +121,8 @@
     -webkit-font-smoothing: antialiased;
   }
 
-  html, body {
+  html,
+  body {
     background: transparent;
     color-scheme: dark;
   }
@@ -158,11 +159,15 @@
 }
 
 @utility htt-glow-green {
-  box-shadow: 0 0 24px -4px var(--terminal), inset 0 0 0 1px var(--terminal);
+  box-shadow:
+    0 0 24px -4px var(--terminal),
+    inset 0 0 0 1px var(--terminal);
 }
 
 @utility htt-glow-amber {
-  box-shadow: 0 0 24px -4px var(--amber), inset 0 0 0 1px var(--amber);
+  box-shadow:
+    0 0 24px -4px var(--amber),
+    inset 0 0 0 1px var(--amber);
 }
 
 @utility htt-text-glow-green {
@@ -183,15 +188,28 @@
 }
 
 @keyframes htt-blink {
-  to { visibility: hidden; }
+  to {
+    visibility: hidden;
+  }
 }
 
 @keyframes htt-glitch {
-  0%, 100% { transform: translate(0); }
-  20% { transform: translate(-1px, 1px); }
-  40% { transform: translate(-1px, -1px); }
-  60% { transform: translate(1px, 1px); }
-  80% { transform: translate(1px, -1px); }
+  0%,
+  100% {
+    transform: translate(0);
+  }
+  20% {
+    transform: translate(-1px, 1px);
+  }
+  40% {
+    transform: translate(-1px, -1px);
+  }
+  60% {
+    transform: translate(1px, 1px);
+  }
+  80% {
+    transform: translate(1px, -1px);
+  }
 }
 
 @utility htt-glitch {

@@ -50,15 +50,15 @@ export function ShareCardPanel({ username, rank }: Props) {
               <img
                 src={url(fmt)}
                 alt={`${fmt} share card`}
-                className={fmt === "story" ? "w-full aspect-[9/16] object-contain" : "w-full aspect-square object-contain"}
+                className={
+                  fmt === "story"
+                    ? "w-full aspect-[9/16] object-contain"
+                    : "w-full aspect-square object-contain"
+                }
               />
             </div>
             <div className="flex gap-2">
-              <a
-                href={url(fmt)}
-                download={`htt-${username}-${type}-${fmt}.svg`}
-                className="flex-1"
-              >
+              <a href={url(fmt)} download={`htt-${username}-${type}-${fmt}.svg`} className="flex-1">
                 <TerminalButton variant="primary" size="sm" className="w-full">
                   {t("share.download")}
                 </TerminalButton>
@@ -75,9 +75,7 @@ export function ShareCardPanel({ username, rank }: Props) {
         ))}
       </div>
 
-      <p className="font-mono text-[10px] text-[var(--text-dim)]">
-        {t("share.note")}
-      </p>
+      <p className="font-mono text-[10px] text-[var(--text-dim)]">{t("share.note")}</p>
     </TerminalCard>
   );
 }

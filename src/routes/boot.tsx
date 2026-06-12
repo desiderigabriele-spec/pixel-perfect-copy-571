@@ -67,7 +67,8 @@ function BootPage() {
       </div>
       {step >= lines.length - 1 && (
         <div className="mt-12 font-display text-4xl sm:text-6xl tracking-[0.1em] text-foreground htt-text-glow-green animate-in fade-in duration-700">
-          HACK<span className="text-[var(--terminal)]">_</span>THE<span className="text-[var(--terminal)]">_</span>TRADING
+          HACK<span className="text-[var(--terminal)]">_</span>THE
+          <span className="text-[var(--terminal)]">_</span>TRADING
         </div>
       )}
       <div className="absolute bottom-6 font-mono text-[10px] uppercase tracking-widest text-[var(--text-dim)]">

@@ -109,7 +109,9 @@ export const listOpenChallenges = createServerFn({ method: "GET" })
     if (error) throw new Error(error.message);
     const ids = (data ?? []).map((c) => c.creator_id);
     const { data: profs } = await supabaseAdmin
-      .from("profiles").select("id, username, avatar_seed").in("id", ids);
+      .from("profiles")
+      .select("id, username, avatar_seed")
+      .in("id", ids);
     const byId = new Map((profs ?? []).map((p: any) => [p.id, p]));
     return {
       items: (data ?? []).map((c: any) => ({
@@ -126,7 +128,9 @@ export const listMyChallenges = createServerFn({ method: "GET" })
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data, error } = await supabaseAdmin
       .from("challenges")
-      .select("id, symbol, duration_minutes, stake_type, stake_amount, status, visibility, invite_code, creator_id, opponent_id, starts_at, ends_at, winner_id, created_at")
+      .select(
+        "id, symbol, duration_minutes, stake_type, stake_amount, status, visibility, invite_code, creator_id, opponent_id, starts_at, ends_at, winner_id, created_at",
+      )
       .or(`creator_id.eq.${context.userId},opponent_id.eq.${context.userId}`)
       .order("created_at", { ascending: false })
       .limit(100);
@@ -149,22 +153,29 @@ export const getChallenge = createServerFn({ method: "GET" })
     if (!c) throw new Error("not_found");
 
     // Authorization: solo creator/opponent/admin per private; tutti autenticati per public.
-    if (c.visibility === "private" && c.creator_id !== context.userId && c.opponent_id !== context.userId) {
+    if (
+      c.visibility === "private" &&
+      c.creator_id !== context.userId &&
+      c.opponent_id !== context.userId
+    ) {
       const { data: isAdmin } = await supabaseAdmin.rpc("has_role", {
-        _user_id: context.userId, _role: "admin",
+        _user_id: context.userId,
+        _role: "admin",
       });
       if (!isAdmin) throw new Error("forbidden");
     }
 
     const ids = [c.creator_id, c.opponent_id].filter(Boolean) as string[];
     const { data: profs } = await supabaseAdmin
-      .from("profiles").select("id, username, avatar_seed").in("id", ids);
+      .from("profiles")
+      .select("id, username, avatar_seed")
+      .in("id", ids);
     const byId = new Map((profs ?? []).map((p: any) => [p.id, p]));
     return {
       challenge: {
         ...c,
         creator: byId.get(c.creator_id) ?? null,
-        opponent: c.opponent_id ? byId.get(c.opponent_id) ?? null : null,
+        opponent: c.opponent_id ? (byId.get(c.opponent_id) ?? null) : null,
       },
     };
   });
@@ -173,11 +184,12 @@ export const getChallenge = createServerFn({ method: "GET" })
 export const joinChallenge = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) =>
-    z.object({
-      id: z.string().uuid().optional(),
-      invite_code: z.string().length(6).optional(),
-      side: z.enum(["long", "short"]).optional(),
-    })
+    z
+      .object({
+        id: z.string().uuid().optional(),
+        invite_code: z.string().length(6).optional(),
+        side: z.enum(["long", "short"]).optional(),
+      })
       .refine((v) => v.id || v.invite_code, "id or invite_code required")
       .parse(input),
   )
@@ -199,11 +211,11 @@ export const joinChallenge = createServerFn({ method: "POST" })
     if (c.stake_type === "points" && c.stake_amount > 0) {
       const ids = [c.creator_id, context.userId];
       const { data: profs } = await supabaseAdmin
-        .from("profiles").select("id, points_balance").in("id", ids);
+        .from("profiles")
+        .select("id, points_balance")
+        .in("id", ids);
       const ok = (profs ?? []).every((p: any) => (p.points_balance ?? 0) >= c.stake_amount);
       if (!ok) throw new Error("insufficient_points");
-      // Scala stake (creator + opponent). In step 04 si redistribuiranno al vincitore.
-      await supabaseAdmin.rpc; // placeholder per linter
       for (const uid of ids) {
         const cur = (profs ?? []).find((p: any) => p.id === uid);
         await supabaseAdmin
@@ -260,7 +272,10 @@ export const settleChallenge = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: c, error } = await supabaseAdmin
-      .from("challenges").select("*").eq("id", data.id).maybeSingle();
+      .from("challenges")
+      .select("*")
+      .eq("id", data.id)
+      .maybeSingle();
     if (error) throw new Error(error.message);
     if (!c) throw new Error("not_found");
     if (c.status !== "live") return { ok: true, alreadySettled: true };
@@ -270,7 +285,12 @@ export const settleChallenge = createServerFn({ method: "POST" })
 
     const startsAtMs = new Date(c.starts_at).getTime();
     const durationSec = (endsAtMs - startsAtMs) / 1000;
-    const creatorPips = pipsFor(c.symbol, startsAtMs, durationSec, c.creator_side as "long" | "short");
+    const creatorPips = pipsFor(
+      c.symbol,
+      startsAtMs,
+      durationSec,
+      c.creator_side as "long" | "short",
+    );
     const opponentPips = c.opponent_id
       ? pipsFor(c.symbol, startsAtMs, durationSec, (c.opponent_side ?? "short") as "long" | "short")
       : 0;
@@ -289,7 +309,10 @@ export const settleChallenge = createServerFn({ method: "POST" })
     // Trasferimento punti (se posta in punti): il vincitore prende l'intero piatto.
     if (c.stake_type === "points" && c.stake_amount > 0 && winnerId) {
       const { data: prof } = await supabaseAdmin
-        .from("profiles").select("points_balance").eq("id", winnerId).single();
+        .from("profiles")
+        .select("points_balance")
+        .eq("id", winnerId)
+        .single();
       const pot = c.stake_amount * 2;
       await supabaseAdmin
         .from("profiles")
@@ -299,7 +322,9 @@ export const settleChallenge = createServerFn({ method: "POST" })
       // pareggio → rimborso ad entrambi
       const ids = [c.creator_id, c.opponent_id].filter(Boolean) as string[];
       const { data: profs } = await supabaseAdmin
-        .from("profiles").select("id, points_balance").in("id", ids);
+        .from("profiles")
+        .select("id, points_balance")
+        .in("id", ids);
       for (const uid of ids) {
         const cur = (profs ?? []).find((p: any) => p.id === uid);
         await supabaseAdmin

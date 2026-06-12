@@ -18,13 +18,17 @@ export function PipsBar({ leaderName, leaderPips, challengerName, challengerPips
     <div className="space-y-3">
       <div className="flex items-end justify-between font-mono text-xs">
         <div className="text-[var(--terminal)]">
-          <div className="text-[10px] uppercase tracking-widest text-[var(--text-dim)]">{t("live.leader")}</div>
+          <div className="text-[10px] uppercase tracking-widest text-[var(--text-dim)]">
+            {t("live.leader")}
+          </div>
           <div className="font-display text-lg leading-none">{leaderName}</div>
           <div className="text-xl htt-text-glow-green">{leaderPips.toFixed(1)} pips</div>
         </div>
         <div className="font-impact text-3xl text-foreground/40 px-2">{t("live.vs")}</div>
         <div className="text-right text-[var(--amber)]">
-          <div className="text-[10px] uppercase tracking-widest text-[var(--text-dim)]">{t("live.challenger")}</div>
+          <div className="text-[10px] uppercase tracking-widest text-[var(--text-dim)]">
+            {t("live.challenger")}
+          </div>
           <div className="font-display text-lg leading-none">{challengerName}</div>
           <div className="text-xl htt-text-glow-amber">{challengerPips.toFixed(1)} pips</div>
         </div>

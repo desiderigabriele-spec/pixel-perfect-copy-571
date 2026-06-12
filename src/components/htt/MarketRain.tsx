@@ -8,8 +8,22 @@ import { useEffect, useRef } from "react";
 type Props = { opacity?: number; className?: string; topOffset?: number };
 
 const TICKERS = [
-  "BTC", "ETH", "SOL", "TSLA", "AAPL", "NVDA", "SPY", "EUR",
-  "USD", "GOLD", "OIL", "DXY", "NDX", "XRP", "MSFT", "META",
+  "BTC",
+  "ETH",
+  "SOL",
+  "TSLA",
+  "AAPL",
+  "NVDA",
+  "SPY",
+  "EUR",
+  "USD",
+  "GOLD",
+  "OIL",
+  "DXY",
+  "NDX",
+  "XRP",
+  "MSFT",
+  "META",
 ];
 
 function randToken(polarity: "pos" | "neg"): string {
@@ -21,7 +35,7 @@ function randToken(polarity: "pos" | "neg"): string {
     return `${sign}${n}%`;
   }
   if (r < 0.55) return polarity === "pos" ? "▲" : "▼";
-  if (r < 0.80) {
+  if (r < 0.8) {
     const len = 2 + Math.floor(Math.random() * 4);
     let s = "";
     for (let i = 0; i < len; i++) s += Math.floor(Math.random() * 10);
@@ -84,7 +98,7 @@ export function MarketRain({ opacity = 0.5, className = "", topOffset = 64 }: Pr
       ctx!.fillRect(0, 0, w, h);
       const count = Math.floor(w / COL_WIDTH);
       cols = Array.from({ length: count }, (_, i) =>
-        makeCol(i * COL_WIDTH + COL_WIDTH / 2, Math.random() * h)
+        makeCol(i * COL_WIDTH + COL_WIDTH / 2, Math.random() * h),
       );
     }
     resize();

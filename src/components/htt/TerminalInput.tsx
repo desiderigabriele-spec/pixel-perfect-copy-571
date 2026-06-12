@@ -15,10 +15,7 @@ export const TerminalInput = forwardRef<HTMLInputElement, Props>(function Termin
   return (
     <div className="flex flex-col gap-1.5">
       {label && (
-        <label
-          htmlFor={inputId}
-          className="font-mono text-xs text-[var(--terminal)] htt-cursor"
-        >
+        <label htmlFor={inputId} className="font-mono text-xs text-[var(--terminal)] htt-cursor">
           {label}
         </label>
       )}

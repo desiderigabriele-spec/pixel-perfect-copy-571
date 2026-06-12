@@ -193,7 +193,11 @@
     },
     "mode": {
       "1v1": { "label": "1v1 AVVERSARIO", "desc": "Sfida un altro trader. Chi fa più pips vince." },
-      "solo_goal": { "label": "OBIETTIVO SOLITARIO", "desc": "Raggiungi X pips entro il tempo. Esito pubblico.", "goalLabel": "Obiettivo (pips)" }
+      "solo_goal": {
+        "label": "OBIETTIVO SOLITARIO",
+        "desc": "Raggiungi X pips entro il tempo. Esito pubblico.",
+        "goalLabel": "Obiettivo (pips)"
+      }
     }
   },
   "chat": {

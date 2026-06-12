@@ -8,7 +8,12 @@ import { HttHeader } from "@/components/htt/HttHeader";
 import { TerminalCard } from "@/components/htt/TerminalCard";
 import { TerminalButton } from "@/components/htt/TerminalButton";
 import { GlitchAvatar } from "@/components/htt/GlitchAvatar";
-import { getChallenge, joinChallenge, cancelChallenge, settleChallenge } from "@/lib/challenges.functions";
+import {
+  getChallenge,
+  joinChallenge,
+  cancelChallenge,
+  settleChallenge,
+} from "@/lib/challenges.functions";
 import { getMyProfile } from "@/lib/avatrade.functions";
 import { getSymbol, DURATIONS } from "@/lib/symbols";
 import { cn } from "@/lib/utils";
@@ -64,10 +69,18 @@ function ChallengeDetail() {
   const [settling, setSettling] = useState(false);
 
   if (error) {
-    return <Shell><p className="font-mono text-xs text-[var(--alert)]">{(error as Error).message}</p></Shell>;
+    return (
+      <Shell>
+        <p className="font-mono text-xs text-[var(--alert)]">{(error as Error).message}</p>
+      </Shell>
+    );
   }
   if (!data) {
-    return <Shell><p className="font-mono text-xs text-[var(--text-dim)]">{t("common.loading")}</p></Shell>;
+    return (
+      <Shell>
+        <p className="font-mono text-xs text-[var(--text-dim)]">{t("common.loading")}</p>
+      </Shell>
+    );
   }
 
   const c = data.challenge;
@@ -87,8 +100,11 @@ function ChallengeDetail() {
   const startsAtMs = c.starts_at ? new Date(c.starts_at).getTime() : 0;
   const tSec = live ? elapsedSec(c.starts_at, c.ends_at, now) : 0;
   const livePrice = live ? priceAt(c.symbol, startsAtMs, tSec) : null;
-  const liveCreatorPips = live ? pipsFor(c.symbol, startsAtMs, tSec, (c.creator_side ?? "long") as any) : null;
-  const liveOpponentPips = live && c.opponent_side ? pipsFor(c.symbol, startsAtMs, tSec, c.opponent_side as any) : null;
+  const liveCreatorPips = live
+    ? pipsFor(c.symbol, startsAtMs, tSec, (c.creator_side ?? "long") as any)
+    : null;
+  const liveOpponentPips =
+    live && c.opponent_side ? pipsFor(c.symbol, startsAtMs, tSec, c.opponent_side as any) : null;
 
   // Auto-settle quando il timer arriva a zero.
   useEffect(() => {
@@ -123,18 +139,24 @@ function ChallengeDetail() {
     <Shell>
       <div className="space-y-6">
         <div>
-          <Link to="/challenges" className="font-mono text-[10px] uppercase tracking-widest text-[var(--text-dim)] hover:text-[var(--terminal)]">
+          <Link
+            to="/challenges"
+            className="font-mono text-[10px] uppercase tracking-widest text-[var(--text-dim)] hover:text-[var(--terminal)]"
+          >
             ← {t("challenges.title")}
           </Link>
           <div className="mt-2 flex items-center gap-3">
-            <div className="font-mono text-xs uppercase tracking-widest text-[var(--terminal)]">// CHALLENGE_{c.id.slice(0, 6)}</div>
+            <div className="font-mono text-xs uppercase tracking-widest text-[var(--terminal)]">
+              // CHALLENGE_{c.id.slice(0, 6)}
+            </div>
             <StatusBadge status={c.status} />
           </div>
           <h1 className="mt-2 font-display text-4xl sm:text-5xl tracking-[0.06em] text-[var(--terminal)] htt-text-glow-green">
             {sym?.label ?? c.symbol}
           </h1>
           <p className="font-mono text-xs text-[var(--text-dim)] mt-1">
-            {dur?.label} · {c.stake_type === "points" ? `${c.stake_amount} HTT` : t("challenges.honor")}
+            {dur?.label} ·{" "}
+            {c.stake_type === "points" ? `${c.stake_amount} HTT` : t("challenges.honor")}
             {c.invite_code ? ` · CODE ${c.invite_code}` : ""}
           </p>
         </div>
@@ -146,7 +168,10 @@ function ChallengeDetail() {
             </div>
             {livePrice != null && sym && (
               <div className="font-mono text-sm text-[var(--text-dim)]">
-                {sym.label} · <span className="text-foreground tabular-nums">{formatPrice(livePrice, sym.pipSize)}</span>
+                {sym.label} ·{" "}
+                <span className="text-foreground tabular-nums">
+                  {formatPrice(livePrice, sym.pipSize)}
+                </span>
               </div>
             )}
           </TerminalCard>
@@ -226,15 +251,16 @@ function ChallengeDetail() {
           </TerminalButton>
         )}
 
-        {(c.status === "waiting" || c.status === "live" || c.status === "settled") && c.opponent_id && (
-          <ChallengeChat
-            challengeId={c.id}
-            canPost={(isCreator || isOpponent) && (c.status === "waiting" || c.status === "live")}
-            myId={myId}
-            creatorId={c.creator_id}
-            opponentId={c.opponent_id}
-          />
-        )}
+        {(c.status === "waiting" || c.status === "live" || c.status === "settled") &&
+          c.opponent_id && (
+            <ChallengeChat
+              challengeId={c.id}
+              canPost={(isCreator || isOpponent) && (c.status === "waiting" || c.status === "live")}
+              myId={myId}
+              creatorId={c.creator_id}
+              opponentId={c.opponent_id}
+            />
+          )}
       </div>
     </Shell>
   );
@@ -258,14 +284,21 @@ function StatusBadge({ status }: { status: string }) {
     cancelled: "border-[var(--alert)] text-[var(--alert)]",
   };
   return (
-    <span className={`inline-block px-2 py-0.5 border font-mono text-[10px] uppercase tracking-widest ${map[status] ?? ""}`}>
+    <span
+      className={`inline-block px-2 py-0.5 border font-mono text-[10px] uppercase tracking-widest ${map[status] ?? ""}`}
+    >
       {t(`challenges.status.${status}`)}
     </span>
   );
 }
 
 function TraderCard({
-  label, color, profile, pips, side, isWinner,
+  label,
+  color,
+  profile,
+  pips,
+  side,
+  isWinner,
 }: {
   label: string;
   color: "green" | "amber";
@@ -276,18 +309,26 @@ function TraderCard({
 }) {
   const sideColor = side === "long" ? "text-[var(--terminal)]" : "text-[var(--alert)]";
   return (
-    <TerminalCard label={`> ${label}${isWinner ? " · WIN" : ""}`} glow={color} className="p-5 flex items-center gap-4">
+    <TerminalCard
+      label={`> ${label}${isWinner ? " · WIN" : ""}`}
+      glow={color}
+      className="p-5 flex items-center gap-4"
+    >
       <GlitchAvatar name={profile.username} color={color} size={64} />
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2">
-          <div className="font-mono text-[10px] uppercase tracking-widest text-[var(--text-dim)]">@{profile.username}</div>
+          <div className="font-mono text-[10px] uppercase tracking-widest text-[var(--text-dim)]">
+            @{profile.username}
+          </div>
           {side && (
             <span className={`font-mono text-[10px] uppercase tracking-widest ${sideColor}`}>
               {side === "long" ? "▲ LONG" : "▼ SHORT"}
             </span>
           )}
         </div>
-        <div className={`font-display text-3xl tracking-wider tabular-nums ${pips != null && pips < 0 ? "text-[var(--alert)]" : color === "green" ? "text-[var(--terminal)]" : "text-[var(--amber)]"}`}>
+        <div
+          className={`font-display text-3xl tracking-wider tabular-nums ${pips != null && pips < 0 ? "text-[var(--alert)]" : color === "green" ? "text-[var(--terminal)]" : "text-[var(--amber)]"}`}
+        >
           {pips != null ? `${pips > 0 ? "+" : ""}${pips.toFixed(1)} pips` : "—"}
         </div>
       </div>
@@ -297,13 +338,19 @@ function TraderCard({
 
 function formatPrice(price: number, pipSize: number): string {
   const decimals = Math.max(0, Math.round(-Math.log10(pipSize)));
-  return price.toLocaleString("en-US", { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+  return price.toLocaleString("en-US", {
+    minimumFractionDigits: decimals,
+    maximumFractionDigits: decimals,
+  });
 }
 
 function WaitingSlot() {
   const { t } = useTranslation();
   return (
-    <TerminalCard label="> CHALLENGER" className="p-5 border-dashed flex items-center justify-center min-h-[120px]">
+    <TerminalCard
+      label="> CHALLENGER"
+      className="p-5 border-dashed flex items-center justify-center min-h-[120px]"
+    >
       <div className="text-center">
         <div className="font-mono text-xs uppercase tracking-widest text-[var(--text-dim)]">
           {t("challenges.waitingOpponent")}

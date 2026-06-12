@@ -70,7 +70,9 @@ function NewChallenge() {
           <div className="font-mono text-xs uppercase tracking-widest text-[var(--terminal)]">
             // NEW_CHALLENGE
           </div>
-          <h1 className="font-display text-4xl tracking-[0.06em] mt-2">{t("challenges.new.title")}</h1>
+          <h1 className="font-display text-4xl tracking-[0.06em] mt-2">
+            {t("challenges.new.title")}
+          </h1>
         </div>
 
         <form onSubmit={onSubmit} className="space-y-6">
@@ -115,30 +117,32 @@ function NewChallenge() {
           </TerminalCard>
 
           <TerminalCard label="> SYMBOL" className="p-5 space-y-4">
-            {(Object.entries(grouped) as [keyof typeof grouped, typeof SYMBOLS][]).map(([cat, list]) => (
-              <div key={cat}>
-                <div className="font-mono text-[10px] uppercase tracking-widest text-[var(--text-dim)] mb-2">
-                  {t(`challenges.cat.${cat}`)}
+            {(Object.entries(grouped) as [keyof typeof grouped, typeof SYMBOLS][]).map(
+              ([cat, list]) => (
+                <div key={cat}>
+                  <div className="font-mono text-[10px] uppercase tracking-widest text-[var(--text-dim)] mb-2">
+                    {t(`challenges.cat.${cat}`)}
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {list.map((s) => (
+                      <button
+                        key={s.code}
+                        type="button"
+                        onClick={() => setSymbol(s.code)}
+                        className={cn(
+                          "px-3 py-1.5 border font-mono text-xs transition-colors",
+                          symbol === s.code
+                            ? "border-[var(--terminal)] bg-[var(--terminal)]/10 text-[var(--terminal)] htt-text-glow-green"
+                            : "border-border text-[var(--text-dim)] hover:text-foreground",
+                        )}
+                      >
+                        {s.label}
+                      </button>
+                    ))}
+                  </div>
                 </div>
-                <div className="flex flex-wrap gap-2">
-                  {list.map((s) => (
-                    <button
-                      key={s.code}
-                      type="button"
-                      onClick={() => setSymbol(s.code)}
-                      className={cn(
-                        "px-3 py-1.5 border font-mono text-xs transition-colors",
-                        symbol === s.code
-                          ? "border-[var(--terminal)] bg-[var(--terminal)]/10 text-[var(--terminal)] htt-text-glow-green"
-                          : "border-border text-[var(--text-dim)] hover:text-foreground",
-                      )}
-                    >
-                      {s.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            ))}
+              ),
+            )}
           </TerminalCard>
 
           <TerminalCard label="> DURATION" className="p-5">
@@ -243,13 +247,21 @@ function NewChallenge() {
               ))}
             </div>
             <p className="mt-2 font-mono text-[10px] text-[var(--text-dim)]">
-              {visibility === "public" ? t("challenges.visibility.publicNote") : t("challenges.visibility.privateNote")}
+              {visibility === "public"
+                ? t("challenges.visibility.publicNote")
+                : t("challenges.visibility.privateNote")}
             </p>
           </TerminalCard>
 
           {error && <div className="font-mono text-xs text-[var(--alert)]">{error}</div>}
 
-          <TerminalButton type="submit" variant="primary" size="lg" disabled={loading} className="w-full">
+          <TerminalButton
+            type="submit"
+            variant="primary"
+            size="lg"
+            disabled={loading}
+            className="w-full"
+          >
             {t("challenges.new.submit")}
           </TerminalButton>
         </form>

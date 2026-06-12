@@ -3,7 +3,12 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useTranslation } from "@/lib/translate";
 import { supabase } from "@/integrations/supabase/client";
-import { listLiveMessages, postLiveMessage, postLiveReaction, REACTION_EMOJIS } from "@/lib/liveStream.functions";
+import {
+  listLiveMessages,
+  postLiveMessage,
+  postLiveReaction,
+  REACTION_EMOJIS,
+} from "@/lib/liveStream.functions";
 import { useAccessLevel } from "@/hooks/useAccessLevel";
 import { TerminalCard } from "./TerminalCard";
 import { Link } from "@tanstack/react-router";
@@ -35,19 +40,31 @@ export function SpectatorChat({ challengeId }: Props) {
       .channel(`live-${challengeId}`)
       .on(
         "postgres_changes",
-        { event: "INSERT", schema: "public", table: "live_chat_messages", filter: `challenge_id=eq.${challengeId}` },
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "live_chat_messages",
+          filter: `challenge_id=eq.${challengeId}`,
+        },
         () => qc.invalidateQueries({ queryKey: ["live-chat", challengeId] }),
       )
       .on(
         "postgres_changes",
-        { event: "INSERT", schema: "public", table: "live_reactions", filter: `challenge_id=eq.${challengeId}` },
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "live_reactions",
+          filter: `challenge_id=eq.${challengeId}`,
+        },
         (payload) => {
           const emoji = (payload.new as any)?.emoji ?? "🔥";
           spawnBubble(emoji);
         },
       )
       .subscribe();
-    return () => { supabase.removeChannel(ch); };
+    return () => {
+      supabase.removeChannel(ch);
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [challengeId]);
 
@@ -76,14 +93,20 @@ export function SpectatorChat({ challengeId }: Props) {
 
   async function react(emoji: (typeof REACTION_EMOJIS)[number]) {
     spawnBubble(emoji); // ottimistico
-    try { await callReact({ data: { challenge_id: challengeId, emoji } }); }
-    catch { /* throttled etc, silenzioso */ }
+    try {
+      await callReact({ data: { challenge_id: challengeId, emoji } });
+    } catch {
+      /* throttled etc, silenzioso */
+    }
   }
 
   const items = data?.items ?? [];
 
   return (
-    <TerminalCard label="> SPECTATOR_CHAT" className="p-0 overflow-hidden relative h-full flex flex-col">
+    <TerminalCard
+      label="> SPECTATOR_CHAT"
+      className="p-0 overflow-hidden relative h-full flex flex-col"
+    >
       {/* Bolle emoji */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden z-10">
         {bubbles.map((b) => (

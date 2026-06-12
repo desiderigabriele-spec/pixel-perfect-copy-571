@@ -19,11 +19,7 @@ export function TerminalCard({ children, glow = "none", label, className, ...res
   return (
     <div
       {...rest}
-      className={cn(
-        "relative z-10 border bg-card backdrop-blur-sm",
-        glowMap[glow],
-        className,
-      )}
+      className={cn("relative z-10 border bg-card backdrop-blur-sm", glowMap[glow], className)}
     >
       {label && (
         <div className="absolute -top-2.5 left-3 px-1.5 bg-background font-mono text-[10px] tracking-widest text-[var(--text-dim)]">

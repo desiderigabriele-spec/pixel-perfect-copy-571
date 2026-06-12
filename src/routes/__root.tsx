@@ -80,16 +80,36 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "HACK_THE_TRADING — Community trader verificata" },
-      { name: "description", content: "Piattaforma di sfide tra trader retail. Performance verificate su conto demo AvaTrade. Estetica terminale hacker." },
+      {
+        name: "description",
+        content:
+          "Piattaforma di sfide tra trader retail. Performance verificate su conto demo AvaTrade. Estetica terminale hacker.",
+      },
       { name: "author", content: "HACK_THE_TRADING" },
       { property: "og:title", content: "HACK_THE_TRADING — Community trader verificata" },
-      { property: "og:description", content: "Piattaforma di sfide tra trader retail. Performance verificate su conto demo AvaTrade. Estetica terminale hacker." },
+      {
+        property: "og:description",
+        content:
+          "Piattaforma di sfide tra trader retail. Performance verificate su conto demo AvaTrade. Estetica terminale hacker.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:title", content: "HACK_THE_TRADING — Community trader verificata" },
-      { name: "twitter:description", content: "Piattaforma di sfide tra trader retail. Performance verificate su conto demo AvaTrade. Estetica terminale hacker." },
-      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/b486c274-fc31-48b2-89cf-516fa03e14b5/id-preview-f15ec637--3c09a3b2-35fd-4527-ab69-6937acab9ecd.lovable.app-1781284887870.png" },
-      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/b486c274-fc31-48b2-89cf-516fa03e14b5/id-preview-f15ec637--3c09a3b2-35fd-4527-ab69-6937acab9ecd.lovable.app-1781284887870.png" },
+      {
+        name: "twitter:description",
+        content:
+          "Piattaforma di sfide tra trader retail. Performance verificate su conto demo AvaTrade. Estetica terminale hacker.",
+      },
+      {
+        property: "og:image",
+        content:
+          "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/b486c274-fc31-48b2-89cf-516fa03e14b5/id-preview-f15ec637--3c09a3b2-35fd-4527-ab69-6937acab9ecd.lovable.app-1781284887870.png",
+      },
+      {
+        name: "twitter:image",
+        content:
+          "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/b486c274-fc31-48b2-89cf-516fa03e14b5/id-preview-f15ec637--3c09a3b2-35fd-4527-ab69-6937acab9ecd.lovable.app-1781284887870.png",
+      },
     ],
     links: [
       {
@@ -129,7 +149,9 @@ function RootComponent() {
 
   // Invalidate router/cache on auth identity changes (canonical pattern).
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event) => {
       if (event !== "SIGNED_IN" && event !== "SIGNED_OUT" && event !== "USER_UPDATED") return;
       queryClient.invalidateQueries();
     });

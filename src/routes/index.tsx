@@ -9,9 +9,16 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "HACK_THE_TRADING — Community trader verificata" },
-      { name: "description", content: "Sfide 1v1 tra trader retail su conto demo AvaTrade. Performance verificate, classifica live, community italiana." },
+      {
+        name: "description",
+        content:
+          "Sfide 1v1 tra trader retail su conto demo AvaTrade. Performance verificate, classifica live, community italiana.",
+      },
       { property: "og:title", content: "HACK_THE_TRADING" },
-      { property: "og:description", content: "Sfide tra trader. Performance verificate. Spettacolo puro." },
+      {
+        property: "og:description",
+        content: "Sfide tra trader. Performance verificate. Spettacolo puro.",
+      },
     ],
   }),
   component: Index,
@@ -29,17 +36,22 @@ function Index() {
             {t("landing.tag")}
           </div>
           <h1 className="mt-4 font-display text-5xl sm:text-7xl lg:text-8xl tracking-[0.08em] text-foreground htt-text-glow-green">
-            HACK<span className="text-[var(--terminal)]">_</span>THE<span className="text-[var(--terminal)]">_</span>TRADING
+            HACK<span className="text-[var(--terminal)]">_</span>THE
+            <span className="text-[var(--terminal)]">_</span>TRADING
           </h1>
           <p className="mx-auto mt-6 max-w-2xl text-base sm:text-lg text-[var(--text-dim)]">
             {t("landing.subtitle")}
           </p>
           <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-3">
             <Link to="/boot">
-              <TerminalButton variant="primary" size="lg">{t("landing.ctaPrimary")}</TerminalButton>
+              <TerminalButton variant="primary" size="lg">
+                {t("landing.ctaPrimary")}
+              </TerminalButton>
             </Link>
             <Link to="/live-demo">
-              <TerminalButton variant="ghost" size="lg">{t("landing.ctaSecondary")}</TerminalButton>
+              <TerminalButton variant="ghost" size="lg">
+                {t("landing.ctaSecondary")}
+              </TerminalButton>
             </Link>
           </div>
         </section>
@@ -51,9 +63,7 @@ function Index() {
               <h3 className="font-display text-2xl tracking-wider text-[var(--terminal)]">
                 {t(`landing.feature${n}Title`)}
               </h3>
-              <p className="mt-2 text-sm text-[var(--text-dim)]">
-                {t(`landing.feature${n}Desc`)}
-              </p>
+              <p className="mt-2 text-sm text-[var(--text-dim)]">{t(`landing.feature${n}Desc`)}</p>
             </TerminalCard>
           ))}
         </section>

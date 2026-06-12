@@ -16,7 +16,8 @@ export function TraderWebcam({ username, side, rank }: Props) {
         aria-hidden
         className="absolute inset-0 opacity-20"
         style={{
-          backgroundImage: "repeating-linear-gradient(0deg, rgba(0,255,65,0.18) 0px, rgba(0,255,65,0.18) 1px, transparent 1px, transparent 3px)",
+          backgroundImage:
+            "repeating-linear-gradient(0deg, rgba(0,255,65,0.18) 0px, rgba(0,255,65,0.18) 1px, transparent 1px, transparent 3px)",
         }}
       />
       <div className="absolute inset-0 flex items-center justify-center">
@@ -24,7 +25,9 @@ export function TraderWebcam({ username, side, rank }: Props) {
       </div>
       <div className="absolute top-2 left-2 flex items-center gap-1.5">
         <span className="inline-block h-2 w-2 rounded-full bg-[var(--alert)] animate-pulse" />
-        <span className="font-mono text-[10px] uppercase tracking-widest text-[var(--alert)]">LIVE</span>
+        <span className="font-mono text-[10px] uppercase tracking-widest text-[var(--alert)]">
+          LIVE
+        </span>
       </div>
       <div className="absolute top-2 right-2 font-mono text-[10px] uppercase tracking-widest text-[var(--text-dim)]">
         // CAM_01

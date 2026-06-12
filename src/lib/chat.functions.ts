@@ -24,7 +24,9 @@ export const listMessages = createServerFn({ method: "GET" })
         .from("profiles")
         .select("id, username, avatar_seed")
         .in("id", ids);
-      profMap = new Map((profs ?? []).map((p: any) => [p.id, { username: p.username, avatar_seed: p.avatar_seed }]));
+      profMap = new Map(
+        (profs ?? []).map((p: any) => [p.id, { username: p.username, avatar_seed: p.avatar_seed }]),
+      );
     }
     return {
       items: (msgs ?? []).map((m) => ({
@@ -38,10 +40,12 @@ export const listMessages = createServerFn({ method: "GET" })
 export const postMessage = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) =>
-    z.object({
-      challenge_id: z.string().uuid(),
-      body: z.string().trim().min(1).max(500),
-    }).parse(input),
+    z
+      .object({
+        challenge_id: z.string().uuid(),
+        body: z.string().trim().min(1).max(500),
+      })
+      .parse(input),
   )
   .handler(async ({ data, context }) => {
     const { error } = await context.supabase

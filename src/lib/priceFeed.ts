@@ -26,7 +26,8 @@ function mulberry32(seed: number) {
 
 // Box-Muller per ottenere N(0,1) da due uniformi.
 function gaussian(rand: () => number): number {
-  let u = 0, v = 0;
+  let u = 0,
+    v = 0;
   while (u === 0) u = rand();
   while (v === 0) v = rand();
   return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
@@ -64,7 +65,11 @@ export function pipsFor(
 }
 
 // Secondi trascorsi (cap a durata) per una sfida live.
-export function elapsedSec(startsAtIso: string | null, endsAtIso: string | null, nowMs: number): number {
+export function elapsedSec(
+  startsAtIso: string | null,
+  endsAtIso: string | null,
+  nowMs: number,
+): number {
   if (!startsAtIso) return 0;
   const start = new Date(startsAtIso).getTime();
   const end = endsAtIso ? new Date(endsAtIso).getTime() : nowMs;

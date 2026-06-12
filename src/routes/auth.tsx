@@ -21,7 +21,11 @@ export const Route = createFileRoute("/auth")({
 
 const signupSchema = z.object({
   email: z.string().email(),
-  username: z.string().min(3).max(20).regex(/^[a-zA-Z0-9_]+$/),
+  username: z
+    .string()
+    .min(3)
+    .max(20)
+    .regex(/^[a-zA-Z0-9_]+$/),
   password: z.string().min(6).max(72),
 });
 const loginSchema = z.object({
@@ -159,7 +163,13 @@ function AuthPage() {
             {error && <div className="font-mono text-xs text-[var(--alert)]">{error}</div>}
             {info && <div className="font-mono text-xs text-[var(--terminal)]">{info}</div>}
 
-            <TerminalButton type="submit" variant="primary" size="lg" disabled={loading} className="w-full">
+            <TerminalButton
+              type="submit"
+              variant="primary"
+              size="lg"
+              disabled={loading}
+              className="w-full"
+            >
               {mode === "signup"
                 ? t("auth.submitSignup")
                 : mode === "forgot"
