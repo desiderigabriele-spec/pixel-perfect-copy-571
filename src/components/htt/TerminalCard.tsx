@@ -20,7 +20,7 @@ export function TerminalCard({ children, glow = "none", label, className, ...res
     <div
       {...rest}
       className={cn(
-        "relative border bg-card/60 backdrop-blur-sm",
+        "relative z-10 border bg-card backdrop-blur-sm",
         glowMap[glow],
         className,
       )}

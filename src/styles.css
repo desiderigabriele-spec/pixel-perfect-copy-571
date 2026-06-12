@@ -115,15 +115,18 @@
   }
 
   body {
-    background-color: var(--color-background);
+    background-color: transparent;
     color: var(--color-foreground);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
   }
 
   html, body {
-    background: var(--color-background);
+    background: transparent;
     color-scheme: dark;
+  }
+  html {
+    background-color: var(--color-background);
   }
 }
 

@@ -40,7 +40,7 @@ type Column = {
   stepCounter: number;
 };
 
-export function MarketRain({ opacity = 0.22, className = "", topOffset = 64 }: Props) {
+export function MarketRain({ opacity = 0.5, className = "", topOffset = 64 }: Props) {
   const ref = useRef<HTMLCanvasElement | null>(null);
 
   useEffect(() => {
@@ -160,8 +160,7 @@ export function MarketRain({ opacity = 0.22, className = "", topOffset = 64 }: P
       style={{
         top: topOffset,
         opacity,
-        zIndex: 1,
-        mixBlendMode: "screen",
+        zIndex: 0,
         background: "transparent",
       }}
     />
