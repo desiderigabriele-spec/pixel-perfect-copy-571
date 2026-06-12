@@ -21,6 +21,7 @@ import { Route as AuthenticatedChallengesRouteImport } from './routes/_authentic
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedOnboardingVerifyRouteImport } from './routes/_authenticated/onboarding.verify'
 import { Route as AuthenticatedOnboardingAvatradeRouteImport } from './routes/_authenticated/onboarding.avatrade'
+import { Route as AuthenticatedChallengesNewRouteImport } from './routes/_authenticated/challenges.new'
 
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
   id: '/reset-password',
@@ -83,6 +84,12 @@ const AuthenticatedOnboardingAvatradeRoute =
     path: '/onboarding/avatrade',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedChallengesNewRoute =
+  AuthenticatedChallengesNewRouteImport.update({
+    id: '/new',
+    path: '/new',
+    getParentRoute: () => AuthenticatedChallengesRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -91,9 +98,10 @@ export interface FileRoutesByFullPath {
   '/live-demo': typeof LiveDemoRoute
   '/reset-password': typeof ResetPasswordRoute
   '/admin': typeof AuthenticatedAdminRoute
-  '/challenges': typeof AuthenticatedChallengesRoute
+  '/challenges': typeof AuthenticatedChallengesRouteWithChildren
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/u/$username': typeof UUsernameRoute
+  '/challenges/new': typeof AuthenticatedChallengesNewRoute
   '/onboarding/avatrade': typeof AuthenticatedOnboardingAvatradeRoute
   '/onboarding/verify': typeof AuthenticatedOnboardingVerifyRoute
 }
@@ -104,9 +112,10 @@ export interface FileRoutesByTo {
   '/live-demo': typeof LiveDemoRoute
   '/reset-password': typeof ResetPasswordRoute
   '/admin': typeof AuthenticatedAdminRoute
-  '/challenges': typeof AuthenticatedChallengesRoute
+  '/challenges': typeof AuthenticatedChallengesRouteWithChildren
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/u/$username': typeof UUsernameRoute
+  '/challenges/new': typeof AuthenticatedChallengesNewRoute
   '/onboarding/avatrade': typeof AuthenticatedOnboardingAvatradeRoute
   '/onboarding/verify': typeof AuthenticatedOnboardingVerifyRoute
 }
@@ -119,9 +128,10 @@ export interface FileRoutesById {
   '/live-demo': typeof LiveDemoRoute
   '/reset-password': typeof ResetPasswordRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
-  '/_authenticated/challenges': typeof AuthenticatedChallengesRoute
+  '/_authenticated/challenges': typeof AuthenticatedChallengesRouteWithChildren
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/u/$username': typeof UUsernameRoute
+  '/_authenticated/challenges/new': typeof AuthenticatedChallengesNewRoute
   '/_authenticated/onboarding/avatrade': typeof AuthenticatedOnboardingAvatradeRoute
   '/_authenticated/onboarding/verify': typeof AuthenticatedOnboardingVerifyRoute
 }
@@ -137,6 +147,7 @@ export interface FileRouteTypes {
     | '/challenges'
     | '/dashboard'
     | '/u/$username'
+    | '/challenges/new'
     | '/onboarding/avatrade'
     | '/onboarding/verify'
   fileRoutesByTo: FileRoutesByTo
@@ -150,6 +161,7 @@ export interface FileRouteTypes {
     | '/challenges'
     | '/dashboard'
     | '/u/$username'
+    | '/challenges/new'
     | '/onboarding/avatrade'
     | '/onboarding/verify'
   id:
@@ -164,6 +176,7 @@ export interface FileRouteTypes {
     | '/_authenticated/challenges'
     | '/_authenticated/dashboard'
     | '/u/$username'
+    | '/_authenticated/challenges/new'
     | '/_authenticated/onboarding/avatrade'
     | '/_authenticated/onboarding/verify'
   fileRoutesById: FileRoutesById
@@ -264,12 +277,33 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedOnboardingAvatradeRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/challenges/new': {
+      id: '/_authenticated/challenges/new'
+      path: '/new'
+      fullPath: '/challenges/new'
+      preLoaderRoute: typeof AuthenticatedChallengesNewRouteImport
+      parentRoute: typeof AuthenticatedChallengesRoute
+    }
   }
 }
 
+interface AuthenticatedChallengesRouteChildren {
+  AuthenticatedChallengesNewRoute: typeof AuthenticatedChallengesNewRoute
+}
+
+const AuthenticatedChallengesRouteChildren: AuthenticatedChallengesRouteChildren =
+  {
+    AuthenticatedChallengesNewRoute: AuthenticatedChallengesNewRoute,
+  }
+
+const AuthenticatedChallengesRouteWithChildren =
+  AuthenticatedChallengesRoute._addFileChildren(
+    AuthenticatedChallengesRouteChildren,
+  )
+
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
-  AuthenticatedChallengesRoute: typeof AuthenticatedChallengesRoute
+  AuthenticatedChallengesRoute: typeof AuthenticatedChallengesRouteWithChildren
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedOnboardingAvatradeRoute: typeof AuthenticatedOnboardingAvatradeRoute
   AuthenticatedOnboardingVerifyRoute: typeof AuthenticatedOnboardingVerifyRoute
@@ -277,7 +311,7 @@ interface AuthenticatedRouteRouteChildren {
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdminRoute: AuthenticatedAdminRoute,
-  AuthenticatedChallengesRoute: AuthenticatedChallengesRoute,
+  AuthenticatedChallengesRoute: AuthenticatedChallengesRouteWithChildren,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedOnboardingAvatradeRoute: AuthenticatedOnboardingAvatradeRoute,
   AuthenticatedOnboardingVerifyRoute: AuthenticatedOnboardingVerifyRoute,
