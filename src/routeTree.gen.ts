@@ -17,6 +17,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as UUsernameRouteImport } from './routes/u.$username'
+import { Route as LiveIdRouteImport } from './routes/live.$id'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedChallengesRouteImport } from './routes/_authenticated/challenges'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
@@ -62,6 +63,11 @@ const IndexRoute = IndexRouteImport.update({
 const UUsernameRoute = UUsernameRouteImport.update({
   id: '/u/$username',
   path: '/u/$username',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LiveIdRoute = LiveIdRouteImport.update({
+  id: '/live/$id',
+  path: '/live/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
@@ -114,6 +120,7 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AuthenticatedAdminRoute
   '/challenges': typeof AuthenticatedChallengesRouteWithChildren
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/live/$id': typeof LiveIdRoute
   '/u/$username': typeof UUsernameRoute
   '/challenges/$id': typeof AuthenticatedChallengesIdRoute
   '/challenges/new': typeof AuthenticatedChallengesNewRoute
@@ -130,6 +137,7 @@ export interface FileRoutesByTo {
   '/admin': typeof AuthenticatedAdminRoute
   '/challenges': typeof AuthenticatedChallengesRouteWithChildren
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/live/$id': typeof LiveIdRoute
   '/u/$username': typeof UUsernameRoute
   '/challenges/$id': typeof AuthenticatedChallengesIdRoute
   '/challenges/new': typeof AuthenticatedChallengesNewRoute
@@ -148,6 +156,7 @@ export interface FileRoutesById {
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/challenges': typeof AuthenticatedChallengesRouteWithChildren
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/live/$id': typeof LiveIdRoute
   '/u/$username': typeof UUsernameRoute
   '/_authenticated/challenges/$id': typeof AuthenticatedChallengesIdRoute
   '/_authenticated/challenges/new': typeof AuthenticatedChallengesNewRoute
@@ -166,6 +175,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/challenges'
     | '/dashboard'
+    | '/live/$id'
     | '/u/$username'
     | '/challenges/$id'
     | '/challenges/new'
@@ -182,6 +192,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/challenges'
     | '/dashboard'
+    | '/live/$id'
     | '/u/$username'
     | '/challenges/$id'
     | '/challenges/new'
@@ -199,6 +210,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin'
     | '/_authenticated/challenges'
     | '/_authenticated/dashboard'
+    | '/live/$id'
     | '/u/$username'
     | '/_authenticated/challenges/$id'
     | '/_authenticated/challenges/new'
@@ -214,6 +226,7 @@ export interface RootRouteChildren {
   LeaderboardRoute: typeof LeaderboardRoute
   LiveDemoRoute: typeof LiveDemoRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
+  LiveIdRoute: typeof LiveIdRoute
   UUsernameRoute: typeof UUsernameRoute
 }
 
@@ -273,6 +286,13 @@ declare module '@tanstack/react-router' {
       path: '/u/$username'
       fullPath: '/u/$username'
       preLoaderRoute: typeof UUsernameRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/live/$id': {
+      id: '/live/$id'
+      path: '/live/$id'
+      fullPath: '/live/$id'
+      preLoaderRoute: typeof LiveIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/dashboard': {
@@ -370,6 +390,7 @@ const rootRouteChildren: RootRouteChildren = {
   LeaderboardRoute: LeaderboardRoute,
   LiveDemoRoute: LiveDemoRoute,
   ResetPasswordRoute: ResetPasswordRoute,
+  LiveIdRoute: LiveIdRoute,
   UUsernameRoute: UUsernameRoute,
 }
 export const routeTree = rootRouteImport
