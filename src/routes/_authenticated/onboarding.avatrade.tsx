@@ -7,9 +7,7 @@ import { TerminalCard } from "@/components/htt/TerminalCard";
 import { TerminalInput } from "@/components/htt/TerminalInput";
 import { TerminalButton } from "@/components/htt/TerminalButton";
 import { submitAvatradeAccount } from "@/lib/avatrade.functions";
-
-// Link affiliato AvaTrade — sostituire con il link reale quando disponibile.
-const AVATRADE_LINK = "https://www.avatrade.com/?aff=HTT_PLACEHOLDER";
+import { AVATRADE_AFFILIATE_URL } from "@/lib/constants";
 
 export const Route = createFileRoute("/_authenticated/onboarding/avatrade")({
   head: () => ({ meta: [{ title: "AvaTrade — HTT" }] }),
@@ -67,7 +65,7 @@ function OnboardingAvatrade() {
         </div>
 
         <TerminalCard label="> ACTION_REQUIRED" glow="green" className="p-5 space-y-4">
-          <a href={AVATRADE_LINK} target="_blank" rel="noreferrer noopener">
+          <a href={AVATRADE_AFFILIATE_URL} target="_blank" rel="noreferrer noopener">
             <TerminalButton variant="primary" size="lg" className="w-full" type="button">
               {t("onboarding.openAvatrade")} →
             </TerminalButton>
