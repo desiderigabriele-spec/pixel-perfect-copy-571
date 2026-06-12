@@ -132,7 +132,21 @@
     "trader": "TRADER",
     "pips": "PIPS",
     "wl": "W/L",
-    "streak": "STREAK"
+    "streak": "STREAK",
+    "rising": "RISING STAR",
+    "allFilter": "tutti",
+    "scope": {
+      "global": "GLOBALE",
+      "language": "LINGUA",
+      "country": "PAESE",
+      "style": "STILE",
+      "asset": "ASSET"
+    },
+    "period": {
+      "week": "7G",
+      "month": "30G",
+      "all": "ALL TIME"
+    }
   },
   "challenges": {
     "title": "SFIDE",

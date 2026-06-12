@@ -132,7 +132,21 @@
     "trader": "TRADER",
     "pips": "PIPS",
     "wl": "W/L",
-    "streak": "STREAK"
+    "streak": "STREAK",
+    "rising": "RISING STAR",
+    "allFilter": "all",
+    "scope": {
+      "global": "GLOBAL",
+      "language": "LANGUAGE",
+      "country": "COUNTRY",
+      "style": "STYLE",
+      "asset": "ASSET"
+    },
+    "period": {
+      "week": "7D",
+      "month": "30D",
+      "all": "ALL TIME"
+    }
   },
   "challenges": {
     "title": "CHALLENGES",
