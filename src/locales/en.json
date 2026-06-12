@@ -134,7 +134,8 @@
     "empty": "> no open challenges. create yours to start.",
     "emptyMine": "> you haven't joined any challenge yet.",
     "waitingOpponent": "waiting for a challenger...",
-    "liveNote": "// Realtime pips view ships with the next module (live execution).",
+    "winner": "WINNER",
+    "tie": "TIE",
     "tab": { "open": "OPEN", "mine": "MINE" },
     "status": {
       "waiting": "WAITING",
@@ -154,6 +155,12 @@
       "private": "Private (code)",
       "publicNote": "Visible to everyone in the lobby.",
       "privateNote": "Only people with the code can join."
+    },
+    "side": {
+      "long": "LONG",
+      "short": "SHORT",
+      "note": "Your direction: LONG profits if price rises, SHORT if it falls.",
+      "opposingNote": "Creator went {{side}}. Pick your direction."
     },
     "new": {
       "title": "CREATE 1v1 CHALLENGE",

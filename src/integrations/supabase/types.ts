@@ -52,12 +52,17 @@ export type Database = {
           created_at: string
           creator_id: string
           creator_pips: number | null
+          creator_side: Database["public"]["Enums"]["trade_side"]
           duration_minutes: number
           ends_at: string | null
+          entry_price: number | null
+          exit_price: number | null
           id: string
           invite_code: string | null
           opponent_id: string | null
           opponent_pips: number | null
+          opponent_side: Database["public"]["Enums"]["trade_side"] | null
+          settled_at: string | null
           stake_amount: number
           stake_type: Database["public"]["Enums"]["stake_type"]
           starts_at: string | null
@@ -71,12 +76,17 @@ export type Database = {
           created_at?: string
           creator_id: string
           creator_pips?: number | null
+          creator_side?: Database["public"]["Enums"]["trade_side"]
           duration_minutes: number
           ends_at?: string | null
+          entry_price?: number | null
+          exit_price?: number | null
           id?: string
           invite_code?: string | null
           opponent_id?: string | null
           opponent_pips?: number | null
+          opponent_side?: Database["public"]["Enums"]["trade_side"] | null
+          settled_at?: string | null
           stake_amount?: number
           stake_type?: Database["public"]["Enums"]["stake_type"]
           starts_at?: string | null
@@ -90,12 +100,17 @@ export type Database = {
           created_at?: string
           creator_id?: string
           creator_pips?: number | null
+          creator_side?: Database["public"]["Enums"]["trade_side"]
           duration_minutes?: number
           ends_at?: string | null
+          entry_price?: number | null
+          exit_price?: number | null
           id?: string
           invite_code?: string | null
           opponent_id?: string | null
           opponent_pips?: number | null
+          opponent_side?: Database["public"]["Enums"]["trade_side"] | null
+          settled_at?: string | null
           stake_amount?: number
           stake_type?: Database["public"]["Enums"]["stake_type"]
           starts_at?: string | null
@@ -170,6 +185,7 @@ export type Database = {
       challenge_status: "waiting" | "live" | "settled" | "cancelled"
       challenge_visibility: "public" | "private"
       stake_type: "points" | "honor"
+      trade_side: "long" | "short"
       verification_status: "pending" | "verified" | "rejected"
     }
     CompositeTypes: {
@@ -302,6 +318,7 @@ export const Constants = {
       challenge_status: ["waiting", "live", "settled", "cancelled"],
       challenge_visibility: ["public", "private"],
       stake_type: ["points", "honor"],
+      trade_side: ["long", "short"],
       verification_status: ["pending", "verified", "rejected"],
     },
   },

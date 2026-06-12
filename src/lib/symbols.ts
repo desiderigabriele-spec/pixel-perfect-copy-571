@@ -3,23 +3,27 @@ export type Symbol = {
   code: string;
   label: string;
   category: "fx" | "metals" | "crypto" | "indices";
-  // Volatilità relativa per il mock realtime (pip per tick).
+  // Prezzo di riferimento per il mock realtime.
+  reference: number;
+  // Dimensione di un pip nella valuta di quotazione.
+  pipSize: number;
+  // Volatilità relativa (deviazione standard in pip al secondo).
   volatility: number;
 };
 
 export const SYMBOLS: Symbol[] = [
-  { code: "EURUSD", label: "EUR/USD", category: "fx", volatility: 0.6 },
-  { code: "GBPUSD", label: "GBP/USD", category: "fx", volatility: 0.9 },
-  { code: "USDJPY", label: "USD/JPY", category: "fx", volatility: 0.8 },
-  { code: "AUDUSD", label: "AUD/USD", category: "fx", volatility: 0.7 },
-  { code: "USDCAD", label: "USD/CAD", category: "fx", volatility: 0.7 },
-  { code: "XAUUSD", label: "Oro (XAU/USD)", category: "metals", volatility: 1.8 },
-  { code: "XAGUSD", label: "Argento (XAG/USD)", category: "metals", volatility: 2.4 },
-  { code: "BTCUSD", label: "Bitcoin", category: "crypto", volatility: 4.5 },
-  { code: "ETHUSD", label: "Ethereum", category: "crypto", volatility: 5.0 },
-  { code: "US500", label: "S&P 500", category: "indices", volatility: 1.2 },
-  { code: "NAS100", label: "Nasdaq 100", category: "indices", volatility: 1.8 },
-  { code: "GER40", label: "DAX 40", category: "indices", volatility: 1.4 },
+  { code: "EURUSD", label: "EUR/USD",          category: "fx",      reference: 1.0850, pipSize: 0.0001, volatility: 0.6 },
+  { code: "GBPUSD", label: "GBP/USD",          category: "fx",      reference: 1.2700, pipSize: 0.0001, volatility: 0.9 },
+  { code: "USDJPY", label: "USD/JPY",          category: "fx",      reference: 150.00, pipSize: 0.01,   volatility: 0.8 },
+  { code: "AUDUSD", label: "AUD/USD",          category: "fx",      reference: 0.6600, pipSize: 0.0001, volatility: 0.7 },
+  { code: "USDCAD", label: "USD/CAD",          category: "fx",      reference: 1.3500, pipSize: 0.0001, volatility: 0.7 },
+  { code: "XAUUSD", label: "Oro (XAU/USD)",    category: "metals",  reference: 2050.0, pipSize: 0.1,    volatility: 1.8 },
+  { code: "XAGUSD", label: "Argento (XAG/USD)", category: "metals", reference: 25.50,  pipSize: 0.01,   volatility: 2.4 },
+  { code: "BTCUSD", label: "Bitcoin",          category: "crypto",  reference: 100000, pipSize: 1,      volatility: 4.5 },
+  { code: "ETHUSD", label: "Ethereum",         category: "crypto",  reference: 3500,   pipSize: 0.1,    volatility: 5.0 },
+  { code: "US500",  label: "S&P 500",          category: "indices", reference: 5800,   pipSize: 0.1,    volatility: 1.2 },
+  { code: "NAS100", label: "Nasdaq 100",       category: "indices", reference: 20000,  pipSize: 0.1,    volatility: 1.8 },
+  { code: "GER40",  label: "DAX 40",           category: "indices", reference: 18500,  pipSize: 0.1,    volatility: 1.4 },
 ];
 
 export const SYMBOL_CODES = SYMBOLS.map((s) => s.code) as [string, ...string[]];
