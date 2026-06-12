@@ -12,6 +12,7 @@
   "nav": {
     "live": "LIVE",
     "challenges": "CHALLENGES",
+    "leaderboard": "LEADERBOARD",
     "dashboard": "DASHBOARD",
     "admin": "ADMIN"
   },
@@ -112,7 +113,8 @@
       "losses": "LOSSES",
       "pips": "TOTAL PIPS",
       "streak": "STREAK",
-      "placeholder": "// Real stats will appear with the challenges module."
+      "placeholder": "// No settled challenges yet. Stats appear after the first settlement.",
+      "played": "// {{n}} settled challenges"
     }
   },
   "admin": {

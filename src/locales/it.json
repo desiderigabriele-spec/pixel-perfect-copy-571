@@ -12,6 +12,7 @@
   "nav": {
     "live": "LIVE",
     "challenges": "SFIDE",
+    "leaderboard": "CLASSIFICA",
     "dashboard": "DASHBOARD",
     "admin": "ADMIN"
   },
@@ -112,7 +113,8 @@
       "losses": "SCONFITTE",
       "pips": "PIPS TOT",
       "streak": "STREAK",
-      "placeholder": "// Le statistiche reali arriveranno con il modulo sfide."
+      "placeholder": "// Nessuna sfida conclusa ancora. Le statistiche appariranno dopo il primo settlement.",
+      "played": "// {{n}} sfide concluse"
     }
   },
   "admin": {
