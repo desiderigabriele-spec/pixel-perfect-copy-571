@@ -163,9 +163,10 @@ export const joinChallenge = createServerFn({ method: "POST" })
     await assertVerified(supabaseAdmin, context.userId);
 
     const query = supabaseAdmin.from("challenges").select("*").eq("status", "waiting");
-    const { data: c, error } = data.id
-      ? await query.eq("id", data.id).maybeSingle()
-      : await query.eq("invite_code", data.invite_code).maybeSingle();
+    const filtered = data.id
+      ? query.eq("id", data.id)
+      : query.eq("invite_code", data.invite_code as string);
+    const { data: c, error } = await filtered.maybeSingle();
     if (error) throw new Error(error.message);
     if (!c) throw new Error("challenge_not_found");
     if (c.creator_id === context.userId) throw new Error("cannot_join_own");
