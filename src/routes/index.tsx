@@ -20,9 +20,9 @@ export const Route = createFileRoute("/")({
 function Index() {
   const { t } = useTranslation();
   return (
-    <div className="min-h-screen bg-background htt-grid-bg">
+    <div className="relative min-h-screen htt-grid-bg">
       <HttHeader />
-      <main className="mx-auto max-w-7xl px-4 sm:px-6">
+      <main className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6">
         {/* HERO */}
         <section className="py-16 sm:py-24 text-center">
           <div className="font-mono text-xs uppercase tracking-widest text-[var(--terminal)]">
@@ -59,7 +59,7 @@ function Index() {
         </section>
 
         {/* COMPLIANCE */}
-        <footer className="border-t border-border py-6 font-mono text-[11px] text-[var(--text-dim)]">
+        <footer className="relative z-10 -mx-4 sm:-mx-6 mt-8 border-t border-border bg-background px-4 sm:px-6 py-6 font-mono text-[11px] text-[var(--text-dim)]">
           {t("landing.compliance")}
         </footer>
       </main>
