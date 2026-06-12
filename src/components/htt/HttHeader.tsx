@@ -24,6 +24,12 @@ export function HttHeader() {
           >
             {t("nav.challenges")}
           </Link>
+          <Link
+            to="/leaderboard"
+            className="hidden sm:inline-block font-mono text-xs uppercase tracking-widest text-[var(--text-dim)] hover:text-[var(--terminal)] transition-colors"
+          >
+            {t("nav.leaderboard")}
+          </Link>
           <LangSwitcher />
         </nav>
       </div>

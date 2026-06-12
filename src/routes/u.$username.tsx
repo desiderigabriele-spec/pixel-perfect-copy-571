@@ -7,9 +7,9 @@ import { getPublicProfile } from "@/lib/profile.functions";
 
 export const Route = createFileRoute("/u/$username")({
   loader: async ({ params }) => {
-    const { profile } = await getPublicProfile({ data: { username: params.username } });
+    const { profile, stats } = await getPublicProfile({ data: { username: params.username } });
     if (!profile) throw notFound();
-    return { profile };
+    return { profile, stats };
   },
   head: ({ params, loaderData }) => {
     const u = loaderData?.profile?.username ?? params.username;
@@ -36,11 +36,21 @@ export const Route = createFileRoute("/u/$username")({
 
 function PublicProfile() {
   const { t, i18n } = useTranslation();
-  const { profile } = Route.useLoaderData();
+  const { profile, stats } = Route.useLoaderData();
   const since = new Date(profile.created_at).toLocaleDateString(i18n.language, {
     year: "numeric",
     month: "long",
   });
+  const cells: Array<{ k: string; v: string; tone: "green" | "amber" | "alert" | "dim" }> = [
+    { k: "wins", v: String(stats?.wins ?? 0), tone: "green" },
+    { k: "losses", v: String(stats?.losses ?? 0), tone: "alert" },
+    { k: "pips", v: (stats?.pips ?? 0) > 0 ? `+${stats!.pips}` : String(stats?.pips ?? 0), tone: (stats?.pips ?? 0) >= 0 ? "green" : "alert" },
+    { k: "streak", v: stats && stats.streak !== 0 ? `${stats.streak > 0 ? "+" : ""}${stats.streak}` : "—", tone: (stats?.streak ?? 0) >= 0 ? "amber" : "alert" },
+  ];
+  const toneClass = (t: "green" | "amber" | "alert" | "dim") =>
+    t === "green" ? "text-[var(--terminal)] htt-text-glow-green" :
+    t === "amber" ? "text-[var(--amber)]" :
+    t === "alert" ? "text-[var(--alert)]" : "text-[var(--text-dim)]";
   return (
     <div className="min-h-screen bg-background htt-grid-bg">
       <HttHeader />
@@ -62,16 +72,23 @@ function PublicProfile() {
 
         <TerminalCard label="> STATS" className="p-6">
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-            {["wins", "losses", "pips", "streak"].map((k) => (
-              <div key={k} className="border border-border p-4">
+            {cells.map((c) => (
+              <div key={c.k} className="border border-border p-4">
                 <div className="font-mono text-[10px] uppercase tracking-widest text-[var(--text-dim)]">
-                  {t(`profile.stats.${k}`)}
+                  {t(`profile.stats.${c.k}`)}
                 </div>
-                <div className="font-display text-3xl text-[var(--terminal)] htt-text-glow-green">—</div>
+                <div className={`font-display text-3xl tabular-nums ${toneClass(c.tone)}`}>{c.v}</div>
               </div>
             ))}
           </div>
-          <p className="mt-4 font-mono text-xs text-[var(--text-dim)]">{t("profile.stats.placeholder")}</p>
+          {(!stats || stats.played === 0) && (
+            <p className="mt-4 font-mono text-xs text-[var(--text-dim)]">{t("profile.stats.placeholder")}</p>
+          )}
+          {stats && stats.played > 0 && (
+            <p className="mt-4 font-mono text-xs text-[var(--text-dim)]">
+              {t("profile.stats.played", { n: stats.played })}
+            </p>
+          )}
         </TerminalCard>
       </main>
     </div>

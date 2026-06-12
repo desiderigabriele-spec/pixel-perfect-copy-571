@@ -12,6 +12,7 @@
   "nav": {
     "live": "LIVE",
     "challenges": "CHALLENGES",
+    "leaderboard": "LEADERBOARD",
     "dashboard": "DASHBOARD",
     "admin": "ADMIN"
   },
@@ -112,7 +113,8 @@
       "losses": "LOSSES",
       "pips": "TOTAL PIPS",
       "streak": "STREAK",
-      "placeholder": "// Real stats will appear with the challenges module."
+      "placeholder": "// No settled challenges yet. Stats appear after the first settlement.",
+      "played": "// {{n}} settled challenges"
     }
   },
   "admin": {
@@ -122,6 +124,15 @@
     "reject": "REJECT",
     "submittedAt": "Submitted on",
     "accountId": "Account ID"
+  },
+  "leaderboard": {
+    "title": "TOP TRADERS",
+    "subtitle": "// Ranked by total pips across settled challenges.",
+    "empty": "> no settled challenges yet. Be the first.",
+    "trader": "TRADER",
+    "pips": "PIPS",
+    "wl": "W/L",
+    "streak": "STREAK"
   },
   "challenges": {
     "title": "CHALLENGES",
