@@ -50,14 +50,10 @@ function ChallengesHub() {
   useEffect(() => {
     const channel = supabase
       .channel("challenges-lobby")
-      .on(
-        "postgres_changes",
-        { event: "*", schema: "public", table: "challenges" },
-        () => {
-          queryClient.invalidateQueries({ queryKey: ["challenges-open"] });
-          queryClient.invalidateQueries({ queryKey: ["challenges-mine"] });
-        },
-      )
+      .on("postgres_changes", { event: "*", schema: "public", table: "challenges" }, () => {
+        queryClient.invalidateQueries({ queryKey: ["challenges-open"] });
+        queryClient.invalidateQueries({ queryKey: ["challenges-mine"] });
+      })
       .subscribe();
     return () => {
       supabase.removeChannel(channel);

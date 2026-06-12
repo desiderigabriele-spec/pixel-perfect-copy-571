@@ -63,8 +63,7 @@ async function fetchYahooPrice(symbol: string): Promise<number | null> {
     });
     if (!res.ok) return null;
     const json = await res.json();
-    const price =
-      json?.chart?.result?.[0]?.meta?.regularMarketPrice as number | undefined;
+    const price = json?.chart?.result?.[0]?.meta?.regularMarketPrice as number | undefined;
     if (typeof price !== "number" || isNaN(price)) return null;
     cache.set(symbol, { price, ts: Date.now() });
     return price;

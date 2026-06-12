@@ -14,7 +14,10 @@ export const Route = createFileRoute("/tournaments")({
   head: () => ({
     meta: [
       { title: "Tornei — HACK_THE_TRADING" },
-      { name: "description", content: "Tornei single elimination HTT: 4/8/16 trader, bracket live." },
+      {
+        name: "description",
+        content: "Tornei single elimination HTT: 4/8/16 trader, bracket live.",
+      },
     ],
   }),
   component: TournamentsPage,
@@ -103,9 +106,7 @@ function TournamentCard({ tournament: t }: { tournament: any }) {
             {sym?.label ?? t.symbol} · {dur?.label}
           </div>
           <div className="flex items-center gap-3">
-            <span
-              className={`tabular-nums ${isFull ? "text-[var(--alert)]" : "text-foreground"}`}
-            >
+            <span className={`tabular-nums ${isFull ? "text-[var(--alert)]" : "text-foreground"}`}>
               {t.player_count}/{t.max_players} trader
             </span>
             <span>·</span>
@@ -113,9 +114,7 @@ function TournamentCard({ tournament: t }: { tournament: any }) {
               {t.stake_type === "points" ? `${t.stake_amount} HTT` : tr("challenges.honor")}
             </span>
           </div>
-          <div className="text-[var(--text-dim)] text-[11px]">
-            @{t.creator_username}
-          </div>
+          <div className="text-[var(--text-dim)] text-[11px]">@{t.creator_username}</div>
         </div>
         {t.prize_note && (
           <div className="mt-3 font-mono text-[11px] text-[var(--amber)] border border-[var(--amber)]/30 px-2 py-1">

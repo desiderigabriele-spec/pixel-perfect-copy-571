@@ -116,8 +116,7 @@ Deno.serve(async (req) => {
       const myPips = uid === c.creator_id ? c.creator_pips : c.opponent_pips;
       const theirPips = uid === c.creator_id ? c.opponent_pips : c.creator_pips;
       const result = c.winner_id === null ? "PAREGGIO" : won ? "HAI VINTO" : "HAI PERSO";
-      const prize =
-        won && c.stake_type === "points" ? ` (+${c.stake_amount * 2} HTT points)` : "";
+      const prize = won && c.stake_type === "points" ? ` (+${c.stake_amount * 2} HTT points)` : "";
       await sendEmail(
         email,
         `🏁 Sfida conclusa — ${result} su ${c.symbol}`,

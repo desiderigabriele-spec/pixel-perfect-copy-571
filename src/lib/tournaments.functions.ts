@@ -62,42 +62,42 @@ export const createTournament = createServerFn({ method: "POST" })
   });
 
 // Lista tornei aperti alla registrazione (pubblici).
-export const listTournaments = createServerFn({ method: "GET" })
-  .handler(async () => {
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { data, error } = await supabaseAdmin
-      .from("tournaments")
-      .select("id, title, symbol, duration_minutes, max_players, stake_type, stake_amount, status, visibility, created_at, creator_id")
-      .eq("visibility", "public")
-      .in("status", ["registration", "in_progress"])
-      .order("created_at", { ascending: false })
-      .limit(30);
-    if (error) throw new Error(error.message);
+export const listTournaments = createServerFn({ method: "GET" }).handler(async () => {
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { data, error } = await supabaseAdmin
+    .from("tournaments")
+    .select(
+      "id, title, symbol, duration_minutes, max_players, stake_type, stake_amount, status, visibility, created_at, creator_id",
+    )
+    .eq("visibility", "public")
+    .in("status", ["registration", "in_progress"])
+    .order("created_at", { ascending: false })
+    .limit(30);
+  if (error) throw new Error(error.message);
 
-    const ids = (data ?? []).map((t) => t.creator_id);
-    const { data: profs } = await supabaseAdmin
-      .from("profiles").select("id, username").in("id", ids);
-    const byId = new Map((profs ?? []).map((p: any) => [p.id, p.username]));
+  const ids = (data ?? []).map((t) => t.creator_id);
+  const { data: profs } = await supabaseAdmin.from("profiles").select("id, username").in("id", ids);
+  const byId = new Map((profs ?? []).map((p: any) => [p.id, p.username]));
 
-    // Conta iscritti per ogni torneo
-    const tIds = (data ?? []).map((t) => t.id);
-    const { data: entries } = await supabaseAdmin
-      .from("tournament_entries")
-      .select("tournament_id")
-      .in("tournament_id", tIds);
-    const countById = new Map<string, number>();
-    for (const e of entries ?? []) {
-      countById.set(e.tournament_id, (countById.get(e.tournament_id) ?? 0) + 1);
-    }
+  // Conta iscritti per ogni torneo
+  const tIds = (data ?? []).map((t) => t.id);
+  const { data: entries } = await supabaseAdmin
+    .from("tournament_entries")
+    .select("tournament_id")
+    .in("tournament_id", tIds);
+  const countById = new Map<string, number>();
+  for (const e of entries ?? []) {
+    countById.set(e.tournament_id, (countById.get(e.tournament_id) ?? 0) + 1);
+  }
 
-    return {
-      items: (data ?? []).map((t: any) => ({
-        ...t,
-        creator_username: byId.get(t.creator_id) ?? "—",
-        player_count: countById.get(t.id) ?? 0,
-      })),
-    };
-  });
+  return {
+    items: (data ?? []).map((t: any) => ({
+      ...t,
+      creator_username: byId.get(t.creator_id) ?? "—",
+      player_count: countById.get(t.id) ?? 0,
+    })),
+  };
+});
 
 // Dettaglio torneo: bracket completo con match e profili partecipanti.
 export const getTournament = createServerFn({ method: "GET" })
@@ -135,7 +135,9 @@ export const getTournament = createServerFn({ method: "GET" })
       if (m.player2_id) allIds.add(m.player2_id);
     }
     const { data: profs } = await supabaseAdmin
-      .from("profiles").select("id, username, avatar_seed").in("id", Array.from(allIds));
+      .from("profiles")
+      .select("id, username, avatar_seed")
+      .in("id", Array.from(allIds));
     const byId = new Map((profs ?? []).map((p: any) => [p.id, p]));
 
     return {
@@ -143,9 +145,9 @@ export const getTournament = createServerFn({ method: "GET" })
       entries: (entries ?? []).map((e: any) => ({ ...e, profile: byId.get(e.user_id) ?? null })),
       matches: (matches ?? []).map((m: any) => ({
         ...m,
-        player1: m.player1_id ? byId.get(m.player1_id) ?? null : null,
-        player2: m.player2_id ? byId.get(m.player2_id) ?? null : null,
-        winner: m.winner_id ? byId.get(m.winner_id) ?? null : null,
+        player1: m.player1_id ? (byId.get(m.player1_id) ?? null) : null,
+        player2: m.player2_id ? (byId.get(m.player2_id) ?? null) : null,
+        winner: m.winner_id ? (byId.get(m.winner_id) ?? null) : null,
       })),
     };
   });
@@ -166,10 +168,7 @@ export const joinTournament = createServerFn({ method: "POST" })
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     await assertVerified(supabaseAdmin, context.userId);
 
-    const query = supabaseAdmin
-      .from("tournaments")
-      .select("*")
-      .eq("status", "registration");
+    const query = supabaseAdmin.from("tournaments").select("*").eq("status", "registration");
     const filtered = data.id
       ? query.eq("id", data.id)
       : query.eq("invite_code", data.invite_code as string);
@@ -201,7 +200,10 @@ export const leaveTournament = createServerFn({ method: "POST" })
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     // Permesso solo se il torneo è ancora in registration
     const { data: t } = await supabaseAdmin
-      .from("tournaments").select("status").eq("id", data.id).maybeSingle();
+      .from("tournaments")
+      .select("status")
+      .eq("id", data.id)
+      .maybeSingle();
     if (t?.status !== "registration") throw new Error("cannot_leave_after_start");
     await supabaseAdmin
       .from("tournament_entries")
@@ -219,7 +221,10 @@ export const startTournament = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: t } = await supabaseAdmin
-      .from("tournaments").select("*").eq("id", data.id).maybeSingle();
+      .from("tournaments")
+      .select("*")
+      .eq("id", data.id)
+      .maybeSingle();
     if (!t) throw new Error("not_found");
     if (t.creator_id !== context.userId) {
       const { data: isAdmin } = await supabaseAdmin.rpc("has_role", {
@@ -313,10 +318,7 @@ export const startTournament = createServerFn({ method: "POST" })
     }
 
     await supabaseAdmin.from("tournament_matches").insert(matchInserts);
-    await supabaseAdmin
-      .from("tournaments")
-      .update({ status: "in_progress" })
-      .eq("id", t.id);
+    await supabaseAdmin.from("tournaments").update({ status: "in_progress" }).eq("id", t.id);
 
     return { ok: true };
   });
@@ -349,7 +351,10 @@ export const advanceTournamentBracket = createServerFn({ method: "POST" })
       .eq("id", match.id);
 
     const { data: t } = await supabaseAdmin
-      .from("tournaments").select("*").eq("id", data.tournament_id).maybeSingle();
+      .from("tournaments")
+      .select("*")
+      .eq("id", data.tournament_id)
+      .maybeSingle();
     if (!t) throw new Error("tournament_not_found");
 
     // Controlla se tutti i match del round corrente sono completed/bye

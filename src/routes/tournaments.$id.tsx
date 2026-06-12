@@ -76,11 +76,18 @@ function TournamentPage() {
       )
       .on(
         "postgres_changes",
-        { event: "*", schema: "public", table: "tournament_matches", filter: `tournament_id=eq.${id}` },
+        {
+          event: "*",
+          schema: "public",
+          table: "tournament_matches",
+          filter: `tournament_id=eq.${id}`,
+        },
         () => queryClient.invalidateQueries({ queryKey: ["tournament", id] }),
       )
       .subscribe();
-    return () => { supabase.removeChannel(ch); };
+    return () => {
+      supabase.removeChannel(ch);
+    };
   }, [id, queryClient]);
 
   const [actionErr, setActionErr] = useState<string | null>(null);
@@ -140,9 +147,7 @@ function TournamentPage() {
               </h1>
               <div className="mt-1 font-mono text-xs text-[var(--text-dim)]">
                 {sym?.label ?? t_.symbol} · {dur?.label} ·{" "}
-                {t_.stake_type === "points"
-                  ? `${t_.stake_amount} HTT`
-                  : t("challenges.honor")}
+                {t_.stake_type === "points" ? `${t_.stake_amount} HTT` : t("challenges.honor")}
                 {" · "}
                 <StatusBadge status={t_.status} />
               </div>
@@ -218,10 +223,7 @@ function TournamentPage() {
               ))}
               {/* Slot vuoti */}
               {Array.from({ length: t_.max_players - entries.length }).map((_, i) => (
-                <div
-                  key={`empty-${i}`}
-                  className="flex items-center gap-2 opacity-30"
-                >
+                <div key={`empty-${i}`} className="flex items-center gap-2 opacity-30">
                   <div className="w-8 h-8 border border-dashed border-border" />
                   <span className="font-mono text-[11px] text-[var(--text-dim)]">—</span>
                 </div>
@@ -361,7 +363,9 @@ function PlayerRow({
       )}
     >
       <GlitchAvatar name={profile.username} color={isWinner ? "amber" : "green"} size={20} />
-      <span className="truncate">{isBye ? `${profile.username} (BYE)` : `@${profile.username}`}</span>
+      <span className="truncate">
+        {isBye ? `${profile.username} (BYE)` : `@${profile.username}`}
+      </span>
       {isWinner && <span>🏆</span>}
     </div>
   );

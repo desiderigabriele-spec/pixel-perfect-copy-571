@@ -51,7 +51,9 @@ export const getMyProfile = createServerFn({ method: "GET" })
     const [{ data: profile }, { data: roles }, { data: verif }] = await Promise.all([
       supabase
         .from("profiles")
-        .select("id, username, avatar_seed, points_balance, country, language, style, primary_asset")
+        .select(
+          "id, username, avatar_seed, points_balance, country, language, style, primary_asset",
+        )
         .eq("id", userId)
         .maybeSingle(),
       supabase.from("user_roles").select("role").eq("user_id", userId),
