@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as LiveDemoRouteImport } from './routes/live-demo'
+import { Route as LeaderboardRouteImport } from './routes/leaderboard'
 import { Route as BootRouteImport } from './routes/boot'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
@@ -32,6 +33,11 @@ const ResetPasswordRoute = ResetPasswordRouteImport.update({
 const LiveDemoRoute = LiveDemoRouteImport.update({
   id: '/live-demo',
   path: '/live-demo',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LeaderboardRoute = LeaderboardRouteImport.update({
+  id: '/leaderboard',
+  path: '/leaderboard',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BootRoute = BootRouteImport.update({
@@ -102,6 +108,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/boot': typeof BootRoute
+  '/leaderboard': typeof LeaderboardRoute
   '/live-demo': typeof LiveDemoRoute
   '/reset-password': typeof ResetPasswordRoute
   '/admin': typeof AuthenticatedAdminRoute
@@ -117,6 +124,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/boot': typeof BootRoute
+  '/leaderboard': typeof LeaderboardRoute
   '/live-demo': typeof LiveDemoRoute
   '/reset-password': typeof ResetPasswordRoute
   '/admin': typeof AuthenticatedAdminRoute
@@ -134,6 +142,7 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
   '/boot': typeof BootRoute
+  '/leaderboard': typeof LeaderboardRoute
   '/live-demo': typeof LiveDemoRoute
   '/reset-password': typeof ResetPasswordRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
@@ -151,6 +160,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/boot'
+    | '/leaderboard'
     | '/live-demo'
     | '/reset-password'
     | '/admin'
@@ -166,6 +176,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/boot'
+    | '/leaderboard'
     | '/live-demo'
     | '/reset-password'
     | '/admin'
@@ -182,6 +193,7 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/auth'
     | '/boot'
+    | '/leaderboard'
     | '/live-demo'
     | '/reset-password'
     | '/_authenticated/admin'
@@ -199,6 +211,7 @@ export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
   BootRoute: typeof BootRoute
+  LeaderboardRoute: typeof LeaderboardRoute
   LiveDemoRoute: typeof LiveDemoRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   UUsernameRoute: typeof UUsernameRoute
@@ -218,6 +231,13 @@ declare module '@tanstack/react-router' {
       path: '/live-demo'
       fullPath: '/live-demo'
       preLoaderRoute: typeof LiveDemoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/leaderboard': {
+      id: '/leaderboard'
+      path: '/leaderboard'
+      fullPath: '/leaderboard'
+      preLoaderRoute: typeof LeaderboardRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/boot': {
@@ -347,6 +367,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
   BootRoute: BootRoute,
+  LeaderboardRoute: LeaderboardRoute,
   LiveDemoRoute: LiveDemoRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   UUsernameRoute: UUsernameRoute,
@@ -354,3 +375,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
