@@ -1,61 +1,28 @@
-## Obiettivo
+# Fix: traduzioni mostrate come chiavi (`landing.tag`, `landing.subtitle`, …)
 
-Sostituire l'attuale `MarketRain` (singoli numeri verdi/rossi) con un effetto "digital rain" finanziario fedele alla specifica fornita: ticker, percentuali, frecce, teste bianche brillanti, scia con fade, profondità parallasse, sfondo nero pieno.
+## Causa
 
-## File toccato
+Nell'HTML SSR del sito pubblicato compaiono letteralmente le chiavi i18n (`landing.tag`, `landing.feature1Title`, `landing.compliance`, `nav.live`, ecc.). Questo succede quando `react-i18next` rende un componente con `useTranslation()` prima che `i18next` abbia completato `init()`. Nel runtime serverless (Cloudflare Worker) l'`init()` di default è asincrono (`initImmediate: true`) e ritorna prima che le risorse siano "ready" — quindi `t("landing.tag")` restituisce la chiave.
 
-Solo `src/components/htt/MarketRain.tsx` (riscrittura completa del canvas; la firma del componente e il punto di mount in `__root.tsx` restano invariati).
+Le risorse `it.json` / `en.json` contengono già tutte le chiavi corrette: non è un problema di traduzioni mancanti, è un problema di tempistica di init in SSR.
 
-## Nuove specifiche di rendering
+## Modifica
 
-**Canvas / layout**
-- `position: fixed`, `inset-0`, `w-screen h-screen`, `z-[-1]`, `pointer-events-none`.
-- Resize listener su `window` con `devicePixelRatio` per nitidezza retina.
-- Sfondo del body/root nero (`#000`); il canvas disegna sopra con fade trail.
+Un solo file: `src/lib/i18n.ts`.
 
-**Effetto trail (fade verso l'alto)**
-- Ogni frame: `ctx.fillStyle = "rgba(0,0,0,0.08)"` + `fillRect` su tutto il canvas → genera automaticamente la scia che svanisce in nero.
+Aggiungere due opzioni all'`init`:
 
-**Colonne**
-- `FONT_SIZE` variabile per colonna (10–18px) → parallasse di profondità.
-- Velocità di caduta randomica per colonna (0.4–1.6).
-- Numero colonne calcolato sulla larghezza media (≈14px).
+- `initImmediate: false` → forza init sincrono (le risorse sono già in memoria, nessun fetch).
+- `react: { useSuspense: false }` → evita che `useTranslation` resti in stato non-ready durante SSR e ritorni la chiave.
 
-**Contenuto delle stringhe (per cella)**
-Mix randomico con pesi:
-- Ticker da pool: `["BTC","ETH","SOL","TSLA","AAPL","NVDA","SPY","EUR","USD","GOLD","OIL","DXY","NDX","XRP"]`
-- Percentuali firmate: `+2.4%`, `-1.2%` (1 decimale, range −9.9/+9.9)
-- Numeri puri (prezzi mock a 2–5 cifre)
-- Frecce direzionali: `▲` (verde) / `▼` (rosso)
-- Caratteri singoli 0–9 come "filler" tra ticker
+Nessuna altra modifica: il resto del file (default `it`, hard reset alla lingua di default) resta com'è.
 
-**Colori**
-- Verde neon `#00FF66` per token "positivi" (ticker accoppiato a ▲ / +%).
-- Rosso acceso `#FF2A4D` per "negativi" (▼ / -%).
-- Testa del flusso (carattere più in basso di ogni colonna): bianco brillante `#FFFFFF` con leggero glow via `shadowColor`/`shadowBlur` per il bagliore.
-- La scia eredita il colore della colonna; il fade-out è gestito dal rettangolo nero semi-trasparente sopra descritto.
+## Verifica
 
-**Font**
-- `font: "${size}px 'Fira Code', 'Courier New', monospace"`.
+1. Ricaricare la preview e controllare che la home mostri "// COMMUNITY TRADER VERIFICATA", "Sfide tra trader…", "INIZIA L'ACCESSO", "SFIDE 1v1", ecc. al posto delle chiavi.
+2. `curl` dell'HTML pubblicato (dopo republish) deve contenere le stringhe italiane, non `landing.tag`.
+3. Switch IT/EN ancora funzionante.
 
-**Animazione**
-- `requestAnimationFrame` con `cancelAnimationFrame` in cleanup.
-- Throttle a ~30 fps (`if (now - last < 33) return`) per ridurre carico CPU sullo sfondo.
-- Rispetto `prefers-reduced-motion: reduce` → render statico di un singolo frame e stop (nessun loop).
+## Dopo il fix
 
-**Stato per colonna**
-```
-{ x, y, size, speed, polarity: 'pos'|'neg', tickPool: string[], stepCounter }
-```
-A ogni "drop" sceglie un nuovo token dal mix; quando esce dal fondo, si reinizializza in cima con polarità/size/speed nuovi.
-
-## Props
-Mantengo `opacity?: number` e `className?: string` per compatibilità con l'uso attuale in `__root.tsx`. Default `opacity = 1` (l'effetto è già scuro; il valore precedente 0.08 lo rendeva quasi invisibile — useremo `0.55` come default per restare leggibile ma non invadente; configurabile dal chiamante).
-
-## Fuori scopo
-- Nessuna modifica a `__root.tsx`, header, logo o altri componenti.
-- Nessuna modifica al backend, i18n, route.
-- Nessuna nuova dipendenza npm (font monospace già caricato dal browser come fallback).
-
-## QA
-- Verifica visiva via `browser--view_preview` su `/` dopo la modifica: confermare ticker leggibili, teste bianche, fade, mix verde/rosso, parallasse.
+L'utente dovrà ripubblicare per propagare il fix sul dominio pubblico (`pixel-perfect-copy-571.lovable.app`).

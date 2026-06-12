@@ -13,6 +13,9 @@ if (!i18n.isInitialized) {
       fallbackLng: "it",
       supportedLngs: ["it", "en"],
       interpolation: { escapeValue: false },
+      react: { useSuspense: false },
+      // initImmediate è disponibile a runtime ma non sempre nei tipi: lo forziamo.
+      ...({ initImmediate: false } as Record<string, unknown>),
     });
 }
 
