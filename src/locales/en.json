@@ -60,7 +60,17 @@
     "errorPassword": "> error: password too short (min 6 chars)",
     "errorUsername": "> error: username required (3-20 chars)",
     "errorGeneric": "> error: {{message}}",
-    "checkEmail": "> check your email to confirm sign-in"
+    "checkEmail": "> check your email to confirm sign-in",
+    "forgot": "Forgot password?",
+    "backToLogin": "← Back to login",
+    "resetTitle": "PASSWORD RECOVERY",
+    "submitReset": "SEND RECOVERY LINK",
+    "resetSent": "> link sent. check your email.",
+    "resetWaiting": "> waiting for recovery token from email...",
+    "resetReady": "> valid token. set a new password.",
+    "newPassword": "> new password_",
+    "updatePassword": "UPDATE PASSWORD",
+    "passwordUpdated": "> password updated. redirecting..."
   },
   "onboarding": {
     "avatradeTitle": "Last step to unlock challenges",
@@ -85,7 +95,22 @@
     "welcome": "WELCOME, {{username}}",
     "verifiedBadge": "VERIFIED",
     "pendingBadge": "VERIFICATION PENDING",
-    "comingSoon": "// Challenges, leaderboard and signals modules are coming in the next cycles."
+    "comingSoon": "// Challenges, leaderboard and signals modules are coming in the next cycles.",
+    "claimAdmin": {
+      "desc": "You are the first registered user. Claim the admin role to access the verification panel.",
+      "cta": "CLAIM ADMIN ROLE"
+    }
+  },
+  "profile": {
+    "memberSince": "// member since {{date}}",
+    "notFound": "No trader found with this username.",
+    "stats": {
+      "wins": "WINS",
+      "losses": "LOSSES",
+      "pips": "TOTAL PIPS",
+      "streak": "STREAK",
+      "placeholder": "// Real stats will appear with the challenges module."
+    }
   },
   "admin": {
     "title": "ADMIN — AVATRADE VERIFICATIONS",
