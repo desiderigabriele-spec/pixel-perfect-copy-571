@@ -89,8 +89,11 @@ export type Database = {
           ends_at: string | null
           entry_price: number | null
           exit_price: number | null
+          goal_pips: number | null
+          goal_reached: boolean | null
           id: string
           invite_code: string | null
+          mode: Database["public"]["Enums"]["challenge_mode"]
           opponent_id: string | null
           opponent_pips: number | null
           opponent_side: Database["public"]["Enums"]["trade_side"] | null
@@ -113,8 +116,11 @@ export type Database = {
           ends_at?: string | null
           entry_price?: number | null
           exit_price?: number | null
+          goal_pips?: number | null
+          goal_reached?: boolean | null
           id?: string
           invite_code?: string | null
+          mode?: Database["public"]["Enums"]["challenge_mode"]
           opponent_id?: string | null
           opponent_pips?: number | null
           opponent_side?: Database["public"]["Enums"]["trade_side"] | null
@@ -137,8 +143,11 @@ export type Database = {
           ends_at?: string | null
           entry_price?: number | null
           exit_price?: number | null
+          goal_pips?: number | null
+          goal_reached?: boolean | null
           id?: string
           invite_code?: string | null
+          mode?: Database["public"]["Enums"]["challenge_mode"]
           opponent_id?: string | null
           opponent_pips?: number | null
           opponent_side?: Database["public"]["Enums"]["trade_side"] | null
@@ -154,26 +163,102 @@ export type Database = {
         }
         Relationships: []
       }
+      live_chat_messages: {
+        Row: {
+          body: string
+          challenge_id: string
+          created_at: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          body: string
+          challenge_id: string
+          created_at?: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          body?: string
+          challenge_id?: string
+          created_at?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "live_chat_messages_challenge_id_fkey"
+            columns: ["challenge_id"]
+            isOneToOne: false
+            referencedRelation: "challenges"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      live_reactions: {
+        Row: {
+          challenge_id: string
+          created_at: string
+          emoji: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          challenge_id: string
+          created_at?: string
+          emoji: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          challenge_id?: string
+          created_at?: string
+          emoji?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "live_reactions_challenge_id_fkey"
+            columns: ["challenge_id"]
+            isOneToOne: false
+            referencedRelation: "challenges"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_seed: string
+          country: string | null
           created_at: string
           id: string
+          language: string | null
           points_balance: number
+          primary_asset: string | null
+          style: Database["public"]["Enums"]["trading_style"] | null
           username: string
         }
         Insert: {
           avatar_seed?: string
+          country?: string | null
           created_at?: string
           id: string
+          language?: string | null
           points_balance?: number
+          primary_asset?: string | null
+          style?: Database["public"]["Enums"]["trading_style"] | null
           username: string
         }
         Update: {
           avatar_seed?: string
+          country?: string | null
           created_at?: string
           id?: string
+          language?: string | null
           points_balance?: number
+          primary_asset?: string | null
+          style?: Database["public"]["Enums"]["trading_style"] | null
           username?: string
         }
         Relationships: []
@@ -211,13 +296,16 @@ export type Database = {
         }
         Returns: boolean
       }
+      is_affiliated: { Args: { _user_id: string }; Returns: boolean }
     }
     Enums: {
       app_role: "admin" | "user"
+      challenge_mode: "1v1" | "solo_goal"
       challenge_status: "waiting" | "live" | "settled" | "cancelled"
       challenge_visibility: "public" | "private"
       stake_type: "points" | "honor"
       trade_side: "long" | "short"
+      trading_style: "scalper" | "intraday" | "swing"
       verification_status: "pending" | "verified" | "rejected"
     }
     CompositeTypes: {
@@ -347,10 +435,12 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "user"],
+      challenge_mode: ["1v1", "solo_goal"],
       challenge_status: ["waiting", "live", "settled", "cancelled"],
       challenge_visibility: ["public", "private"],
       stake_type: ["points", "honor"],
       trade_side: ["long", "short"],
+      trading_style: ["scalper", "intraday", "swing"],
       verification_status: ["pending", "verified", "rejected"],
     },
   },

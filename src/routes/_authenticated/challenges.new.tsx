@@ -25,6 +25,8 @@ function NewChallenge() {
   const [stakeAmount, setStakeAmount] = useState(100);
   const [visibility, setVisibility] = useState<"public" | "private">("public");
   const [side, setSide] = useState<"long" | "short">("long");
+  const [mode, setMode] = useState<"1v1" | "solo_goal">("1v1");
+  const [goalPips, setGoalPips] = useState(20);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -41,6 +43,8 @@ function NewChallenge() {
           stake_amount: stakeType === "points" ? stakeAmount : 0,
           visibility,
           side,
+          mode,
+          goal_pips: mode === "solo_goal" ? goalPips : undefined,
         },
       });
       navigate({ to: "/challenges/$id", params: { id } });
@@ -70,6 +74,46 @@ function NewChallenge() {
         </div>
 
         <form onSubmit={onSubmit} className="space-y-6">
+          <TerminalCard label="> MODE" className="p-5">
+            <div className="flex gap-2">
+              {(["1v1", "solo_goal"] as const).map((m) => (
+                <button
+                  key={m}
+                  type="button"
+                  onClick={() => setMode(m)}
+                  className={cn(
+                    "px-4 py-3 border font-mono text-sm transition-colors flex-1 text-left",
+                    mode === m
+                      ? "border-[var(--terminal)] bg-[var(--terminal)]/10 text-[var(--terminal)]"
+                      : "border-border text-[var(--text-dim)] hover:text-foreground",
+                  )}
+                >
+                  <div className="font-display text-base tracking-wide">
+                    {t(`challenges.mode.${m}.label`)}
+                  </div>
+                  <div className="font-mono text-[10px] mt-1 opacity-80">
+                    {t(`challenges.mode.${m}.desc`)}
+                  </div>
+                </button>
+              ))}
+            </div>
+            {mode === "solo_goal" && (
+              <div className="mt-4">
+                <label className="font-mono text-[10px] uppercase tracking-widest text-[var(--text-dim)]">
+                  {t("challenges.mode.solo_goal.goalLabel")}
+                </label>
+                <input
+                  type="number"
+                  min={1}
+                  max={10000}
+                  value={goalPips}
+                  onChange={(e) => setGoalPips(Number(e.target.value))}
+                  className="mt-1 w-full bg-bg-secondary border border-border px-3 py-2 font-mono text-sm text-[var(--terminal)] focus:outline-none focus:border-[var(--terminal)]"
+                />
+              </div>
+            )}
+          </TerminalCard>
+
           <TerminalCard label="> SYMBOL" className="p-5 space-y-4">
             {(Object.entries(grouped) as [keyof typeof grouped, typeof SYMBOLS][]).map(([cat, list]) => (
               <div key={cat}>

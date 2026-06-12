@@ -132,7 +132,21 @@
     "trader": "TRADER",
     "pips": "PIPS",
     "wl": "W/L",
-    "streak": "STREAK"
+    "streak": "STREAK",
+    "rising": "RISING STAR",
+    "allFilter": "all",
+    "scope": {
+      "global": "GLOBAL",
+      "language": "LANGUAGE",
+      "country": "COUNTRY",
+      "style": "STYLE",
+      "asset": "ASSET"
+    },
+    "period": {
+      "week": "7D",
+      "month": "30D",
+      "all": "ALL TIME"
+    }
   },
   "challenges": {
     "title": "CHALLENGES",
@@ -176,6 +190,10 @@
     "new": {
       "title": "CREATE 1v1 CHALLENGE",
       "submit": "PUBLISH CHALLENGE"
+    },
+    "mode": {
+      "1v1": { "label": "1v1 OPPONENT", "desc": "Challenge another trader. Most pips wins." },
+      "solo_goal": { "label": "SOLO GOAL", "desc": "Hit X pips before time runs out. Public outcome.", "goalLabel": "Goal (pips)" }
     }
   },
   "chat": {
@@ -183,5 +201,28 @@
     "placeholder": "type a message...",
     "send": "SEND",
     "readOnly": "// read-only chat — only participants can post"
+  },
+  "gate": {
+    "title": "Watch live in real time",
+    "description": "Open your AvaTrade account through the HTT link and unlock realtime live, challenges and the full leaderboard.",
+    "signin": "SIGN IN",
+    "affiliate": "BECOME AFFILIATE",
+    "delayedBadge": "DELAYED VIEW · AFFILIATE FOR LIVE"
+  },
+  "metrics": {
+    "consistency": "CONSISTENCY",
+    "winRate": "WIN RATE",
+    "profitFactor": "PROFIT FACTOR",
+    "sharpe": "SHARPE",
+    "maxDrawdown": "MAX DD",
+    "avgRR": "AVG R:R",
+    "trades": "TRADES",
+    "trackRecord": "TRACK REC.",
+    "equity": "EQUITY CURVE (24P)"
+  },
+  "share": {
+    "download": "DOWNLOAD SVG",
+    "copyLink": "COPY LINK",
+    "note": "// I'm participating / follow me. No profit promises."
   }
 }

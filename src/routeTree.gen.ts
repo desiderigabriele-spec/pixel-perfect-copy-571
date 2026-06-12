@@ -17,6 +17,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as UUsernameRouteImport } from './routes/u.$username'
+import { Route as LiveIdRouteImport } from './routes/live.$id'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedChallengesRouteImport } from './routes/_authenticated/challenges'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
@@ -24,6 +25,7 @@ import { Route as AuthenticatedOnboardingVerifyRouteImport } from './routes/_aut
 import { Route as AuthenticatedOnboardingAvatradeRouteImport } from './routes/_authenticated/onboarding.avatrade'
 import { Route as AuthenticatedChallengesNewRouteImport } from './routes/_authenticated/challenges.new'
 import { Route as AuthenticatedChallengesIdRouteImport } from './routes/_authenticated/challenges.$id'
+import { Route as ApiPublicCardUsernameRouteImport } from './routes/api/public/card.$username'
 
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
   id: '/reset-password',
@@ -62,6 +64,11 @@ const IndexRoute = IndexRouteImport.update({
 const UUsernameRoute = UUsernameRouteImport.update({
   id: '/u/$username',
   path: '/u/$username',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LiveIdRoute = LiveIdRouteImport.update({
+  id: '/live/$id',
+  path: '/live/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
@@ -103,6 +110,11 @@ const AuthenticatedChallengesIdRoute =
     path: '/$id',
     getParentRoute: () => AuthenticatedChallengesRoute,
   } as any)
+const ApiPublicCardUsernameRoute = ApiPublicCardUsernameRouteImport.update({
+  id: '/api/public/card/$username',
+  path: '/api/public/card/$username',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -114,11 +126,13 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AuthenticatedAdminRoute
   '/challenges': typeof AuthenticatedChallengesRouteWithChildren
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/live/$id': typeof LiveIdRoute
   '/u/$username': typeof UUsernameRoute
   '/challenges/$id': typeof AuthenticatedChallengesIdRoute
   '/challenges/new': typeof AuthenticatedChallengesNewRoute
   '/onboarding/avatrade': typeof AuthenticatedOnboardingAvatradeRoute
   '/onboarding/verify': typeof AuthenticatedOnboardingVerifyRoute
+  '/api/public/card/$username': typeof ApiPublicCardUsernameRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -130,11 +144,13 @@ export interface FileRoutesByTo {
   '/admin': typeof AuthenticatedAdminRoute
   '/challenges': typeof AuthenticatedChallengesRouteWithChildren
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/live/$id': typeof LiveIdRoute
   '/u/$username': typeof UUsernameRoute
   '/challenges/$id': typeof AuthenticatedChallengesIdRoute
   '/challenges/new': typeof AuthenticatedChallengesNewRoute
   '/onboarding/avatrade': typeof AuthenticatedOnboardingAvatradeRoute
   '/onboarding/verify': typeof AuthenticatedOnboardingVerifyRoute
+  '/api/public/card/$username': typeof ApiPublicCardUsernameRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -148,11 +164,13 @@ export interface FileRoutesById {
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/challenges': typeof AuthenticatedChallengesRouteWithChildren
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/live/$id': typeof LiveIdRoute
   '/u/$username': typeof UUsernameRoute
   '/_authenticated/challenges/$id': typeof AuthenticatedChallengesIdRoute
   '/_authenticated/challenges/new': typeof AuthenticatedChallengesNewRoute
   '/_authenticated/onboarding/avatrade': typeof AuthenticatedOnboardingAvatradeRoute
   '/_authenticated/onboarding/verify': typeof AuthenticatedOnboardingVerifyRoute
+  '/api/public/card/$username': typeof ApiPublicCardUsernameRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -166,11 +184,13 @@ export interface FileRouteTypes {
     | '/admin'
     | '/challenges'
     | '/dashboard'
+    | '/live/$id'
     | '/u/$username'
     | '/challenges/$id'
     | '/challenges/new'
     | '/onboarding/avatrade'
     | '/onboarding/verify'
+    | '/api/public/card/$username'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -182,11 +202,13 @@ export interface FileRouteTypes {
     | '/admin'
     | '/challenges'
     | '/dashboard'
+    | '/live/$id'
     | '/u/$username'
     | '/challenges/$id'
     | '/challenges/new'
     | '/onboarding/avatrade'
     | '/onboarding/verify'
+    | '/api/public/card/$username'
   id:
     | '__root__'
     | '/'
@@ -199,11 +221,13 @@ export interface FileRouteTypes {
     | '/_authenticated/admin'
     | '/_authenticated/challenges'
     | '/_authenticated/dashboard'
+    | '/live/$id'
     | '/u/$username'
     | '/_authenticated/challenges/$id'
     | '/_authenticated/challenges/new'
     | '/_authenticated/onboarding/avatrade'
     | '/_authenticated/onboarding/verify'
+    | '/api/public/card/$username'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -214,7 +238,9 @@ export interface RootRouteChildren {
   LeaderboardRoute: typeof LeaderboardRoute
   LiveDemoRoute: typeof LiveDemoRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
+  LiveIdRoute: typeof LiveIdRoute
   UUsernameRoute: typeof UUsernameRoute
+  ApiPublicCardUsernameRoute: typeof ApiPublicCardUsernameRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -275,6 +301,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof UUsernameRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/live/$id': {
+      id: '/live/$id'
+      path: '/live/$id'
+      fullPath: '/live/$id'
+      preLoaderRoute: typeof LiveIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated/dashboard': {
       id: '/_authenticated/dashboard'
       path: '/dashboard'
@@ -324,6 +357,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedChallengesIdRouteImport
       parentRoute: typeof AuthenticatedChallengesRoute
     }
+    '/api/public/card/$username': {
+      id: '/api/public/card/$username'
+      path: '/api/public/card/$username'
+      fullPath: '/api/public/card/$username'
+      preLoaderRoute: typeof ApiPublicCardUsernameRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -370,7 +410,9 @@ const rootRouteChildren: RootRouteChildren = {
   LeaderboardRoute: LeaderboardRoute,
   LiveDemoRoute: LiveDemoRoute,
   ResetPasswordRoute: ResetPasswordRoute,
+  LiveIdRoute: LiveIdRoute,
   UUsernameRoute: UUsernameRoute,
+  ApiPublicCardUsernameRoute: ApiPublicCardUsernameRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

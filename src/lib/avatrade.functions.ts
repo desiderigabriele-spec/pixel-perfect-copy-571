@@ -46,13 +46,15 @@ export const getMyProfile = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
     const { supabase, userId } = context;
-    const [{ data: profile }, { data: roles }] = await Promise.all([
+    const [{ data: profile }, { data: roles }, { data: verif }] = await Promise.all([
       supabase.from("profiles").select("id, username, avatar_seed, points_balance").eq("id", userId).maybeSingle(),
       supabase.from("user_roles").select("role").eq("user_id", userId),
+      supabase.from("avatrade_verifications").select("status").eq("user_id", userId).maybeSingle(),
     ]);
     return {
       profile,
       isAdmin: (roles ?? []).some((r) => r.role === "admin"),
+      isAffiliated: verif?.status === "verified",
     };
   });
 
