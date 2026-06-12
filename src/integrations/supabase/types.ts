@@ -221,23 +221,35 @@ export type Database = {
       profiles: {
         Row: {
           avatar_seed: string
+          country: string | null
           created_at: string
           id: string
+          language: string | null
           points_balance: number
+          primary_asset: string | null
+          style: Database["public"]["Enums"]["trading_style"] | null
           username: string
         }
         Insert: {
           avatar_seed?: string
+          country?: string | null
           created_at?: string
           id: string
+          language?: string | null
           points_balance?: number
+          primary_asset?: string | null
+          style?: Database["public"]["Enums"]["trading_style"] | null
           username: string
         }
         Update: {
           avatar_seed?: string
+          country?: string | null
           created_at?: string
           id?: string
+          language?: string | null
           points_balance?: number
+          primary_asset?: string | null
+          style?: Database["public"]["Enums"]["trading_style"] | null
           username?: string
         }
         Relationships: []
@@ -283,6 +295,7 @@ export type Database = {
       challenge_visibility: "public" | "private"
       stake_type: "points" | "honor"
       trade_side: "long" | "short"
+      trading_style: "scalper" | "intraday" | "swing"
       verification_status: "pending" | "verified" | "rejected"
     }
     CompositeTypes: {
@@ -416,6 +429,7 @@ export const Constants = {
       challenge_visibility: ["public", "private"],
       stake_type: ["points", "honor"],
       trade_side: ["long", "short"],
+      trading_style: ["scalper", "intraday", "swing"],
       verification_status: ["pending", "verified", "rejected"],
     },
   },
