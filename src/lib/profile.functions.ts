@@ -115,3 +115,28 @@ export const getCurrentLiveMatch = createServerFn({ method: "GET" })
       },
     };
   });
+
+// Recupera una specifica sfida live pubblica per id (route /live/$id).
+export const getPublicLiveMatch = createServerFn({ method: "GET" })
+  .inputValidator((input: unknown) => z.object({ id: z.string().uuid() }).parse(input))
+  .handler(async ({ data }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: c } = await supabaseAdmin
+      .from("challenges")
+      .select("id, symbol, duration_minutes, creator_id, opponent_id, creator_side, opponent_side, starts_at, ends_at, status, visibility")
+      .eq("id", data.id)
+      .eq("visibility", "public")
+      .maybeSingle();
+    if (!c) return { match: null };
+    const ids = [c.creator_id, c.opponent_id].filter(Boolean) as string[];
+    const { data: profs } = await supabaseAdmin
+      .from("profiles").select("id, username, avatar_seed").in("id", ids);
+    const byId = new Map((profs ?? []).map((p: any) => [p.id, p]));
+    return {
+      match: {
+        ...c,
+        creator: byId.get(c.creator_id) ?? null,
+        opponent: c.opponent_id ? byId.get(c.opponent_id) ?? null : null,
+      },
+    };
+  });
