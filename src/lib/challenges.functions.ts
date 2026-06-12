@@ -2,6 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { SYMBOL_CODES } from "@/lib/symbols";
+import { priceAt, pipsFor } from "@/lib/priceFeed";
 
 const DURATIONS = [15, 60, 240, 1440] as const;
 
@@ -11,6 +12,7 @@ const createSchema = z.object({
   stake_type: z.enum(["points", "honor"]),
   stake_amount: z.number().int().min(0).max(100000),
   visibility: z.enum(["public", "private"]),
+  side: z.enum(["long", "short"]),
 });
 
 function genInviteCode(): string {
@@ -67,6 +69,7 @@ export const createChallenge = createServerFn({ method: "POST" })
         visibility: data.visibility,
         invite_code,
         status: "waiting",
+        creator_side: data.side,
       })
       .select("id, invite_code")
       .single();
@@ -154,7 +157,11 @@ export const getChallenge = createServerFn({ method: "GET" })
 export const joinChallenge = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) =>
-    z.object({ id: z.string().uuid().optional(), invite_code: z.string().length(6).optional() })
+    z.object({
+      id: z.string().uuid().optional(),
+      invite_code: z.string().length(6).optional(),
+      side: z.enum(["long", "short"]),
+    })
       .refine((v) => v.id || v.invite_code, "id or invite_code required")
       .parse(input),
   )
@@ -192,6 +199,7 @@ export const joinChallenge = createServerFn({ method: "POST" })
 
     const startsAt = new Date();
     const endsAt = new Date(startsAt.getTime() + c.duration_minutes * 60_000);
+    const entry = priceAt(c.symbol, startsAt.getTime(), 0);
     const { error: updErr } = await supabaseAdmin
       .from("challenges")
       .update({
@@ -199,6 +207,8 @@ export const joinChallenge = createServerFn({ method: "POST" })
         status: "live",
         starts_at: startsAt.toISOString(),
         ends_at: endsAt.toISOString(),
+        opponent_side: data.side,
+        entry_price: entry,
       })
       .eq("id", c.id)
       .eq("status", "waiting"); // race-guard
@@ -221,6 +231,74 @@ export const cancelChallenge = createServerFn({ method: "POST" })
       .eq("status", "waiting");
     if (error) throw new Error(error.message);
     return { ok: true };
+  });
+
+// Settlement: callable da qualunque utente autenticato; agisce solo se la sfida
+// è 'live' e il timer è scaduto. Calcola pips deterministici, decreta winner,
+// trasferisce stake. Idempotente grazie al guard sullo status.
+export const settleChallenge = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) => z.object({ id: z.string().uuid() }).parse(input))
+  .handler(async ({ data }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: c, error } = await supabaseAdmin
+      .from("challenges").select("*").eq("id", data.id).maybeSingle();
+    if (error) throw new Error(error.message);
+    if (!c) throw new Error("not_found");
+    if (c.status !== "live") return { ok: true, alreadySettled: true };
+    if (!c.starts_at || !c.ends_at) throw new Error("invalid_state");
+    const endsAtMs = new Date(c.ends_at).getTime();
+    if (Date.now() < endsAtMs) throw new Error("not_yet");
+
+    const startsAtMs = new Date(c.starts_at).getTime();
+    const durationSec = (endsAtMs - startsAtMs) / 1000;
+    const creatorPips = pipsFor(c.symbol, startsAtMs, durationSec, c.creator_side as "long" | "short");
+    const opponentPips = pipsFor(c.symbol, startsAtMs, durationSec, (c.opponent_side ?? "short") as "long" | "short");
+    const exit = priceAt(c.symbol, startsAtMs, durationSec);
+
+    let winnerId: string | null = null;
+    if (creatorPips > opponentPips) winnerId = c.creator_id;
+    else if (opponentPips > creatorPips) winnerId = c.opponent_id ?? null;
+    // tie → winner_id null
+
+    // Trasferimento punti (se posta in punti): il vincitore prende l'intero piatto.
+    if (c.stake_type === "points" && c.stake_amount > 0 && winnerId) {
+      const { data: prof } = await supabaseAdmin
+        .from("profiles").select("points_balance").eq("id", winnerId).single();
+      const pot = c.stake_amount * 2;
+      await supabaseAdmin
+        .from("profiles")
+        .update({ points_balance: (prof?.points_balance ?? 0) + pot })
+        .eq("id", winnerId);
+    } else if (c.stake_type === "points" && c.stake_amount > 0 && !winnerId) {
+      // pareggio → rimborso ad entrambi
+      const ids = [c.creator_id, c.opponent_id].filter(Boolean) as string[];
+      const { data: profs } = await supabaseAdmin
+        .from("profiles").select("id, points_balance").in("id", ids);
+      for (const uid of ids) {
+        const cur = (profs ?? []).find((p: any) => p.id === uid);
+        await supabaseAdmin
+          .from("profiles")
+          .update({ points_balance: (cur?.points_balance ?? 0) + c.stake_amount })
+          .eq("id", uid);
+      }
+    }
+
+    const { error: updErr } = await supabaseAdmin
+      .from("challenges")
+      .update({
+        status: "settled",
+        winner_id: winnerId,
+        creator_pips: Number(creatorPips.toFixed(1)),
+        opponent_pips: Number(opponentPips.toFixed(1)),
+        exit_price: exit,
+        settled_at: new Date().toISOString(),
+      })
+      .eq("id", c.id)
+      .eq("status", "live");
+    if (updErr) throw new Error(updErr.message);
+
+    return { ok: true, winnerId, creatorPips, opponentPips };
   });
 
 export const DURATION_VALUES = DURATIONS;
