@@ -13,6 +13,7 @@ import { getMyProfile } from "@/lib/avatrade.functions";
 import { getSymbol, DURATIONS } from "@/lib/symbols";
 import { cn } from "@/lib/utils";
 import { priceAt, pipsFor, elapsedSec } from "@/lib/priceFeed";
+import { ChallengeChat } from "@/components/htt/ChallengeChat";
 
 export const Route = createFileRoute("/_authenticated/challenges/$id")({
   head: ({ params }) => ({ meta: [{ title: `Sfida ${params.id.slice(0, 8)} — HTT` }] }),
@@ -223,6 +224,16 @@ function ChallengeDetail() {
           <TerminalButton variant="ghost" size="lg" className="w-full" onClick={onCancel}>
             {t("challenges.cancel")}
           </TerminalButton>
+        )}
+
+        {(c.status === "waiting" || c.status === "live" || c.status === "settled") && c.opponent_id && (
+          <ChallengeChat
+            challengeId={c.id}
+            canPost={(isCreator || isOpponent) && (c.status === "waiting" || c.status === "live")}
+            myId={myId}
+            creatorId={c.creator_id}
+            opponentId={c.opponent_id}
+          />
         )}
       </div>
     </Shell>
