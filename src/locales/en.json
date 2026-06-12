@@ -14,7 +14,8 @@
     "challenges": "CHALLENGES",
     "leaderboard": "LEADERBOARD",
     "dashboard": "DASHBOARD",
-    "admin": "ADMIN"
+    "admin": "ADMIN",
+    "settings": "SETTINGS"
   },
   "landing": {
     "tag": "// VERIFIED TRADER COMMUNITY",
@@ -228,5 +229,24 @@
     "download": "DOWNLOAD SVG",
     "copyLink": "COPY LINK",
     "note": "// I'm participating / follow me. No profit promises."
+  },
+  "settings": {
+    "title": "SETTINGS",
+    "avatarNote": "// Avatar is generated from your username.",
+    "usernameLabel": "> username_",
+    "styleLabel": "TRADING STYLE",
+    "assetLabel": "PRIMARY ASSET",
+    "assetNone": "— none —",
+    "languageLabel": "LANGUAGE",
+    "countryLabel": "COUNTRY",
+    "countryNone": "— none —",
+    "save": "SAVE CHANGES",
+    "saved": "> profile updated.",
+    "errorUsernameTaken": "> error: username already taken.",
+    "style": {
+      "scalper": "SCALPER",
+      "intraday": "INTRADAY",
+      "swing": "SWING"
+    }
   }
 }

@@ -14,7 +14,8 @@
     "challenges": "SFIDE",
     "leaderboard": "CLASSIFICA",
     "dashboard": "DASHBOARD",
-    "admin": "ADMIN"
+    "admin": "ADMIN",
+    "settings": "SETTINGS"
   },
   "landing": {
     "tag": "// COMMUNITY TRADER VERIFICATA",
@@ -228,5 +229,24 @@
     "download": "SCARICA SVG",
     "copyLink": "COPIA LINK",
     "note": "// Sto partecipando / seguimi. Niente promesse di guadagno."
+  },
+  "settings": {
+    "title": "IMPOSTAZIONI",
+    "avatarNote": "// L'avatar viene generato dal tuo username.",
+    "usernameLabel": "> username_",
+    "styleLabel": "STILE DI TRADING",
+    "assetLabel": "ASSET PREFERITO",
+    "assetNone": "— nessuno —",
+    "languageLabel": "LINGUA",
+    "countryLabel": "PAESE",
+    "countryNone": "— nessuno —",
+    "save": "SALVA MODIFICHE",
+    "saved": "> profilo aggiornato.",
+    "errorUsernameTaken": "> errore: username già in uso.",
+    "style": {
+      "scalper": "SCALPER",
+      "intraday": "INTRADAY",
+      "swing": "SWING"
+    }
   }
 }

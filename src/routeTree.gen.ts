@@ -18,6 +18,7 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as UUsernameRouteImport } from './routes/u.$username'
 import { Route as LiveIdRouteImport } from './routes/live.$id'
+import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedChallengesRouteImport } from './routes/_authenticated/challenges'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
@@ -70,6 +71,11 @@ const LiveIdRoute = LiveIdRouteImport.update({
   id: '/live/$id',
   path: '/live/$id',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
@@ -126,6 +132,7 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AuthenticatedAdminRoute
   '/challenges': typeof AuthenticatedChallengesRouteWithChildren
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/settings': typeof AuthenticatedSettingsRoute
   '/live/$id': typeof LiveIdRoute
   '/u/$username': typeof UUsernameRoute
   '/challenges/$id': typeof AuthenticatedChallengesIdRoute
@@ -144,6 +151,7 @@ export interface FileRoutesByTo {
   '/admin': typeof AuthenticatedAdminRoute
   '/challenges': typeof AuthenticatedChallengesRouteWithChildren
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/settings': typeof AuthenticatedSettingsRoute
   '/live/$id': typeof LiveIdRoute
   '/u/$username': typeof UUsernameRoute
   '/challenges/$id': typeof AuthenticatedChallengesIdRoute
@@ -164,6 +172,7 @@ export interface FileRoutesById {
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/challenges': typeof AuthenticatedChallengesRouteWithChildren
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/live/$id': typeof LiveIdRoute
   '/u/$username': typeof UUsernameRoute
   '/_authenticated/challenges/$id': typeof AuthenticatedChallengesIdRoute
@@ -184,6 +193,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/challenges'
     | '/dashboard'
+    | '/settings'
     | '/live/$id'
     | '/u/$username'
     | '/challenges/$id'
@@ -202,6 +212,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/challenges'
     | '/dashboard'
+    | '/settings'
     | '/live/$id'
     | '/u/$username'
     | '/challenges/$id'
@@ -221,6 +232,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin'
     | '/_authenticated/challenges'
     | '/_authenticated/dashboard'
+    | '/_authenticated/settings'
     | '/live/$id'
     | '/u/$username'
     | '/_authenticated/challenges/$id'
@@ -308,6 +320,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LiveIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/settings': {
+      id: '/_authenticated/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof AuthenticatedSettingsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/dashboard': {
       id: '/_authenticated/dashboard'
       path: '/dashboard'
@@ -387,6 +406,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
   AuthenticatedChallengesRoute: typeof AuthenticatedChallengesRouteWithChildren
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
   AuthenticatedOnboardingAvatradeRoute: typeof AuthenticatedOnboardingAvatradeRoute
   AuthenticatedOnboardingVerifyRoute: typeof AuthenticatedOnboardingVerifyRoute
 }
@@ -395,6 +415,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdminRoute: AuthenticatedAdminRoute,
   AuthenticatedChallengesRoute: AuthenticatedChallengesRouteWithChildren,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
   AuthenticatedOnboardingAvatradeRoute: AuthenticatedOnboardingAvatradeRoute,
   AuthenticatedOnboardingVerifyRoute: AuthenticatedOnboardingVerifyRoute,
 }

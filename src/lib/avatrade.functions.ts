@@ -43,7 +43,7 @@ export const getMyVerification = createServerFn({ method: "GET" })
     return { verification: data };
   });
 
-// Profilo + ruolo dell'utente loggato (per la dashboard).
+// Profilo + ruolo dell'utente loggato (per la dashboard e settings).
 export const getMyProfile = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
@@ -51,7 +51,7 @@ export const getMyProfile = createServerFn({ method: "GET" })
     const [{ data: profile }, { data: roles }, { data: verif }] = await Promise.all([
       supabase
         .from("profiles")
-        .select("id, username, avatar_seed, points_balance")
+        .select("id, username, avatar_seed, points_balance, country, language, style, primary_asset")
         .eq("id", userId)
         .maybeSingle(),
       supabase.from("user_roles").select("role").eq("user_id", userId),
@@ -62,6 +62,44 @@ export const getMyProfile = createServerFn({ method: "GET" })
       isAdmin: (roles ?? []).some((r) => r.role === "admin"),
       isAffiliated: verif?.status === "verified",
     };
+  });
+
+const profileUpdateSchema = z.object({
+  username: z
+    .string()
+    .min(3)
+    .max(20)
+    .regex(/^[a-zA-Z0-9_]+$/)
+    .optional(),
+  style: z.enum(["scalper", "intraday", "swing"]).nullable().optional(),
+  primary_asset: z.string().nullable().optional(),
+  country: z.string().length(2).toUpperCase().nullable().optional(),
+  language: z.enum(["it", "en"]).nullable().optional(),
+});
+
+export const updateMyProfile = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) => profileUpdateSchema.parse(input))
+  .handler(async ({ data, context }) => {
+    const { supabase, userId } = context;
+    if (data.username) {
+      const { data: existing } = await supabase
+        .from("profiles")
+        .select("id")
+        .ilike("username", data.username)
+        .neq("id", userId)
+        .maybeSingle();
+      if (existing) throw new Error("username_taken");
+    }
+    const patch: Record<string, unknown> = {};
+    if (data.username !== undefined) patch.username = data.username;
+    if (data.style !== undefined) patch.style = data.style;
+    if (data.primary_asset !== undefined) patch.primary_asset = data.primary_asset;
+    if (data.country !== undefined) patch.country = data.country;
+    if (data.language !== undefined) patch.language = data.language;
+    const { error } = await supabase.from("profiles").update(patch).eq("id", userId);
+    if (error) throw new Error(error.message);
+    return { ok: true };
   });
 
 // === ADMIN ===
