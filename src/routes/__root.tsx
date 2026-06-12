@@ -11,7 +11,6 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
-import "../lib/i18n";
 import { supabase } from "@/integrations/supabase/client";
 import { MarketRain } from "@/components/htt/MarketRain";
 
