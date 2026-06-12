@@ -107,11 +107,23 @@ function Dashboard() {
 
         <TerminalCard label="> MODULES" className="p-5">
           <p className="font-mono text-xs text-[var(--text-dim)]">{t("dashboard.comingSoon")}</p>
-          {profileData?.isAdmin && (
+          {profileData?.isAdmin ? (
             <Link to="/admin" className="mt-4 inline-block">
               <TerminalButton variant="ghost" size="sm">{t("nav.admin")}</TerminalButton>
             </Link>
-          )}
+          ) : adminAvail?.available ? (
+            <div className="mt-4 border border-[var(--amber)] p-4">
+              <div className="font-mono text-[10px] uppercase tracking-widest text-[var(--amber)]">
+                // ADMIN_BOOTSTRAP
+              </div>
+              <p className="font-mono text-xs text-[var(--text-dim)] mt-1">
+                {t("dashboard.claimAdmin.desc")}
+              </p>
+              <TerminalButton variant="amber" size="sm" className="mt-3" onClick={onClaimAdmin}>
+                {t("dashboard.claimAdmin.cta")}
+              </TerminalButton>
+            </div>
+          ) : null}
         </TerminalCard>
       </main>
     </div>
