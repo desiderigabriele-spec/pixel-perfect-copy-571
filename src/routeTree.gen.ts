@@ -22,6 +22,7 @@ import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/
 import { Route as AuthenticatedOnboardingVerifyRouteImport } from './routes/_authenticated/onboarding.verify'
 import { Route as AuthenticatedOnboardingAvatradeRouteImport } from './routes/_authenticated/onboarding.avatrade'
 import { Route as AuthenticatedChallengesNewRouteImport } from './routes/_authenticated/challenges.new'
+import { Route as AuthenticatedChallengesIdRouteImport } from './routes/_authenticated/challenges.$id'
 
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
   id: '/reset-password',
@@ -90,6 +91,12 @@ const AuthenticatedChallengesNewRoute =
     path: '/new',
     getParentRoute: () => AuthenticatedChallengesRoute,
   } as any)
+const AuthenticatedChallengesIdRoute =
+  AuthenticatedChallengesIdRouteImport.update({
+    id: '/$id',
+    path: '/$id',
+    getParentRoute: () => AuthenticatedChallengesRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -101,6 +108,7 @@ export interface FileRoutesByFullPath {
   '/challenges': typeof AuthenticatedChallengesRouteWithChildren
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/u/$username': typeof UUsernameRoute
+  '/challenges/$id': typeof AuthenticatedChallengesIdRoute
   '/challenges/new': typeof AuthenticatedChallengesNewRoute
   '/onboarding/avatrade': typeof AuthenticatedOnboardingAvatradeRoute
   '/onboarding/verify': typeof AuthenticatedOnboardingVerifyRoute
@@ -115,6 +123,7 @@ export interface FileRoutesByTo {
   '/challenges': typeof AuthenticatedChallengesRouteWithChildren
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/u/$username': typeof UUsernameRoute
+  '/challenges/$id': typeof AuthenticatedChallengesIdRoute
   '/challenges/new': typeof AuthenticatedChallengesNewRoute
   '/onboarding/avatrade': typeof AuthenticatedOnboardingAvatradeRoute
   '/onboarding/verify': typeof AuthenticatedOnboardingVerifyRoute
@@ -131,6 +140,7 @@ export interface FileRoutesById {
   '/_authenticated/challenges': typeof AuthenticatedChallengesRouteWithChildren
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/u/$username': typeof UUsernameRoute
+  '/_authenticated/challenges/$id': typeof AuthenticatedChallengesIdRoute
   '/_authenticated/challenges/new': typeof AuthenticatedChallengesNewRoute
   '/_authenticated/onboarding/avatrade': typeof AuthenticatedOnboardingAvatradeRoute
   '/_authenticated/onboarding/verify': typeof AuthenticatedOnboardingVerifyRoute
@@ -147,6 +157,7 @@ export interface FileRouteTypes {
     | '/challenges'
     | '/dashboard'
     | '/u/$username'
+    | '/challenges/$id'
     | '/challenges/new'
     | '/onboarding/avatrade'
     | '/onboarding/verify'
@@ -161,6 +172,7 @@ export interface FileRouteTypes {
     | '/challenges'
     | '/dashboard'
     | '/u/$username'
+    | '/challenges/$id'
     | '/challenges/new'
     | '/onboarding/avatrade'
     | '/onboarding/verify'
@@ -176,6 +188,7 @@ export interface FileRouteTypes {
     | '/_authenticated/challenges'
     | '/_authenticated/dashboard'
     | '/u/$username'
+    | '/_authenticated/challenges/$id'
     | '/_authenticated/challenges/new'
     | '/_authenticated/onboarding/avatrade'
     | '/_authenticated/onboarding/verify'
@@ -284,15 +297,24 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedChallengesNewRouteImport
       parentRoute: typeof AuthenticatedChallengesRoute
     }
+    '/_authenticated/challenges/$id': {
+      id: '/_authenticated/challenges/$id'
+      path: '/$id'
+      fullPath: '/challenges/$id'
+      preLoaderRoute: typeof AuthenticatedChallengesIdRouteImport
+      parentRoute: typeof AuthenticatedChallengesRoute
+    }
   }
 }
 
 interface AuthenticatedChallengesRouteChildren {
+  AuthenticatedChallengesIdRoute: typeof AuthenticatedChallengesIdRoute
   AuthenticatedChallengesNewRoute: typeof AuthenticatedChallengesNewRoute
 }
 
 const AuthenticatedChallengesRouteChildren: AuthenticatedChallengesRouteChildren =
   {
+    AuthenticatedChallengesIdRoute: AuthenticatedChallengesIdRoute,
     AuthenticatedChallengesNewRoute: AuthenticatedChallengesNewRoute,
   }
 
