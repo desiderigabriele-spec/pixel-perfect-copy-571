@@ -89,3 +89,29 @@ export const getLeaderboard = createServerFn({ method: "GET" })
       .slice(0, 20);
     return { items };
   });
+
+// Sfida live più recente (se esiste). Usata da /live-demo per mostrare un match reale.
+export const getCurrentLiveMatch = createServerFn({ method: "GET" })
+  .handler(async () => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: c } = await supabaseAdmin
+      .from("challenges")
+      .select("id, symbol, duration_minutes, creator_id, opponent_id, creator_side, opponent_side, starts_at, ends_at, stake_type, stake_amount, visibility")
+      .eq("status", "live")
+      .eq("visibility", "public")
+      .order("starts_at", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+    if (!c) return { match: null };
+    const ids = [c.creator_id, c.opponent_id].filter(Boolean) as string[];
+    const { data: profs } = await supabaseAdmin
+      .from("profiles").select("id, username, avatar_seed").in("id", ids);
+    const byId = new Map((profs ?? []).map((p: any) => [p.id, p]));
+    return {
+      match: {
+        ...c,
+        creator: byId.get(c.creator_id) ?? null,
+        opponent: c.opponent_id ? byId.get(c.opponent_id) ?? null : null,
+      },
+    };
+  });
