@@ -13,9 +13,8 @@ if (!i18n.isInitialized) {
       fallbackLng: "it",
       supportedLngs: ["it", "en"],
       interpolation: { escapeValue: false },
-      initImmediate: false,
       react: { useSuspense: false },
-    });
+    } as never);
 }
 
 // Hard reset alla lingua di default per garantire che SSR e prima resa client coincidano.
