@@ -106,6 +106,22 @@ function Dashboard() {
         )}
 
         <TerminalCard label="> MODULES" className="p-5">
+          <div className="grid sm:grid-cols-2 gap-3 mb-4">
+            <Link to="/challenges">
+              <TerminalCard className="p-4 hover:border-[var(--terminal)] transition-colors cursor-pointer">
+                <div className="font-mono text-[10px] uppercase tracking-widest text-[var(--terminal)]">// ARENA</div>
+                <div className="font-display text-xl mt-1">{t("challenges.title")}</div>
+                <div className="font-mono text-xs text-[var(--text-dim)] mt-1">{t("dashboard.challengesDesc")}</div>
+              </TerminalCard>
+            </Link>
+            <Link to="/live-demo">
+              <TerminalCard className="p-4 hover:border-[var(--amber)] transition-colors cursor-pointer">
+                <div className="font-mono text-[10px] uppercase tracking-widest text-[var(--amber)]">// SHOWCASE</div>
+                <div className="font-display text-xl mt-1">{t("nav.live")}</div>
+                <div className="font-mono text-xs text-[var(--text-dim)] mt-1">{t("dashboard.liveDesc")}</div>
+              </TerminalCard>
+            </Link>
+          </div>
           <p className="font-mono text-xs text-[var(--text-dim)]">{t("dashboard.comingSoon")}</p>
           {profileData?.isAdmin ? (
             <Link to="/admin" className="mt-4 inline-block">

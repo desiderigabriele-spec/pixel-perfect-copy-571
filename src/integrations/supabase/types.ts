@@ -47,23 +47,86 @@ export type Database = {
         }
         Relationships: []
       }
+      challenges: {
+        Row: {
+          created_at: string
+          creator_id: string
+          creator_pips: number | null
+          duration_minutes: number
+          ends_at: string | null
+          id: string
+          invite_code: string | null
+          opponent_id: string | null
+          opponent_pips: number | null
+          stake_amount: number
+          stake_type: Database["public"]["Enums"]["stake_type"]
+          starts_at: string | null
+          status: Database["public"]["Enums"]["challenge_status"]
+          symbol: string
+          updated_at: string
+          visibility: Database["public"]["Enums"]["challenge_visibility"]
+          winner_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          creator_id: string
+          creator_pips?: number | null
+          duration_minutes: number
+          ends_at?: string | null
+          id?: string
+          invite_code?: string | null
+          opponent_id?: string | null
+          opponent_pips?: number | null
+          stake_amount?: number
+          stake_type?: Database["public"]["Enums"]["stake_type"]
+          starts_at?: string | null
+          status?: Database["public"]["Enums"]["challenge_status"]
+          symbol: string
+          updated_at?: string
+          visibility?: Database["public"]["Enums"]["challenge_visibility"]
+          winner_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          creator_id?: string
+          creator_pips?: number | null
+          duration_minutes?: number
+          ends_at?: string | null
+          id?: string
+          invite_code?: string | null
+          opponent_id?: string | null
+          opponent_pips?: number | null
+          stake_amount?: number
+          stake_type?: Database["public"]["Enums"]["stake_type"]
+          starts_at?: string | null
+          status?: Database["public"]["Enums"]["challenge_status"]
+          symbol?: string
+          updated_at?: string
+          visibility?: Database["public"]["Enums"]["challenge_visibility"]
+          winner_id?: string | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_seed: string
           created_at: string
           id: string
+          points_balance: number
           username: string
         }
         Insert: {
           avatar_seed?: string
           created_at?: string
           id: string
+          points_balance?: number
           username: string
         }
         Update: {
           avatar_seed?: string
           created_at?: string
           id?: string
+          points_balance?: number
           username?: string
         }
         Relationships: []
@@ -104,6 +167,9 @@ export type Database = {
     }
     Enums: {
       app_role: "admin" | "user"
+      challenge_status: "waiting" | "live" | "settled" | "cancelled"
+      challenge_visibility: "public" | "private"
+      stake_type: "points" | "honor"
       verification_status: "pending" | "verified" | "rejected"
     }
     CompositeTypes: {
@@ -233,6 +299,9 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "user"],
+      challenge_status: ["waiting", "live", "settled", "cancelled"],
+      challenge_visibility: ["public", "private"],
+      stake_type: ["points", "honor"],
       verification_status: ["pending", "verified", "rejected"],
     },
   },
