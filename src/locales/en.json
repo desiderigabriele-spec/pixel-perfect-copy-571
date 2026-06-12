@@ -15,7 +15,8 @@
     "leaderboard": "LEADERBOARD",
     "dashboard": "DASHBOARD",
     "admin": "ADMIN",
-    "settings": "SETTINGS"
+    "settings": "SETTINGS",
+    "tournaments": "TOURNAMENTS"
   },
   "landing": {
     "tag": "// VERIFIED TRADER COMMUNITY",
@@ -100,6 +101,7 @@
     "pendingBadge": "VERIFICATION PENDING",
     "comingSoon": "// Challenges, leaderboard and signals modules are coming in the next cycles.",
     "challengesDesc": "Create or accept a 1v1 challenge.",
+    "tournamentsDesc": "Join or create a single elimination tournament.",
     "liveDesc": "Watch the ongoing live match.",
     "claimAdmin": {
       "desc": "You are the first registered user. Claim the admin role to access the verification panel.",
@@ -229,6 +231,27 @@
     "download": "DOWNLOAD SVG",
     "copyLink": "COPY LINK",
     "note": "// I'm participating / follow me. No profit promises."
+  },
+  "tournaments": {
+    "title": "TOURNAMENTS",
+    "subtitle": "// Single elimination. 4/8/16 traders. Live bracket.",
+    "create": "NEW TOURNAMENT",
+    "createTitle": "CREATE TOURNAMENT",
+    "titleLabel": "> tournament name_",
+    "prizeNoteLabel": "> prize/notes (optional)_",
+    "maxPlayers": "MAXIMUM PLAYERS",
+    "createSubmit": "CREATE TOURNAMENT",
+    "empty": "> no open tournaments. Create the first one.",
+    "join": "REGISTER",
+    "leave": "WITHDRAW",
+    "start": "START TOURNAMENT",
+    "noEntries": "> no registrations yet.",
+    "status": {
+      "registration": "OPEN FOR REGISTRATION",
+      "in_progress": "IN PROGRESS",
+      "completed": "COMPLETED",
+      "cancelled": "CANCELLED"
+    }
   },
   "settings": {
     "title": "SETTINGS",

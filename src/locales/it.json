@@ -15,7 +15,8 @@
     "leaderboard": "CLASSIFICA",
     "dashboard": "DASHBOARD",
     "admin": "ADMIN",
-    "settings": "SETTINGS"
+    "settings": "SETTINGS",
+    "tournaments": "TORNEI"
   },
   "landing": {
     "tag": "// COMMUNITY TRADER VERIFICATA",
@@ -100,6 +101,7 @@
     "pendingBadge": "VERIFICA PENDING",
     "comingSoon": "// I moduli sfide, classifica e segnali arrivano nei prossimi cicli.",
     "challengesDesc": "Crea o accetta una sfida 1v1.",
+    "tournamentsDesc": "Iscriviti o crea un torneo single elimination.",
     "liveDesc": "Guarda la sfida in corso.",
     "claimAdmin": {
       "desc": "Sei il primo utente registrato. Rivendica il ruolo admin per accedere al pannello verifiche.",
@@ -229,6 +231,27 @@
     "download": "SCARICA SVG",
     "copyLink": "COPIA LINK",
     "note": "// Sto partecipando / seguimi. Niente promesse di guadagno."
+  },
+  "tournaments": {
+    "title": "TORNEI",
+    "subtitle": "// Single elimination. 4/8/16 trader. Bracket live.",
+    "create": "NUOVO TORNEO",
+    "createTitle": "CREA TORNEO",
+    "titleLabel": "> nome torneo_",
+    "prizeNoteLabel": "> premio/note (opzionale)_",
+    "maxPlayers": "NUMERO MASSIMO DI GIOCATORI",
+    "createSubmit": "CREA TORNEO",
+    "empty": "> nessun torneo aperto. Crea il primo.",
+    "join": "ISCRIVITI",
+    "leave": "RITIRATI",
+    "start": "AVVIA TORNEO",
+    "noEntries": "> nessun iscritto.",
+    "status": {
+      "registration": "ISCRIZIONI APERTE",
+      "in_progress": "IN CORSO",
+      "completed": "CONCLUSO",
+      "cancelled": "ANNULLATO"
+    }
   },
   "settings": {
     "title": "IMPOSTAZIONI",

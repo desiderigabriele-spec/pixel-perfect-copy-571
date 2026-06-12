@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TournamentsRouteImport } from './routes/tournaments'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as LiveDemoRouteImport } from './routes/live-demo'
 import { Route as LeaderboardRouteImport } from './routes/leaderboard'
@@ -17,17 +18,24 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as UUsernameRouteImport } from './routes/u.$username'
+import { Route as TournamentsIdRouteImport } from './routes/tournaments.$id'
 import { Route as LiveIdRouteImport } from './routes/live.$id'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedChallengesRouteImport } from './routes/_authenticated/challenges'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
+import { Route as AuthenticatedTournamentsNewRouteImport } from './routes/_authenticated/tournaments.new'
 import { Route as AuthenticatedOnboardingVerifyRouteImport } from './routes/_authenticated/onboarding.verify'
 import { Route as AuthenticatedOnboardingAvatradeRouteImport } from './routes/_authenticated/onboarding.avatrade'
 import { Route as AuthenticatedChallengesNewRouteImport } from './routes/_authenticated/challenges.new'
 import { Route as AuthenticatedChallengesIdRouteImport } from './routes/_authenticated/challenges.$id'
 import { Route as ApiPublicCardUsernameRouteImport } from './routes/api/public/card.$username'
 
+const TournamentsRoute = TournamentsRouteImport.update({
+  id: '/tournaments',
+  path: '/tournaments',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
   id: '/reset-password',
   path: '/reset-password',
@@ -67,6 +75,11 @@ const UUsernameRoute = UUsernameRouteImport.update({
   path: '/u/$username',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TournamentsIdRoute = TournamentsIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => TournamentsRoute,
+} as any)
 const LiveIdRoute = LiveIdRouteImport.update({
   id: '/live/$id',
   path: '/live/$id',
@@ -92,6 +105,12 @@ const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedTournamentsNewRoute =
+  AuthenticatedTournamentsNewRouteImport.update({
+    id: '/tournaments/new',
+    path: '/tournaments/new',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedOnboardingVerifyRoute =
   AuthenticatedOnboardingVerifyRouteImport.update({
     id: '/onboarding/verify',
@@ -129,16 +148,19 @@ export interface FileRoutesByFullPath {
   '/leaderboard': typeof LeaderboardRoute
   '/live-demo': typeof LiveDemoRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/tournaments': typeof TournamentsRouteWithChildren
   '/admin': typeof AuthenticatedAdminRoute
   '/challenges': typeof AuthenticatedChallengesRouteWithChildren
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/live/$id': typeof LiveIdRoute
+  '/tournaments/$id': typeof TournamentsIdRoute
   '/u/$username': typeof UUsernameRoute
   '/challenges/$id': typeof AuthenticatedChallengesIdRoute
   '/challenges/new': typeof AuthenticatedChallengesNewRoute
   '/onboarding/avatrade': typeof AuthenticatedOnboardingAvatradeRoute
   '/onboarding/verify': typeof AuthenticatedOnboardingVerifyRoute
+  '/tournaments/new': typeof AuthenticatedTournamentsNewRoute
   '/api/public/card/$username': typeof ApiPublicCardUsernameRoute
 }
 export interface FileRoutesByTo {
@@ -148,16 +170,19 @@ export interface FileRoutesByTo {
   '/leaderboard': typeof LeaderboardRoute
   '/live-demo': typeof LiveDemoRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/tournaments': typeof TournamentsRouteWithChildren
   '/admin': typeof AuthenticatedAdminRoute
   '/challenges': typeof AuthenticatedChallengesRouteWithChildren
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/live/$id': typeof LiveIdRoute
+  '/tournaments/$id': typeof TournamentsIdRoute
   '/u/$username': typeof UUsernameRoute
   '/challenges/$id': typeof AuthenticatedChallengesIdRoute
   '/challenges/new': typeof AuthenticatedChallengesNewRoute
   '/onboarding/avatrade': typeof AuthenticatedOnboardingAvatradeRoute
   '/onboarding/verify': typeof AuthenticatedOnboardingVerifyRoute
+  '/tournaments/new': typeof AuthenticatedTournamentsNewRoute
   '/api/public/card/$username': typeof ApiPublicCardUsernameRoute
 }
 export interface FileRoutesById {
@@ -169,16 +194,19 @@ export interface FileRoutesById {
   '/leaderboard': typeof LeaderboardRoute
   '/live-demo': typeof LiveDemoRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/tournaments': typeof TournamentsRouteWithChildren
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/challenges': typeof AuthenticatedChallengesRouteWithChildren
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/live/$id': typeof LiveIdRoute
+  '/tournaments/$id': typeof TournamentsIdRoute
   '/u/$username': typeof UUsernameRoute
   '/_authenticated/challenges/$id': typeof AuthenticatedChallengesIdRoute
   '/_authenticated/challenges/new': typeof AuthenticatedChallengesNewRoute
   '/_authenticated/onboarding/avatrade': typeof AuthenticatedOnboardingAvatradeRoute
   '/_authenticated/onboarding/verify': typeof AuthenticatedOnboardingVerifyRoute
+  '/_authenticated/tournaments/new': typeof AuthenticatedTournamentsNewRoute
   '/api/public/card/$username': typeof ApiPublicCardUsernameRoute
 }
 export interface FileRouteTypes {
@@ -190,16 +218,19 @@ export interface FileRouteTypes {
     | '/leaderboard'
     | '/live-demo'
     | '/reset-password'
+    | '/tournaments'
     | '/admin'
     | '/challenges'
     | '/dashboard'
     | '/settings'
     | '/live/$id'
+    | '/tournaments/$id'
     | '/u/$username'
     | '/challenges/$id'
     | '/challenges/new'
     | '/onboarding/avatrade'
     | '/onboarding/verify'
+    | '/tournaments/new'
     | '/api/public/card/$username'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -209,16 +240,19 @@ export interface FileRouteTypes {
     | '/leaderboard'
     | '/live-demo'
     | '/reset-password'
+    | '/tournaments'
     | '/admin'
     | '/challenges'
     | '/dashboard'
     | '/settings'
     | '/live/$id'
+    | '/tournaments/$id'
     | '/u/$username'
     | '/challenges/$id'
     | '/challenges/new'
     | '/onboarding/avatrade'
     | '/onboarding/verify'
+    | '/tournaments/new'
     | '/api/public/card/$username'
   id:
     | '__root__'
@@ -229,16 +263,19 @@ export interface FileRouteTypes {
     | '/leaderboard'
     | '/live-demo'
     | '/reset-password'
+    | '/tournaments'
     | '/_authenticated/admin'
     | '/_authenticated/challenges'
     | '/_authenticated/dashboard'
     | '/_authenticated/settings'
     | '/live/$id'
+    | '/tournaments/$id'
     | '/u/$username'
     | '/_authenticated/challenges/$id'
     | '/_authenticated/challenges/new'
     | '/_authenticated/onboarding/avatrade'
     | '/_authenticated/onboarding/verify'
+    | '/_authenticated/tournaments/new'
     | '/api/public/card/$username'
   fileRoutesById: FileRoutesById
 }
@@ -250,6 +287,7 @@ export interface RootRouteChildren {
   LeaderboardRoute: typeof LeaderboardRoute
   LiveDemoRoute: typeof LiveDemoRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
+  TournamentsRoute: typeof TournamentsRouteWithChildren
   LiveIdRoute: typeof LiveIdRoute
   UUsernameRoute: typeof UUsernameRoute
   ApiPublicCardUsernameRoute: typeof ApiPublicCardUsernameRoute
@@ -257,6 +295,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/tournaments': {
+      id: '/tournaments'
+      path: '/tournaments'
+      fullPath: '/tournaments'
+      preLoaderRoute: typeof TournamentsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/reset-password': {
       id: '/reset-password'
       path: '/reset-password'
@@ -313,6 +358,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof UUsernameRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/tournaments/$id': {
+      id: '/tournaments/$id'
+      path: '/$id'
+      fullPath: '/tournaments/$id'
+      preLoaderRoute: typeof TournamentsIdRouteImport
+      parentRoute: typeof TournamentsRoute
+    }
     '/live/$id': {
       id: '/live/$id'
       path: '/live/$id'
@@ -346,6 +398,13 @@ declare module '@tanstack/react-router' {
       path: '/admin'
       fullPath: '/admin'
       preLoaderRoute: typeof AuthenticatedAdminRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/tournaments/new': {
+      id: '/_authenticated/tournaments/new'
+      path: '/tournaments/new'
+      fullPath: '/tournaments/new'
+      preLoaderRoute: typeof AuthenticatedTournamentsNewRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/onboarding/verify': {
@@ -409,6 +468,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
   AuthenticatedOnboardingAvatradeRoute: typeof AuthenticatedOnboardingAvatradeRoute
   AuthenticatedOnboardingVerifyRoute: typeof AuthenticatedOnboardingVerifyRoute
+  AuthenticatedTournamentsNewRoute: typeof AuthenticatedTournamentsNewRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
@@ -418,10 +478,23 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
   AuthenticatedOnboardingAvatradeRoute: AuthenticatedOnboardingAvatradeRoute,
   AuthenticatedOnboardingVerifyRoute: AuthenticatedOnboardingVerifyRoute,
+  AuthenticatedTournamentsNewRoute: AuthenticatedTournamentsNewRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
   AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
+interface TournamentsRouteChildren {
+  TournamentsIdRoute: typeof TournamentsIdRoute
+}
+
+const TournamentsRouteChildren: TournamentsRouteChildren = {
+  TournamentsIdRoute: TournamentsIdRoute,
+}
+
+const TournamentsRouteWithChildren = TournamentsRoute._addFileChildren(
+  TournamentsRouteChildren,
+)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
@@ -431,6 +504,7 @@ const rootRouteChildren: RootRouteChildren = {
   LeaderboardRoute: LeaderboardRoute,
   LiveDemoRoute: LiveDemoRoute,
   ResetPasswordRoute: ResetPasswordRoute,
+  TournamentsRoute: TournamentsRouteWithChildren,
   LiveIdRoute: LiveIdRoute,
   UUsernameRoute: UUsernameRoute,
   ApiPublicCardUsernameRoute: ApiPublicCardUsernameRoute,

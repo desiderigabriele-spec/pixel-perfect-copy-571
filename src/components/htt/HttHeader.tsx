@@ -33,6 +33,9 @@ export function HttHeader() {
           <Link to="/leaderboard" className={navLinkClass}>
             {t("nav.leaderboard")}
           </Link>
+          <Link to="/tournaments" className={navLinkClass}>
+            {t("nav.tournaments")}
+          </Link>
           {isLoggedIn ? (
             <>
               <Link to="/dashboard" className={navLinkClass}>

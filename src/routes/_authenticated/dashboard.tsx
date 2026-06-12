@@ -110,7 +110,7 @@ function Dashboard() {
         )}
 
         <TerminalCard label="> MODULES" className="p-5">
-          <div className="grid sm:grid-cols-2 gap-3 mb-4">
+          <div className="grid sm:grid-cols-3 gap-3 mb-4">
             <Link to="/challenges">
               <TerminalCard className="p-4 hover:border-[var(--terminal)] transition-colors cursor-pointer">
                 <div className="font-mono text-[10px] uppercase tracking-widest text-[var(--terminal)]">
@@ -119,6 +119,17 @@ function Dashboard() {
                 <div className="font-display text-xl mt-1">{t("challenges.title")}</div>
                 <div className="font-mono text-xs text-[var(--text-dim)] mt-1">
                   {t("dashboard.challengesDesc")}
+                </div>
+              </TerminalCard>
+            </Link>
+            <Link to="/tournaments">
+              <TerminalCard className="p-4 hover:border-[var(--terminal)] transition-colors cursor-pointer">
+                <div className="font-mono text-[10px] uppercase tracking-widest text-[var(--terminal)]">
+                  // BRACKET
+                </div>
+                <div className="font-display text-xl mt-1">{t("tournaments.title")}</div>
+                <div className="font-mono text-xs text-[var(--text-dim)] mt-1">
+                  {t("dashboard.tournamentsDesc")}
                 </div>
               </TerminalCard>
             </Link>
