@@ -125,6 +125,15 @@
     "submittedAt": "Submitted on",
     "accountId": "Account ID"
   },
+  "leaderboard": {
+    "title": "TOP TRADERS",
+    "subtitle": "// Ranked by total pips across settled challenges.",
+    "empty": "> no settled challenges yet. Be the first.",
+    "trader": "TRADER",
+    "pips": "PIPS",
+    "wl": "W/L",
+    "streak": "STREAK"
+  },
   "challenges": {
     "title": "CHALLENGES",
     "create": "NEW CHALLENGE",

@@ -125,6 +125,15 @@
     "submittedAt": "Inviata il",
     "accountId": "ID conto"
   },
+  "leaderboard": {
+    "title": "TOP TRADER",
+    "subtitle": "// Classifica per pips totali nelle sfide concluse.",
+    "empty": "> nessuna sfida ancora conclusa. Sii il primo.",
+    "trader": "TRADER",
+    "pips": "PIPS",
+    "wl": "W/L",
+    "streak": "STREAK"
+  },
   "challenges": {
     "title": "SFIDE",
     "create": "NUOVA SFIDA",
