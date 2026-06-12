@@ -32,7 +32,7 @@ const loginSchema = z.object({
 function AuthPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const [mode, setMode] = useState<"signup" | "login">("signup");
+  const [mode, setMode] = useState<"signup" | "login" | "forgot">("signup");
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -53,7 +53,15 @@ function AuthPage() {
     setInfo(null);
     setLoading(true);
     try {
-      if (mode === "signup") {
+      if (mode === "forgot") {
+        const parsed = z.string().email().safeParse(email);
+        if (!parsed.success) throw new Error(t("auth.errorEmail"));
+        const { error } = await supabase.auth.resetPasswordForEmail(parsed.data, {
+          redirectTo: `${window.location.origin}/reset-password`,
+        });
+        if (error) throw error;
+        setInfo(t("auth.resetSent"));
+      } else if (mode === "signup") {
         const parsed = signupSchema.safeParse({ email, username, password });
         if (!parsed.success) {
           const flat = parsed.error.flatten().fieldErrors;
@@ -108,7 +116,11 @@ function AuthPage() {
       <main className="mx-auto flex max-w-md flex-col px-4 py-10 sm:py-16">
         <TerminalCard label="> SECURE_TERMINAL" glow="green" className="p-6 sm:p-8">
           <h1 className="font-display text-3xl tracking-[0.1em] text-[var(--terminal)] htt-text-glow-green">
-            {mode === "signup" ? t("auth.titleSignup") : t("auth.titleLogin")}
+            {mode === "signup"
+              ? t("auth.titleSignup")
+              : mode === "forgot"
+                ? t("auth.resetTitle")
+                : t("auth.titleLogin")}
           </h1>
 
           <form onSubmit={handleSubmit} className="mt-6 space-y-4">
@@ -132,43 +144,69 @@ function AuthPage() {
                 required
               />
             )}
-            <TerminalInput
-              type="password"
-              name="password"
-              label={t("auth.passwordLabel")}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              autoComplete={mode === "signup" ? "new-password" : "current-password"}
-              required
-            />
+            {mode !== "forgot" && (
+              <TerminalInput
+                type="password"
+                name="password"
+                label={t("auth.passwordLabel")}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                autoComplete={mode === "signup" ? "new-password" : "current-password"}
+                required
+              />
+            )}
 
             {error && <div className="font-mono text-xs text-[var(--alert)]">{error}</div>}
             {info && <div className="font-mono text-xs text-[var(--terminal)]">{info}</div>}
 
             <TerminalButton type="submit" variant="primary" size="lg" disabled={loading} className="w-full">
-              {mode === "signup" ? t("auth.submitSignup") : t("auth.submitLogin")}
+              {mode === "signup"
+                ? t("auth.submitSignup")
+                : mode === "forgot"
+                  ? t("auth.submitReset")
+                  : t("auth.submitLogin")}
             </TerminalButton>
           </form>
 
-          <div className="my-5 flex items-center gap-3 font-mono text-[10px] text-[var(--text-dim)]">
-            <div className="h-px flex-1 bg-border" />
-            //
-            <div className="h-px flex-1 bg-border" />
-          </div>
+          {mode !== "forgot" && (
+            <>
+              <div className="my-5 flex items-center gap-3 font-mono text-[10px] text-[var(--text-dim)]">
+                <div className="h-px flex-1 bg-border" />
+                //
+                <div className="h-px flex-1 bg-border" />
+              </div>
+              <TerminalButton variant="ghost" size="lg" onClick={googleSignIn} className="w-full">
+                {t("auth.google")}
+              </TerminalButton>
+            </>
+          )}
 
-          <TerminalButton variant="ghost" size="lg" onClick={googleSignIn} className="w-full">
-            {t("auth.google")}
-          </TerminalButton>
+          {mode === "login" && (
+            <button
+              onClick={() => {
+                setMode("forgot");
+                setError(null);
+                setInfo(null);
+              }}
+              className="mt-4 block w-full text-center font-mono text-[10px] uppercase tracking-widest text-[var(--text-dim)] hover:text-[var(--amber)] transition-colors"
+            >
+              {t("auth.forgot")}
+            </button>
+          )}
 
           <button
             onClick={() => {
-              setMode(mode === "signup" ? "login" : "signup");
+              setMode(mode === "signup" ? "login" : mode === "login" ? "signup" : "login");
               setError(null);
               setInfo(null);
             }}
             className="mt-6 block w-full text-center font-mono text-xs text-[var(--text-dim)] hover:text-[var(--terminal)] transition-colors"
           >
-            {mode === "signup" ? t("auth.toggleToLogin") : t("auth.toggleToSignup")}
+            {mode === "signup"
+              ? t("auth.toggleToLogin")
+              : mode === "forgot"
+                ? t("auth.backToLogin")
+                : t("auth.toggleToSignup")}
           </button>
         </TerminalCard>
       </main>
