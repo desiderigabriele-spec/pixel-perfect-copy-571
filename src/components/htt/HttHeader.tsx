@@ -18,6 +18,12 @@ export function HttHeader() {
           >
             {t("nav.live")}
           </Link>
+          <Link
+            to="/challenges"
+            className="hidden sm:inline-block font-mono text-xs uppercase tracking-widest text-[var(--text-dim)] hover:text-[var(--terminal)] transition-colors"
+          >
+            {t("nav.challenges")}
+          </Link>
           <LangSwitcher />
         </nav>
       </div>
