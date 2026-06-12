@@ -5,7 +5,7 @@ import { useEffect, useRef } from "react";
 // token = ticker / percentuali / numeri / frecce, teste bianche con glow,
 // scia con fade-out verso il nero. Rispetta prefers-reduced-motion.
 
-type Props = { opacity?: number; className?: string };
+type Props = { opacity?: number; className?: string; topOffset?: number };
 
 const TICKERS = [
   "BTC", "ETH", "SOL", "TSLA", "AAPL", "NVDA", "SPY", "EUR",
@@ -40,7 +40,7 @@ type Column = {
   stepCounter: number;
 };
 
-export function MarketRain({ opacity = 0.55, className = "" }: Props) {
+export function MarketRain({ opacity = 0.22, className = "", topOffset = 64 }: Props) {
   const ref = useRef<HTMLCanvasElement | null>(null);
 
   useEffect(() => {
@@ -72,7 +72,7 @@ export function MarketRain({ opacity = 0.55, className = "" }: Props) {
 
     function resize() {
       w = window.innerWidth;
-      h = window.innerHeight;
+      h = window.innerHeight - topOffset;
       canvas!.width = Math.floor(w * dpr);
       canvas!.height = Math.floor(h * dpr);
       canvas!.style.width = `${w}px`;
@@ -156,8 +156,14 @@ export function MarketRain({ opacity = 0.55, className = "" }: Props) {
     <canvas
       ref={ref}
       aria-hidden
-      className={`pointer-events-none fixed inset-0 ${className}`}
-      style={{ opacity, zIndex: 9999, mixBlendMode: "screen", background: "transparent" }}
+      className={`pointer-events-none fixed left-0 right-0 bottom-0 ${className}`}
+      style={{
+        top: topOffset,
+        opacity,
+        zIndex: 1,
+        mixBlendMode: "screen",
+        background: "transparent",
+      }}
     />
   );
 }
