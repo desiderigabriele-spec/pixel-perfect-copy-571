@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useTranslation } from "react-i18next";
@@ -7,9 +7,11 @@ import { HttHeader } from "@/components/htt/HttHeader";
 import { TerminalCard } from "@/components/htt/TerminalCard";
 import { TerminalButton } from "@/components/htt/TerminalButton";
 import { GlitchAvatar } from "@/components/htt/GlitchAvatar";
-import { getChallenge, joinChallenge, cancelChallenge } from "@/lib/challenges.functions";
+import { getChallenge, joinChallenge, cancelChallenge, settleChallenge } from "@/lib/challenges.functions";
 import { getMyProfile } from "@/lib/avatrade.functions";
 import { getSymbol, DURATIONS } from "@/lib/symbols";
+import { cn } from "@/lib/utils";
+import { priceAt, pipsFor, elapsedSec } from "@/lib/priceFeed";
 
 export const Route = createFileRoute("/_authenticated/challenges/$id")({
   head: ({ params }) => ({ meta: [{ title: `Sfida ${params.id.slice(0, 8)} — HTT` }] }),
@@ -26,11 +28,12 @@ function ChallengeDetail() {
   const fetchMe = useServerFn(getMyProfile);
   const callJoin = useServerFn(joinChallenge);
   const callCancel = useServerFn(cancelChallenge);
+  const callSettle = useServerFn(settleChallenge);
 
   const { data, error } = useQuery({
     queryKey: ["challenge", id],
     queryFn: () => fetchOne({ data: { id } }),
-    refetchInterval: 5000,
+    refetchInterval: (q) => (q.state.data?.challenge?.status === "live" ? 5000 : 10000),
   });
   const { data: me } = useQuery({ queryKey: ["my-profile"], queryFn: () => fetchMe() });
 
@@ -39,6 +42,9 @@ function ChallengeDetail() {
     const t = setInterval(() => setNow(Date.now()), 1000);
     return () => clearInterval(t);
   }, []);
+
+  const [joinSide, setJoinSide] = useState<"long" | "short">("short");
+  const [settling, setSettling] = useState(false);
 
   if (error) {
     return <Shell><p className="font-mono text-xs text-[var(--alert)]">{(error as Error).message}</p></Shell>;
@@ -50,18 +56,38 @@ function ChallengeDetail() {
   const c = data.challenge;
   const sym = getSymbol(c.symbol);
   const dur = DURATIONS.find((d) => d.value === c.duration_minutes);
-  const myId = (me as any)?.profile?.id; // not present; fallback to creator/opponent check
-  const isCreator = me && (me as any).profile && c.creator?.username === (me as any).profile.username;
-  const isOpponent = me && (me as any).profile && c.opponent?.username === (me as any).profile.username;
+  const myId = (me as any)?.profile?.id as string | undefined;
+  const isCreator = !!myId && c.creator_id === myId;
+  const isOpponent = !!myId && c.opponent_id === myId;
 
   const endsAt = c.ends_at ? new Date(c.ends_at).getTime() : null;
   const msLeft = endsAt ? Math.max(0, endsAt - now) : null;
   const mm = msLeft != null ? String(Math.floor(msLeft / 60000)).padStart(2, "0") : "--";
   const ss = msLeft != null ? String(Math.floor((msLeft % 60000) / 1000)).padStart(2, "0") : "--";
 
+  // Live pips (mock deterministico) — solo se la sfida è LIVE.
+  const live = c.status === "live" && c.starts_at && c.ends_at;
+  const startsAtMs = c.starts_at ? new Date(c.starts_at).getTime() : 0;
+  const tSec = live ? elapsedSec(c.starts_at, c.ends_at, now) : 0;
+  const livePrice = live ? priceAt(c.symbol, startsAtMs, tSec) : null;
+  const liveCreatorPips = live ? pipsFor(c.symbol, startsAtMs, tSec, (c.creator_side ?? "long") as any) : null;
+  const liveOpponentPips = live && c.opponent_side ? pipsFor(c.symbol, startsAtMs, tSec, c.opponent_side as any) : null;
+
+  // Auto-settle quando il timer arriva a zero.
+  useEffect(() => {
+    if (c.status !== "live" || !endsAt || settling) return;
+    if (now < endsAt) return;
+    setSettling(true);
+    callSettle({ data: { id } })
+      .then(() => queryClient.invalidateQueries({ queryKey: ["challenge", id] }))
+      .catch(() => {})
+      .finally(() => setSettling(false));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [c.status, endsAt, now]);
+
   async function onJoin() {
     try {
-      await callJoin({ data: { id } });
+      await callJoin({ data: { id, side: joinSide } });
       await queryClient.invalidateQueries({ queryKey: ["challenge", id] });
     } catch (err) {
       alert(err instanceof Error ? err.message : String(err));
@@ -97,36 +123,90 @@ function ChallengeDetail() {
         </div>
 
         {c.status === "live" && msLeft != null && (
-          <TerminalCard label="> TIME_LEFT" glow="green" className="p-5 text-center">
-            <div className="font-display text-6xl tracking-[0.1em] text-[var(--terminal)] htt-text-glow-green">
+          <TerminalCard label="> LIVE_FEED" glow="green" className="p-5 text-center space-y-2">
+            <div className="font-display text-6xl tracking-[0.1em] text-[var(--terminal)] htt-text-glow-green tabular-nums">
               {mm}:{ss}
             </div>
+            {livePrice != null && sym && (
+              <div className="font-mono text-sm text-[var(--text-dim)]">
+                {sym.label} · <span className="text-foreground tabular-nums">{formatPrice(livePrice, sym.pipSize)}</span>
+              </div>
+            )}
+          </TerminalCard>
+        )}
+
+        {c.status === "settled" && c.winner_id && (
+          <TerminalCard label="> SETTLED" glow="green" className="p-5 text-center">
+            <div className="font-mono text-[10px] uppercase tracking-widest text-[var(--text-dim)]">
+              {t("challenges.winner")}
+            </div>
+            <div className="font-display text-3xl text-[var(--terminal)] htt-text-glow-green mt-1">
+              @{c.winner_id === c.creator_id ? c.creator?.username : c.opponent?.username}
+            </div>
+          </TerminalCard>
+        )}
+        {c.status === "settled" && !c.winner_id && (
+          <TerminalCard label="> SETTLED" className="p-5 text-center">
+            <div className="font-display text-2xl text-[var(--amber)]">{t("challenges.tie")}</div>
           </TerminalCard>
         )}
 
         <div className="grid sm:grid-cols-2 gap-4">
-          <TraderCard label={t("live.leader")} color="green" profile={c.creator} pips={c.creator_pips} />
+          <TraderCard
+            label={t("live.leader")}
+            color="green"
+            profile={c.creator}
+            side={c.creator_side}
+            pips={c.status === "live" ? liveCreatorPips : c.creator_pips}
+            isWinner={c.status === "settled" && c.winner_id === c.creator_id}
+          />
           {c.opponent ? (
-            <TraderCard label={t("live.challenger")} color="amber" profile={c.opponent} pips={c.opponent_pips} />
+            <TraderCard
+              label={t("live.challenger")}
+              color="amber"
+              profile={c.opponent}
+              side={c.opponent_side}
+              pips={c.status === "live" ? liveOpponentPips : c.opponent_pips}
+              isWinner={c.status === "settled" && c.winner_id === c.opponent_id}
+            />
           ) : (
             <WaitingSlot />
           )}
         </div>
 
         {c.status === "waiting" && !isCreator && !isOpponent && (
-          <TerminalButton variant="primary" size="lg" className="w-full" onClick={onJoin}>
-            {t("challenges.accept")}
-          </TerminalButton>
+          <TerminalCard label="> YOUR_POSITION" className="p-5 space-y-3">
+            <p className="font-mono text-[10px] uppercase tracking-widest text-[var(--text-dim)]">
+              {t("challenges.side.opposingNote", { side: t(`challenges.side.${c.creator_side}`) })}
+            </p>
+            <div className="flex gap-2">
+              {(["long", "short"] as const).map((s) => (
+                <button
+                  key={s}
+                  type="button"
+                  onClick={() => setJoinSide(s)}
+                  className={cn(
+                    "px-4 py-2 border font-mono text-sm transition-colors flex-1",
+                    joinSide === s
+                      ? s === "long"
+                        ? "border-[var(--terminal)] bg-[var(--terminal)]/10 text-[var(--terminal)]"
+                        : "border-[var(--alert)] bg-[var(--alert)]/10 text-[var(--alert)]"
+                      : "border-border text-[var(--text-dim)] hover:text-foreground",
+                  )}
+                >
+                  {t(`challenges.side.${s}`)}
+                </button>
+              ))}
+            </div>
+            <TerminalButton variant="primary" size="lg" className="w-full" onClick={onJoin}>
+              {t("challenges.accept")}
+            </TerminalButton>
+          </TerminalCard>
         )}
         {c.status === "waiting" && isCreator && (
           <TerminalButton variant="ghost" size="lg" className="w-full" onClick={onCancel}>
             {t("challenges.cancel")}
           </TerminalButton>
-        )}
-        {c.status === "live" && (
-          <TerminalCard label="> NOTE" className="p-4">
-            <p className="font-mono text-xs text-[var(--text-dim)]">{t("challenges.liveNote")}</p>
-          </TerminalCard>
         )}
       </div>
     </Shell>
@@ -157,18 +237,40 @@ function StatusBadge({ status }: { status: string }) {
   );
 }
 
-function TraderCard({ label, color, profile, pips }: { label: string; color: "green" | "amber"; profile: any; pips: number | null }) {
+function TraderCard({
+  label, color, profile, pips, side, isWinner,
+}: {
+  label: string;
+  color: "green" | "amber";
+  profile: any;
+  pips: number | null;
+  side?: "long" | "short" | null;
+  isWinner?: boolean;
+}) {
+  const sideColor = side === "long" ? "text-[var(--terminal)]" : "text-[var(--alert)]";
   return (
-    <TerminalCard label={`> ${label}`} glow={color} className="p-5 flex items-center gap-4">
+    <TerminalCard label={`> ${label}${isWinner ? " · WIN" : ""}`} glow={color} className="p-5 flex items-center gap-4">
       <GlitchAvatar name={profile.username} color={color} size={64} />
       <div className="flex-1 min-w-0">
-        <div className="font-mono text-[10px] uppercase tracking-widest text-[var(--text-dim)]">@{profile.username}</div>
-        <div className={`font-display text-3xl tracking-wider ${color === "green" ? "text-[var(--terminal)]" : "text-[var(--amber)]"}`}>
-          {pips != null ? `${pips > 0 ? "+" : ""}${pips} pips` : "—"}
+        <div className="flex items-center gap-2">
+          <div className="font-mono text-[10px] uppercase tracking-widest text-[var(--text-dim)]">@{profile.username}</div>
+          {side && (
+            <span className={`font-mono text-[10px] uppercase tracking-widest ${sideColor}`}>
+              {side === "long" ? "▲ LONG" : "▼ SHORT"}
+            </span>
+          )}
+        </div>
+        <div className={`font-display text-3xl tracking-wider tabular-nums ${pips != null && pips < 0 ? "text-[var(--alert)]" : color === "green" ? "text-[var(--terminal)]" : "text-[var(--amber)]"}`}>
+          {pips != null ? `${pips > 0 ? "+" : ""}${pips.toFixed(1)} pips` : "—"}
         </div>
       </div>
     </TerminalCard>
   );
+}
+
+function formatPrice(price: number, pipSize: number): string {
+  const decimals = Math.max(0, Math.round(-Math.log10(pipSize)));
+  return price.toLocaleString("en-US", { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
 }
 
 function WaitingSlot() {
