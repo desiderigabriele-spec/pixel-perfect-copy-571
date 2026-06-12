@@ -11,6 +11,7 @@
   },
   "nav": {
     "live": "LIVE",
+    "challenges": "CHALLENGES",
     "dashboard": "DASHBOARD",
     "admin": "ADMIN"
   },
@@ -96,6 +97,8 @@
     "verifiedBadge": "VERIFIED",
     "pendingBadge": "VERIFICATION PENDING",
     "comingSoon": "// Challenges, leaderboard and signals modules are coming in the next cycles.",
+    "challengesDesc": "Create or accept a 1v1 challenge.",
+    "liveDesc": "Watch the ongoing live match.",
     "claimAdmin": {
       "desc": "You are the first registered user. Claim the admin role to access the verification panel.",
       "cta": "CLAIM ADMIN ROLE"
@@ -119,5 +122,42 @@
     "reject": "REJECT",
     "submittedAt": "Submitted on",
     "accountId": "Account ID"
+  },
+  "challenges": {
+    "title": "CHALLENGES",
+    "create": "NEW CHALLENGE",
+    "join": "ENTER",
+    "accept": "ACCEPT",
+    "cancel": "CANCEL CHALLENGE",
+    "honor": "Honor only",
+    "inviteCodeLabel": "> invite code_",
+    "empty": "> no open challenges. create yours to start.",
+    "emptyMine": "> you haven't joined any challenge yet.",
+    "waitingOpponent": "waiting for a challenger...",
+    "liveNote": "// Realtime pips view ships with the next module (live execution).",
+    "tab": { "open": "OPEN", "mine": "MINE" },
+    "status": {
+      "waiting": "WAITING",
+      "live": "LIVE",
+      "settled": "SETTLED",
+      "cancelled": "CANCELLED"
+    },
+    "cat": { "fx": "Forex", "metals": "Metals", "crypto": "Crypto", "indices": "Indices" },
+    "stake": {
+      "honor": "Honor only",
+      "points": "HTT Points",
+      "amount": "Points amount",
+      "note": "Points are locked on join and go to the winner at settlement."
+    },
+    "visibility": {
+      "public": "Public",
+      "private": "Private (code)",
+      "publicNote": "Visible to everyone in the lobby.",
+      "privateNote": "Only people with the code can join."
+    },
+    "new": {
+      "title": "CREATE 1v1 CHALLENGE",
+      "submit": "PUBLISH CHALLENGE"
+    }
   }
 }
