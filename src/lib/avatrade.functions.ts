@@ -47,7 +47,7 @@ export const getMyProfile = createServerFn({ method: "GET" })
   .handler(async ({ context }) => {
     const { supabase, userId } = context;
     const [{ data: profile }, { data: roles }] = await Promise.all([
-      supabase.from("profiles").select("username, avatar_seed").eq("id", userId).maybeSingle(),
+      supabase.from("profiles").select("id, username, avatar_seed, points_balance").eq("id", userId).maybeSingle(),
       supabase.from("user_roles").select("role").eq("user_id", userId),
     ]);
     return {
