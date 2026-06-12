@@ -1,6 +1,6 @@
 import { getMockStats } from "@/lib/mockStats";
 import { TerminalCard } from "./TerminalCard";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "@/lib/translate";
 
 // Card metriche di consistenza + sparkline equity. Mock deterministico per ora.
 // Seed pubblico (es. username) — non esponiamo lo user_id.

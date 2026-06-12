@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "@/lib/translate";
 import { fetchTick, type Tick } from "@/lib/data/mock";
 import { cn } from "@/lib/utils";
 

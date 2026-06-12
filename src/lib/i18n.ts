@@ -1,6 +1,6 @@
 // i18n: italiano di default, inglese selezionabile.
 import i18n from "i18next";
-import { initReactI18next } from "react-i18next";
+import { initReactI18next } from "@/lib/translate";
 import it from "../locales/it.json";
 import en from "../locales/en.json";
 

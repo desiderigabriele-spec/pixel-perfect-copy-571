@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { TerminalCard } from "./TerminalCard";
 import { TerminalButton } from "./TerminalButton";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "@/lib/translate";
 
 // Pannello "GENERA CARD": due preview (stories e post) con bottoni
 // per scaricare l'SVG e copiare il link. Compliance: testo fisso "seguimi".
