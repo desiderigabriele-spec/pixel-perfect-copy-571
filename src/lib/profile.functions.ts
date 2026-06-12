@@ -56,37 +56,74 @@ export const getPublicProfile = createServerFn({ method: "GET" })
   });
 
 // Top trader. Ordinamento: punti totali pips (sum), tie-break vittorie, poi created_at.
+// Leaderboard con filtri multipli. Tutti opzionali.
+// - scope: dimensione di filtro (globale / lingua / paese / stile / asset)
+// - period: finestra temporale dei settled (week/month/all)
+// - special: 'rising_star' (profili creati ≤30gg, ≥3 sfide)
+const leaderboardInput = z.object({
+  scope: z.enum(["global", "language", "country", "style", "asset"]).default("global"),
+  filterValue: z.string().optional(),
+  period: z.enum(["week", "month", "all"]).default("all"),
+  special: z.enum(["rising_star"]).optional(),
+  limit: z.number().int().min(1).max(50).default(20),
+}).default({});
+
 export const getLeaderboard = createServerFn({ method: "GET" })
-  .handler(async () => {
+  .inputValidator((input: unknown) => leaderboardInput.parse(input ?? {}))
+  .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { data: profiles } = await supabaseAdmin
+
+    // Filtri sui profili
+    let profQ = supabaseAdmin
       .from("profiles")
-      .select("id, username, avatar_seed, points_balance")
-      .limit(500);
-    const { data: chRows } = await supabaseAdmin
+      .select("id, username, avatar_seed, points_balance, country, language, style, primary_asset, created_at")
+      .limit(1000);
+    if (data.scope === "language" && data.filterValue) profQ = profQ.eq("language", data.filterValue);
+    if (data.scope === "country" && data.filterValue) profQ = profQ.eq("country", data.filterValue);
+    if (data.scope === "style" && data.filterValue) profQ = profQ.eq("style", data.filterValue);
+    if (data.scope === "asset" && data.filterValue) profQ = profQ.eq("primary_asset", data.filterValue);
+    if (data.special === "rising_star") {
+      const cutoff = new Date(Date.now() - 30 * 86_400_000).toISOString();
+      profQ = profQ.gte("created_at", cutoff);
+    }
+    const { data: profiles } = await profQ;
+
+    // Filtri temporali sulle sfide settled
+    let chQ = supabaseAdmin
       .from("challenges")
       .select("status, winner_id, creator_id, opponent_id, creator_pips, opponent_pips, settled_at")
       .eq("status", "settled");
-    const byUser = new Map<string, typeof chRows>();
+    if (data.period === "week") {
+      chQ = chQ.gte("settled_at", new Date(Date.now() - 7 * 86_400_000).toISOString());
+    } else if (data.period === "month") {
+      chQ = chQ.gte("settled_at", new Date(Date.now() - 30 * 86_400_000).toISOString());
+    }
+    const { data: chRows } = await chQ;
+
+    const byUser = new Map<string, any[]>();
     for (const r of chRows ?? []) {
       for (const uid of [r.creator_id, r.opponent_id].filter(Boolean) as string[]) {
-        if (!byUser.has(uid)) byUser.set(uid, [] as any);
-        byUser.get(uid)!.push(r as any);
+        if (!byUser.has(uid)) byUser.set(uid, []);
+        byUser.get(uid)!.push(r);
       }
     }
+
     const items = (profiles ?? [])
       .map((p: any) => {
         const s = computeStats(byUser.get(p.id) ?? [], p.id);
         return {
           username: p.username,
           avatar_seed: p.avatar_seed,
-          points_balance: p.points_balance,
+          country: p.country,
+          language: p.language,
+          style: p.style,
+          primary_asset: p.primary_asset,
           ...s,
         };
       })
-      .filter((r) => r.played > 0)
+      .filter((r) => (data.special === "rising_star" ? r.played >= 3 : r.played > 0))
       .sort((a, b) => b.pips - a.pips || b.wins - a.wins)
-      .slice(0, 20);
+      .slice(0, data.limit);
     return { items };
   });
 
