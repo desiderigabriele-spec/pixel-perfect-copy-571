@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useTranslation } from "react-i18next";
 import { HttHeader } from "@/components/htt/HttHeader";
@@ -7,6 +7,7 @@ import { TerminalCard } from "@/components/htt/TerminalCard";
 import { TerminalButton } from "@/components/htt/TerminalButton";
 import { GlitchAvatar } from "@/components/htt/GlitchAvatar";
 import { getMyProfile, getMyVerification } from "@/lib/avatrade.functions";
+import { adminClaimAvailable, claimAdminRole } from "@/lib/admin.functions";
 import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
@@ -17,8 +18,11 @@ export const Route = createFileRoute("/_authenticated/dashboard")({
 function Dashboard() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const fetchProfile = useServerFn(getMyProfile);
   const fetchVerification = useServerFn(getMyVerification);
+  const fetchAdminAvailable = useServerFn(adminClaimAvailable);
+  const callClaimAdmin = useServerFn(claimAdminRole);
 
   const { data: profileData } = useQuery({
     queryKey: ["my-profile"],
@@ -27,6 +31,11 @@ function Dashboard() {
   const { data: vData } = useQuery({
     queryKey: ["my-verification"],
     queryFn: () => fetchVerification(),
+  });
+  const { data: adminAvail } = useQuery({
+    queryKey: ["admin-claim-available"],
+    queryFn: () => fetchAdminAvailable(),
+    enabled: !!profileData && !profileData.isAdmin,
   });
 
   const username = profileData?.profile?.username ?? "...";
@@ -37,6 +46,17 @@ function Dashboard() {
   async function logout() {
     await supabase.auth.signOut();
     navigate({ to: "/", replace: true });
+  }
+
+  async function onClaimAdmin() {
+    try {
+      await callClaimAdmin();
+      await queryClient.invalidateQueries({ queryKey: ["my-profile"] });
+      await queryClient.invalidateQueries({ queryKey: ["admin-claim-available"] });
+    } catch (err) {
+      // eslint-disable-next-line no-alert
+      alert(err instanceof Error ? err.message : String(err));
+    }
   }
 
   return (
@@ -87,11 +107,23 @@ function Dashboard() {
 
         <TerminalCard label="> MODULES" className="p-5">
           <p className="font-mono text-xs text-[var(--text-dim)]">{t("dashboard.comingSoon")}</p>
-          {profileData?.isAdmin && (
+          {profileData?.isAdmin ? (
             <Link to="/admin" className="mt-4 inline-block">
               <TerminalButton variant="ghost" size="sm">{t("nav.admin")}</TerminalButton>
             </Link>
-          )}
+          ) : adminAvail?.available ? (
+            <div className="mt-4 border border-[var(--amber)] p-4">
+              <div className="font-mono text-[10px] uppercase tracking-widest text-[var(--amber)]">
+                // ADMIN_BOOTSTRAP
+              </div>
+              <p className="font-mono text-xs text-[var(--text-dim)] mt-1">
+                {t("dashboard.claimAdmin.desc")}
+              </p>
+              <TerminalButton variant="amber" size="sm" className="mt-3" onClick={onClaimAdmin}>
+                {t("dashboard.claimAdmin.cta")}
+              </TerminalButton>
+            </div>
+          ) : null}
         </TerminalCard>
       </main>
     </div>

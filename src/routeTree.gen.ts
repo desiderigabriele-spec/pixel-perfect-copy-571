@@ -9,16 +9,23 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as LiveDemoRouteImport } from './routes/live-demo'
 import { Route as BootRouteImport } from './routes/boot'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as UUsernameRouteImport } from './routes/u.$username'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedOnboardingVerifyRouteImport } from './routes/_authenticated/onboarding.verify'
 import { Route as AuthenticatedOnboardingAvatradeRouteImport } from './routes/_authenticated/onboarding.avatrade'
 
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LiveDemoRoute = LiveDemoRouteImport.update({
   id: '/live-demo',
   path: '/live-demo',
@@ -41,6 +48,11 @@ const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const UUsernameRoute = UUsernameRouteImport.update({
+  id: '/u/$username',
+  path: '/u/$username',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
@@ -71,8 +83,10 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/boot': typeof BootRoute
   '/live-demo': typeof LiveDemoRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/u/$username': typeof UUsernameRoute
   '/onboarding/avatrade': typeof AuthenticatedOnboardingAvatradeRoute
   '/onboarding/verify': typeof AuthenticatedOnboardingVerifyRoute
 }
@@ -81,8 +95,10 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/boot': typeof BootRoute
   '/live-demo': typeof LiveDemoRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/u/$username': typeof UUsernameRoute
   '/onboarding/avatrade': typeof AuthenticatedOnboardingAvatradeRoute
   '/onboarding/verify': typeof AuthenticatedOnboardingVerifyRoute
 }
@@ -93,8 +109,10 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/boot': typeof BootRoute
   '/live-demo': typeof LiveDemoRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/u/$username': typeof UUsernameRoute
   '/_authenticated/onboarding/avatrade': typeof AuthenticatedOnboardingAvatradeRoute
   '/_authenticated/onboarding/verify': typeof AuthenticatedOnboardingVerifyRoute
 }
@@ -105,8 +123,10 @@ export interface FileRouteTypes {
     | '/auth'
     | '/boot'
     | '/live-demo'
+    | '/reset-password'
     | '/admin'
     | '/dashboard'
+    | '/u/$username'
     | '/onboarding/avatrade'
     | '/onboarding/verify'
   fileRoutesByTo: FileRoutesByTo
@@ -115,8 +135,10 @@ export interface FileRouteTypes {
     | '/auth'
     | '/boot'
     | '/live-demo'
+    | '/reset-password'
     | '/admin'
     | '/dashboard'
+    | '/u/$username'
     | '/onboarding/avatrade'
     | '/onboarding/verify'
   id:
@@ -126,8 +148,10 @@ export interface FileRouteTypes {
     | '/auth'
     | '/boot'
     | '/live-demo'
+    | '/reset-password'
     | '/_authenticated/admin'
     | '/_authenticated/dashboard'
+    | '/u/$username'
     | '/_authenticated/onboarding/avatrade'
     | '/_authenticated/onboarding/verify'
   fileRoutesById: FileRoutesById
@@ -138,10 +162,19 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   BootRoute: typeof BootRoute
   LiveDemoRoute: typeof LiveDemoRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
+  UUsernameRoute: typeof UUsernameRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/live-demo': {
       id: '/live-demo'
       path: '/live-demo'
@@ -175,6 +208,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/u/$username': {
+      id: '/u/$username'
+      path: '/u/$username'
+      fullPath: '/u/$username'
+      preLoaderRoute: typeof UUsernameRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/dashboard': {
@@ -231,6 +271,8 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   BootRoute: BootRoute,
   LiveDemoRoute: LiveDemoRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
+  UUsernameRoute: UUsernameRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
