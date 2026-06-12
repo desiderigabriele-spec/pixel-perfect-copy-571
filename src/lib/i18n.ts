@@ -16,4 +16,10 @@ if (!i18n.isInitialized) {
     });
 }
 
+// Hard reset alla lingua di default per garantire che SSR e prima resa client coincidano.
+// La lingua salvata in localStorage viene riapplicata da <LangSwitcher /> dopo l'idratazione.
+if (i18n.language !== "it") {
+  i18n.changeLanguage("it");
+}
+
 export default i18n;
