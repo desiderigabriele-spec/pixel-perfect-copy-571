@@ -1,0 +1,98 @@
+{
+  "common": {
+    "loading": "> loading...",
+    "error": "> error",
+    "back": "Back",
+    "next": "Next",
+    "skip": "Skip",
+    "logout": "Log out",
+    "login": "Log in",
+    "signup": "Sign up"
+  },
+  "nav": {
+    "live": "LIVE",
+    "dashboard": "DASHBOARD",
+    "admin": "ADMIN"
+  },
+  "landing": {
+    "tag": "// VERIFIED TRADER COMMUNITY",
+    "title": "HACK_THE_TRADING",
+    "subtitle": "Trader vs trader. Verified performance. Pure spectacle.",
+    "ctaPrimary": "INITIATE ACCESS",
+    "ctaSecondary": "WATCH LIVE CHALLENGE",
+    "feature1Title": "1v1 CHALLENGES",
+    "feature1Desc": "Trader vs trader on demo. Most pips wins.",
+    "feature2Title": "VERIFIED DATA",
+    "feature2Desc": "Read-only AvaTrade feed. No fakery.",
+    "feature3Title": "ITALIAN COMMUNITY",
+    "feature3Desc": "AI-moderated chat, signals, live leaderboard.",
+    "compliance": "// Notice: HTT is an entertainment and competitive-learning platform. We do not execute trades or provide signals to copy. Trading involves risk."
+  },
+  "live": {
+    "title": "LIVE CHALLENGE",
+    "leader": "LEADER",
+    "challenger": "CHALLENGER",
+    "vs": "VS",
+    "timeLeft": "TIME LEFT",
+    "liveFeed": "LIVE_FEED",
+    "rank": "RANK"
+  },
+  "boot": {
+    "line1": "> booting HTT_NET...",
+    "line2": "> neural link: OK",
+    "line3": "> market feed: OK",
+    "line4": "> AI modules: OK",
+    "line5": "> system online.",
+    "skipHint": "tap to skip"
+  },
+  "auth": {
+    "titleSignup": "INITIALIZE ACCESS",
+    "titleLogin": "USER LOGIN",
+    "emailLabel": "> email_",
+    "usernameLabel": "> username_",
+    "passwordLabel": "> password_",
+    "submitSignup": "INITIALIZE ACCESS",
+    "submitLogin": "LOG IN",
+    "google": "Continue with Google",
+    "toggleToLogin": "Already have an account? Log in",
+    "toggleToSignup": "No account yet? Sign up",
+    "errorEmail": "> error: invalid email",
+    "errorPassword": "> error: password too short (min 6 chars)",
+    "errorUsername": "> error: username required (3-20 chars)",
+    "errorGeneric": "> error: {{message}}",
+    "checkEmail": "> check your email to confirm sign-in"
+  },
+  "onboarding": {
+    "avatradeTitle": "Last step to unlock challenges",
+    "avatradeIntro": "To guarantee verified performance, every HTT trader opens a free AvaTrade account through our link.",
+    "step1Title": "Open your free AvaTrade account",
+    "step1Desc": "€250 deposit, stays yours. Real + linked demo account.",
+    "step2Title": "Enter your account ID here",
+    "step2Desc": "We verify manually within 24h.",
+    "step3Title": "Access challenges, leaderboard and community",
+    "step3Desc": "Your demo performance becomes verified.",
+    "openAvatrade": "OPEN AVATRADE",
+    "accountIdLabel": "> AvaTrade account ID_",
+    "submit": "SUBMIT VERIFICATION",
+    "verifyTitle": "Verification in progress",
+    "verifyDesc": "Our team is reviewing your account. Average time: 24h.",
+    "verifyStatus": "Status: {{status}}",
+    "statusPending": "pending",
+    "statusVerified": "verified",
+    "statusRejected": "rejected"
+  },
+  "dashboard": {
+    "welcome": "WELCOME, {{username}}",
+    "verifiedBadge": "VERIFIED",
+    "pendingBadge": "VERIFICATION PENDING",
+    "comingSoon": "// Challenges, leaderboard and signals modules are coming in the next cycles."
+  },
+  "admin": {
+    "title": "ADMIN — AVATRADE VERIFICATIONS",
+    "noRequests": "> no pending requests.",
+    "approve": "APPROVE",
+    "reject": "REJECT",
+    "submittedAt": "Submitted on",
+    "accountId": "Account ID"
+  }
+}
