@@ -1,12 +1,46 @@
 import { useEffect, useRef } from "react";
 
-// Effetto "market rain": numeri singoli che cadono in stile matrix,
-// ~70% verde / 30% rosso, teste brillanti. Bassa opacità per restare sfondo.
-// Si pausa automaticamente se l'utente ha 'prefers-reduced-motion'.
+// "Market Rain": digital rain a tema mercati finanziari.
+// Colonne indipendenti con size/velocità random (parallasse),
+// token = ticker / percentuali / numeri / frecce, teste bianche con glow,
+// scia con fade-out verso il nero. Rispetta prefers-reduced-motion.
 
 type Props = { opacity?: number; className?: string };
 
-export function MarketRain({ opacity = 0.08, className = "" }: Props) {
+const TICKERS = [
+  "BTC", "ETH", "SOL", "TSLA", "AAPL", "NVDA", "SPY", "EUR",
+  "USD", "GOLD", "OIL", "DXY", "NDX", "XRP", "MSFT", "META",
+];
+
+function randToken(polarity: "pos" | "neg"): string {
+  const r = Math.random();
+  if (r < 0.22) return TICKERS[Math.floor(Math.random() * TICKERS.length)];
+  if (r < 0.42) {
+    const sign = polarity === "pos" ? "+" : "-";
+    const n = (Math.random() * 9.9).toFixed(1);
+    return `${sign}${n}%`;
+  }
+  if (r < 0.55) return polarity === "pos" ? "▲" : "▼";
+  if (r < 0.80) {
+    const len = 2 + Math.floor(Math.random() * 4);
+    let s = "";
+    for (let i = 0; i < len; i++) s += Math.floor(Math.random() * 10);
+    return s;
+  }
+  return String(Math.floor(Math.random() * 10));
+}
+
+type Column = {
+  x: number;
+  y: number;
+  size: number;
+  speed: number;
+  polarity: "pos" | "neg";
+  token: string;
+  stepCounter: number;
+};
+
+export function MarketRain({ opacity = 0.55, className = "" }: Props) {
   const ref = useRef<HTMLCanvasElement | null>(null);
 
   useEffect(() => {
@@ -16,60 +50,101 @@ export function MarketRain({ opacity = 0.08, className = "" }: Props) {
     if (!ctx) return;
 
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduce) return; // statico, niente animazione
+    const dpr = window.devicePixelRatio || 1;
+    const COL_WIDTH = 16; // spaziatura orizzontale media
+    let cols: Column[] = [];
+    let w = 0;
+    let h = 0;
 
-    const FONT_SIZE = 14;
-    let columns = 0;
-    let drops: { y: number; speed: number; color: "g" | "r"; bright: boolean }[] = [];
-    let dpr = window.devicePixelRatio || 1;
+    function makeCol(x: number, initialY?: number): Column {
+      const size = 10 + Math.floor(Math.random() * 9); // 10..18
+      const polarity: "pos" | "neg" = Math.random() < 0.55 ? "pos" : "neg";
+      return {
+        x,
+        y: initialY ?? -Math.random() * h,
+        size,
+        speed: 0.4 + Math.random() * 1.2,
+        polarity,
+        token: randToken(polarity),
+        stepCounter: 0,
+      };
+    }
 
     function resize() {
-      const w = window.innerWidth;
-      const h = window.innerHeight;
-      canvas!.width = w * dpr;
-      canvas!.height = h * dpr;
+      w = window.innerWidth;
+      h = window.innerHeight;
+      canvas!.width = Math.floor(w * dpr);
+      canvas!.height = Math.floor(h * dpr);
       canvas!.style.width = `${w}px`;
       canvas!.style.height = `${h}px`;
+      ctx!.setTransform(1, 0, 0, 1, 0, 0);
       ctx!.scale(dpr, dpr);
-      columns = Math.floor(w / FONT_SIZE);
-      drops = Array.from({ length: columns }, () => ({
-        y: Math.random() * h,
-        speed: 0.6 + Math.random() * 1.4,
-        color: Math.random() < 0.7 ? "g" : "r",
-        bright: Math.random() < 0.15,
-      }));
+      // riempi sfondo nero pieno
+      ctx!.fillStyle = "#000000";
+      ctx!.fillRect(0, 0, w, h);
+      const count = Math.floor(w / COL_WIDTH);
+      cols = Array.from({ length: count }, (_, i) =>
+        makeCol(i * COL_WIDTH + COL_WIDTH / 2, Math.random() * h)
+      );
     }
     resize();
     window.addEventListener("resize", resize);
 
-    let raf = 0;
-    function frame() {
-      const w = window.innerWidth;
-      const h = window.innerHeight;
-      ctx!.fillStyle = "rgba(13,13,13,0.18)";
+    function drawFrame() {
+      // scia: rettangolo nero semi-trasparente → fade verso l'alto
+      ctx!.fillStyle = "rgba(0,0,0,0.09)";
       ctx!.fillRect(0, 0, w, h);
-      ctx!.font = `${FONT_SIZE}px "JetBrains Mono", monospace`;
-      for (let i = 0; i < drops.length; i++) {
-        const d = drops[i];
-        const ch = Math.random() < 0.5
-          ? String(Math.floor(Math.random() * 10))
-          : (Math.random() < 0.4 ? "-" : String(Math.floor(Math.random() * 10)));
-        const x = i * FONT_SIZE;
-        const baseG = d.bright ? "#9CFFB7" : "#00FF41";
-        const baseR = d.bright ? "#FF7088" : "#FF0033";
-        ctx!.fillStyle = d.color === "g" ? baseG : baseR;
-        ctx!.fillText(ch, x, d.y);
-        d.y += d.speed * FONT_SIZE * 0.6;
-        if (d.y > h && Math.random() > 0.975) {
-          d.y = -FONT_SIZE;
-          d.speed = 0.6 + Math.random() * 1.4;
-          d.color = Math.random() < 0.7 ? "g" : "r";
-          d.bright = Math.random() < 0.15;
+
+      for (const c of cols) {
+        // ogni N step la colonna cambia token (per leggibilità)
+        if (c.stepCounter % 6 === 0) {
+          c.token = randToken(c.polarity);
+        }
+        c.stepCounter++;
+
+        ctx!.font = `${c.size}px "Fira Code", "Courier New", monospace`;
+        ctx!.textBaseline = "top";
+
+        const color = c.polarity === "pos" ? "#00FF66" : "#FF2A4D";
+
+        // testa bianca con glow
+        ctx!.shadowColor = color;
+        ctx!.shadowBlur = 6;
+        ctx!.fillStyle = "#FFFFFF";
+        ctx!.fillText(c.token, c.x, c.y);
+
+        // riga sopra (coda immediata) nel colore della polarità
+        ctx!.shadowBlur = 0;
+        ctx!.fillStyle = color;
+        ctx!.fillText(c.token, c.x, c.y - c.size - 2);
+
+        c.y += c.speed * c.size * 0.9;
+
+        if (c.y > h + 40 && Math.random() > 0.965) {
+          const x = c.x;
+          const fresh = makeCol(x, -c.size * 2);
+          Object.assign(c, fresh);
         }
       }
-      raf = requestAnimationFrame(frame);
     }
-    raf = requestAnimationFrame(frame);
+
+    // primo frame sempre (anche con reduced motion → stato statico visibile)
+    drawFrame();
+    if (reduce) {
+      return () => window.removeEventListener("resize", resize);
+    }
+
+    let raf = 0;
+    let last = 0;
+    const FRAME_MS = 1000 / 30; // ~30fps
+    function loop(now: number) {
+      if (now - last >= FRAME_MS) {
+        last = now;
+        drawFrame();
+      }
+      raf = requestAnimationFrame(loop);
+    }
+    raf = requestAnimationFrame(loop);
 
     return () => {
       cancelAnimationFrame(raf);
@@ -81,8 +156,8 @@ export function MarketRain({ opacity = 0.08, className = "" }: Props) {
     <canvas
       ref={ref}
       aria-hidden
-      className={`pointer-events-none fixed inset-0 -z-10 ${className}`}
-      style={{ opacity }}
+      className={`pointer-events-none fixed inset-0 ${className}`}
+      style={{ opacity, zIndex: -1, background: "#000" }}
     />
   );
 }
