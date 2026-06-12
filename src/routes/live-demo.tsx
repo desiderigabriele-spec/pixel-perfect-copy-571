@@ -12,6 +12,8 @@ import { getCurrentLiveMatch } from "@/lib/profile.functions";
 import { getSymbol } from "@/lib/symbols";
 import { pipsFor, elapsedSec, priceAt } from "@/lib/priceFeed";
 import { TerminalButton } from "@/components/htt/TerminalButton";
+import { AffiliateGate } from "@/components/htt/AffiliateGate";
+import { useAccessLevel } from "@/hooks/useAccessLevel";
 
 export const Route = createFileRoute("/live-demo")({
   loader: () => getCurrentLiveMatch(),
@@ -40,6 +42,8 @@ function RealMatchOrFallback() {
 
 function RealMatch({ match }: { match: any }) {
   const { t } = useTranslation();
+  const { level } = useAccessLevel();
+  const isAffiliated = level === "affiliated";
   const sym = getSymbol(match.symbol);
   const [now, setNow] = useState(Date.now());
   useEffect(() => {
@@ -81,12 +85,28 @@ function RealMatch({ match }: { match: any }) {
         </div>
 
         <TerminalCard label="> CHALLENGE_STATE" className="p-5">
-          <PipsBar
-            leaderName={match.creator?.username ?? "—"}
-            leaderPips={leaderPips}
-            challengerName={match.opponent?.username ?? "—"}
-            challengerPips={challengerPips}
-          />
+          {isAffiliated ? (
+            <PipsBar
+              leaderName={match.creator?.username ?? "—"}
+              leaderPips={leaderPips}
+              challengerName={match.opponent?.username ?? "—"}
+              challengerPips={challengerPips}
+            />
+          ) : (
+            <AffiliateGate>
+              <PipsBar
+                leaderName={match.creator?.username ?? "—"}
+                leaderPips={leaderPips}
+                challengerName={match.opponent?.username ?? "—"}
+                challengerPips={challengerPips}
+              />
+            </AffiliateGate>
+          )}
+          {!isAffiliated && (
+            <div className="mt-3 text-center font-mono text-[10px] uppercase tracking-widest text-[var(--amber)]">
+              {t("gate.delayedBadge")}
+            </div>
+          )}
         </TerminalCard>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

@@ -183,5 +183,12 @@
     "placeholder": "type a message...",
     "send": "SEND",
     "readOnly": "// read-only chat — only participants can post"
+  },
+  "gate": {
+    "title": "Watch live in real time",
+    "description": "Open your AvaTrade account through the HTT link and unlock realtime live, challenges and the full leaderboard.",
+    "signin": "SIGN IN",
+    "affiliate": "BECOME AFFILIATE",
+    "delayedBadge": "DELAYED VIEW · AFFILIATE FOR LIVE"
   }
 }
