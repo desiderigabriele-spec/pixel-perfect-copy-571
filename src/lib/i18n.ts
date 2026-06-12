@@ -14,7 +14,9 @@ if (!i18n.isInitialized) {
       supportedLngs: ["it", "en"],
       interpolation: { escapeValue: false },
       react: { useSuspense: false },
-    } as never);
+      // initImmediate è disponibile a runtime ma non sempre nei tipi: lo forziamo.
+      ...({ initImmediate: false } as Record<string, unknown>),
+    });
 }
 
 // Hard reset alla lingua di default per garantire che SSR e prima resa client coincidano.
