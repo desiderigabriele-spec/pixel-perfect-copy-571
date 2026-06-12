@@ -89,8 +89,11 @@ export type Database = {
           ends_at: string | null
           entry_price: number | null
           exit_price: number | null
+          goal_pips: number | null
+          goal_reached: boolean | null
           id: string
           invite_code: string | null
+          mode: Database["public"]["Enums"]["challenge_mode"]
           opponent_id: string | null
           opponent_pips: number | null
           opponent_side: Database["public"]["Enums"]["trade_side"] | null
@@ -113,8 +116,11 @@ export type Database = {
           ends_at?: string | null
           entry_price?: number | null
           exit_price?: number | null
+          goal_pips?: number | null
+          goal_reached?: boolean | null
           id?: string
           invite_code?: string | null
+          mode?: Database["public"]["Enums"]["challenge_mode"]
           opponent_id?: string | null
           opponent_pips?: number | null
           opponent_side?: Database["public"]["Enums"]["trade_side"] | null
@@ -137,8 +143,11 @@ export type Database = {
           ends_at?: string | null
           entry_price?: number | null
           exit_price?: number | null
+          goal_pips?: number | null
+          goal_reached?: boolean | null
           id?: string
           invite_code?: string | null
+          mode?: Database["public"]["Enums"]["challenge_mode"]
           opponent_id?: string | null
           opponent_pips?: number | null
           opponent_side?: Database["public"]["Enums"]["trade_side"] | null
@@ -291,6 +300,7 @@ export type Database = {
     }
     Enums: {
       app_role: "admin" | "user"
+      challenge_mode: "1v1" | "solo_goal"
       challenge_status: "waiting" | "live" | "settled" | "cancelled"
       challenge_visibility: "public" | "private"
       stake_type: "points" | "honor"
@@ -425,6 +435,7 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "user"],
+      challenge_mode: ["1v1", "solo_goal"],
       challenge_status: ["waiting", "live", "settled", "cancelled"],
       challenge_visibility: ["public", "private"],
       stake_type: ["points", "honor"],
