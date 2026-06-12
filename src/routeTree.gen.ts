@@ -17,6 +17,7 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as UUsernameRouteImport } from './routes/u.$username'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedChallengesRouteImport } from './routes/_authenticated/challenges'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedOnboardingVerifyRouteImport } from './routes/_authenticated/onboarding.verify'
 import { Route as AuthenticatedOnboardingAvatradeRouteImport } from './routes/_authenticated/onboarding.avatrade'
@@ -60,6 +61,11 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedChallengesRoute = AuthenticatedChallengesRouteImport.update({
+  id: '/challenges',
+  path: '/challenges',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   id: '/admin',
   path: '/admin',
@@ -85,6 +91,7 @@ export interface FileRoutesByFullPath {
   '/live-demo': typeof LiveDemoRoute
   '/reset-password': typeof ResetPasswordRoute
   '/admin': typeof AuthenticatedAdminRoute
+  '/challenges': typeof AuthenticatedChallengesRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/u/$username': typeof UUsernameRoute
   '/onboarding/avatrade': typeof AuthenticatedOnboardingAvatradeRoute
@@ -97,6 +104,7 @@ export interface FileRoutesByTo {
   '/live-demo': typeof LiveDemoRoute
   '/reset-password': typeof ResetPasswordRoute
   '/admin': typeof AuthenticatedAdminRoute
+  '/challenges': typeof AuthenticatedChallengesRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/u/$username': typeof UUsernameRoute
   '/onboarding/avatrade': typeof AuthenticatedOnboardingAvatradeRoute
@@ -111,6 +119,7 @@ export interface FileRoutesById {
   '/live-demo': typeof LiveDemoRoute
   '/reset-password': typeof ResetPasswordRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
+  '/_authenticated/challenges': typeof AuthenticatedChallengesRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/u/$username': typeof UUsernameRoute
   '/_authenticated/onboarding/avatrade': typeof AuthenticatedOnboardingAvatradeRoute
@@ -125,6 +134,7 @@ export interface FileRouteTypes {
     | '/live-demo'
     | '/reset-password'
     | '/admin'
+    | '/challenges'
     | '/dashboard'
     | '/u/$username'
     | '/onboarding/avatrade'
@@ -137,6 +147,7 @@ export interface FileRouteTypes {
     | '/live-demo'
     | '/reset-password'
     | '/admin'
+    | '/challenges'
     | '/dashboard'
     | '/u/$username'
     | '/onboarding/avatrade'
@@ -150,6 +161,7 @@ export interface FileRouteTypes {
     | '/live-demo'
     | '/reset-password'
     | '/_authenticated/admin'
+    | '/_authenticated/challenges'
     | '/_authenticated/dashboard'
     | '/u/$username'
     | '/_authenticated/onboarding/avatrade'
@@ -224,6 +236,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/challenges': {
+      id: '/_authenticated/challenges'
+      path: '/challenges'
+      fullPath: '/challenges'
+      preLoaderRoute: typeof AuthenticatedChallengesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/admin': {
       id: '/_authenticated/admin'
       path: '/admin'
@@ -250,6 +269,7 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
+  AuthenticatedChallengesRoute: typeof AuthenticatedChallengesRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedOnboardingAvatradeRoute: typeof AuthenticatedOnboardingAvatradeRoute
   AuthenticatedOnboardingVerifyRoute: typeof AuthenticatedOnboardingVerifyRoute
@@ -257,6 +277,7 @@ interface AuthenticatedRouteRouteChildren {
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdminRoute: AuthenticatedAdminRoute,
+  AuthenticatedChallengesRoute: AuthenticatedChallengesRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedOnboardingAvatradeRoute: AuthenticatedOnboardingAvatradeRoute,
   AuthenticatedOnboardingVerifyRoute: AuthenticatedOnboardingVerifyRoute,
@@ -277,3 +298,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
