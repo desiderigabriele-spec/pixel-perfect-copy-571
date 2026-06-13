@@ -18,10 +18,10 @@ function label(v: number): string {
 
 type Col = {
   x: number;
-  gridY: number;     // row index of head (increases as it falls)
-  stepFrac: number;  // accumulated fractional step
-  speed: number;     // grid cells per frame
-  cells: number[];   // [0]=head value, [i]=i rows above head
+  gridY: number;
+  stepFrac: number;
+  speed: number;
+  cells: number[];
   maxTrail: number;
 };
 
@@ -29,9 +29,11 @@ const FONT_SIZE = 14;
 const CELL_W = Math.round(FONT_SIZE * 1.7); // 24
 const GREEN = "#00FF41";
 const RED = "#FF0033";
-const FRAME_MS = 1000 / 30;
+// Green head slightly brighter than trail for glow-less fallback
+const GREEN_HEAD = "#AFFFCC";
+const RED_HEAD = "#FFAAB5";
 
-export function MarketRain({ opacity = 0.08, className = "", topOffset = 64 }: Props) {
+export function MarketRain({ opacity = 0.15, className = "", topOffset = 64 }: Props) {
   const ref = useRef<HTMLCanvasElement | null>(null);
 
   useEffect(() => {
@@ -41,7 +43,13 @@ export function MarketRain({ opacity = 0.08, className = "", topOffset = 64 }: P
     if (!ctx) return;
 
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const dpr = window.devicePixelRatio || 1;
+    // Cap DPR at 2: a 3× DPR phone draws 9× pixels per frame — way too slow
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    // shadowBlur is the heaviest canvas op on mobile — skip it
+    const useGlow = !window.matchMedia("(hover: none) and (pointer: coarse)").matches;
+    // Throttle to 20fps on touch devices, 30fps on desktop
+    const FRAME_MS = useGlow ? 1000 / 30 : 1000 / 20;
+
     let cols: Col[] = [];
     let w = 0;
     let h = 0;
@@ -51,12 +59,12 @@ export function MarketRain({ opacity = 0.08, className = "", topOffset = 64 }: P
     }
 
     function makeCol(x: number, gridY?: number): Col {
-      const maxTrail = 12 + Math.floor(Math.random() * 12);
+      const maxTrail = 10 + Math.floor(Math.random() * 10);
       return {
         x,
         gridY: gridY ?? -(1 + Math.floor(Math.random() * 8)),
         stepFrac: Math.random(),
-        speed: 0.18 + Math.random() * 0.32,
+        speed: 0.2 + Math.random() * 0.35,
         cells: [initialValue()],
         maxTrail,
       };
@@ -95,7 +103,6 @@ export function MarketRain({ opacity = 0.08, className = "", topOffset = 64 }: P
       const rows = totalRows();
 
       for (const c of cols) {
-        // Advance column position
         c.stepFrac += c.speed;
         while (c.stepFrac >= 1) {
           c.stepFrac -= 1;
@@ -106,33 +113,34 @@ export function MarketRain({ opacity = 0.08, className = "", topOffset = 64 }: P
 
         const len = c.cells.length;
 
-        // Draw trail cells (oldest → newest so head renders on top)
+        // Trail (oldest → newest so head renders on top)
         ctx!.shadowBlur = 0;
         for (let i = len - 1; i >= 1; i--) {
           const rowY = (c.gridY - i) * FONT_SIZE;
           if (rowY < -FONT_SIZE || rowY > h) continue;
           const alpha = Math.pow(1 - i / len, 0.7);
-          if (alpha < 0.01) continue;
+          if (alpha < 0.02) continue;
           ctx!.globalAlpha = alpha;
           const v = c.cells[i];
           ctx!.fillStyle = v >= 0 ? GREEN : RED;
           ctx!.fillText(label(v), c.x, rowY);
         }
 
-        // Draw head with bright near-white tint and glow
+        // Head
         const headY = c.gridY * FONT_SIZE;
         ctx!.globalAlpha = 1;
         if (headY >= -FONT_SIZE && headY <= h + FONT_SIZE) {
           const hv = c.cells[0];
           const isPos = hv >= 0;
-          ctx!.shadowColor = isPos ? GREEN : RED;
-          ctx!.shadowBlur = 12;
-          ctx!.fillStyle = isPos ? "rgba(210,255,225,1)" : "rgba(255,210,215,1)";
+          if (useGlow) {
+            ctx!.shadowColor = isPos ? GREEN : RED;
+            ctx!.shadowBlur = 10;
+          }
+          ctx!.fillStyle = isPos ? GREEN_HEAD : RED_HEAD;
           ctx!.fillText(label(hv), c.x, headY);
-          ctx!.shadowBlur = 0;
+          if (useGlow) ctx!.shadowBlur = 0;
         }
 
-        // Reset when entire column has fallen below screen
         if (c.gridY - c.cells.length > rows + 1) {
           const fresh = makeCol(c.x);
           c.gridY = fresh.gridY;
@@ -172,7 +180,7 @@ export function MarketRain({ opacity = 0.08, className = "", topOffset = 64 }: P
         ref={ref}
         aria-hidden
         className={`pointer-events-none fixed left-0 right-0 bottom-0 ${className}`}
-        style={{ top: topOffset, opacity, zIndex: 0 }}
+        style={{ top: topOffset, opacity, zIndex: 0, willChange: "transform" }}
       />
       {/* Scanlines */}
       <div
