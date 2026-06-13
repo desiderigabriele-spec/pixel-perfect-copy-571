@@ -1,4 +1,4 @@
-import { writeFileSync, copyFileSync, mkdirSync, readdirSync, existsSync, statSync } from "node:fs";
+import { writeFileSync, copyFileSync, mkdirSync, readdirSync, existsSync } from "node:fs";
 import { join } from "node:path";
 
 const srcDir = ".netlify/functions-internal/server";
@@ -24,18 +24,10 @@ function copyDir(src, dest) {
 
 copyDir(srcDir, destDir);
 
-// Netlify v2 function entry point (path: "/*" routes all traffic here)
+// Simple v2 function entry — routing is handled by netlify.toml redirect
 writeFileSync(
   join(destDir, "server.mjs"),
-  `export { default } from "./main.mjs";
-export const config = {
-  name: "server handler",
-  path: "/*",
-  nodeBundler: "none",
-  includedFiles: ["**"],
-  preferStatic: true,
-};
-`,
+  `export { default } from "./main.mjs";\n`,
 );
 
 console.log("[post-build] netlify/functions/server/ ready");
