@@ -1,5 +1,5 @@
-// Gate gestito dall'integrazione Lovable Cloud:
-// reindirizza a /auth se non loggato. ssr:false perché la sessione vive in localStorage.
+// Auth gate: reindirizza a /auth se non loggato.
+// ssr:false — la sessione Supabase vive in localStorage (client-only).
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
 

@@ -4,13 +4,13 @@
 // Variabili d'ambiente richieste (Supabase Dashboard → Edge Functions → Secrets):
 //   RESEND_API_KEY  — chiave API di https://resend.com
 //   HTT_FROM_EMAIL  — es. "HTT <noreply@hackthetrading.com>"
-//   HTT_APP_URL     — es. "https://pixel-perfect-copy-571.lovable.app"
+//   HTT_APP_URL     — URL Netlify del sito, es. "https://tuosito.netlify.app"
 
 import { createClient } from "jsr:@supabase/supabase-js@2";
 
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY") ?? "";
 const FROM = Deno.env.get("HTT_FROM_EMAIL") ?? "HACK_THE_TRADING <noreply@hackthetrading.com>";
-const APP_URL = Deno.env.get("HTT_APP_URL") ?? "https://pixel-perfect-copy-571.lovable.app";
+const APP_URL = Deno.env.get("HTT_APP_URL") ?? "https://hackthetrading.netlify.app";
 
 interface Payload {
   type: "challenge_live" | "challenge_settled" | "verification_reviewed";
