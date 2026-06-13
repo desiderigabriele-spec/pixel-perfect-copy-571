@@ -30,6 +30,7 @@ import { Route as AuthenticatedOnboardingAvatradeRouteImport } from './routes/_a
 import { Route as AuthenticatedChallengesNewRouteImport } from './routes/_authenticated/challenges.new'
 import { Route as AuthenticatedChallengesIdRouteImport } from './routes/_authenticated/challenges.$id'
 import { Route as ApiPublicCardUsernameRouteImport } from './routes/api/public/card.$username'
+import { Route as PerITraderRouteImport } from './routes/per-i-trader'
 
 const TournamentsRoute = TournamentsRouteImport.update({
   id: '/tournaments',
@@ -140,6 +141,11 @@ const ApiPublicCardUsernameRoute = ApiPublicCardUsernameRouteImport.update({
   path: '/api/public/card/$username',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PerITraderRoute = PerITraderRouteImport.update({
+  id: '/per-i-trader',
+  path: '/per-i-trader',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -162,6 +168,7 @@ export interface FileRoutesByFullPath {
   '/onboarding/verify': typeof AuthenticatedOnboardingVerifyRoute
   '/tournaments/new': typeof AuthenticatedTournamentsNewRoute
   '/api/public/card/$username': typeof ApiPublicCardUsernameRoute
+  '/per-i-trader': typeof PerITraderRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -184,6 +191,7 @@ export interface FileRoutesByTo {
   '/onboarding/verify': typeof AuthenticatedOnboardingVerifyRoute
   '/tournaments/new': typeof AuthenticatedTournamentsNewRoute
   '/api/public/card/$username': typeof ApiPublicCardUsernameRoute
+  '/per-i-trader': typeof PerITraderRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -208,6 +216,7 @@ export interface FileRoutesById {
   '/_authenticated/onboarding/verify': typeof AuthenticatedOnboardingVerifyRoute
   '/_authenticated/tournaments/new': typeof AuthenticatedTournamentsNewRoute
   '/api/public/card/$username': typeof ApiPublicCardUsernameRoute
+  '/per-i-trader': typeof PerITraderRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -232,6 +241,7 @@ export interface FileRouteTypes {
     | '/onboarding/verify'
     | '/tournaments/new'
     | '/api/public/card/$username'
+    | '/per-i-trader'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -254,6 +264,7 @@ export interface FileRouteTypes {
     | '/onboarding/verify'
     | '/tournaments/new'
     | '/api/public/card/$username'
+    | '/per-i-trader'
   id:
     | '__root__'
     | '/'
@@ -277,6 +288,7 @@ export interface FileRouteTypes {
     | '/_authenticated/onboarding/verify'
     | '/_authenticated/tournaments/new'
     | '/api/public/card/$username'
+    | '/per-i-trader'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -291,6 +303,7 @@ export interface RootRouteChildren {
   LiveIdRoute: typeof LiveIdRoute
   UUsernameRoute: typeof UUsernameRoute
   ApiPublicCardUsernameRoute: typeof ApiPublicCardUsernameRoute
+  PerITraderRoute: typeof PerITraderRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -442,6 +455,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicCardUsernameRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/per-i-trader': {
+      id: '/per-i-trader'
+      path: '/per-i-trader'
+      fullPath: '/per-i-trader'
+      preLoaderRoute: typeof PerITraderRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -508,6 +528,7 @@ const rootRouteChildren: RootRouteChildren = {
   LiveIdRoute: LiveIdRoute,
   UUsernameRoute: UUsernameRoute,
   ApiPublicCardUsernameRoute: ApiPublicCardUsernameRoute,
+  PerITraderRoute: PerITraderRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
