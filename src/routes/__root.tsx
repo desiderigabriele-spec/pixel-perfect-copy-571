@@ -146,7 +146,7 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <MarketRain opacity={0.22} topOffset={64} />
+      <MarketRain opacity={0.08} topOffset={64} />
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <Outlet />
     </QueryClientProvider>
