@@ -29,7 +29,6 @@ const FONT_SIZE = 14;
 const CELL_W = Math.round(FONT_SIZE * 1.7); // 24
 const GREEN = "#00FF41";
 const RED = "#FF0033";
-// Green head slightly brighter than trail for glow-less fallback
 const GREEN_HEAD = "#AFFFCC";
 const RED_HEAD = "#FFAAB5";
 
@@ -42,35 +41,45 @@ export function MarketRain({ opacity = 0.15, className = "", topOffset = 64 }: P
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    // Cap DPR at 2: a 3× DPR phone draws 9× pixels per frame — way too slow
+    // Cap DPR at 2: a 3× phone draws 9× pixels per frame — far too slow.
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
-    // shadowBlur is the heaviest canvas op on mobile — skip it
-    const useGlow = !window.matchMedia("(hover: none) and (pointer: coarse)").matches;
-    // Throttle to 20fps on touch devices, 30fps on desktop
-    const FRAME_MS = useGlow ? 1000 / 30 : 1000 / 20;
+    // shadowBlur is the heaviest 2D op on mobile — skip it on touch devices.
+    const isTouch = window.matchMedia("(hover: none) and (pointer: coarse)").matches;
+    const useGlow = !isTouch;
+    const FRAME_MS = isTouch ? 1000 / 20 : 1000 / 30;
 
     let cols: Col[] = [];
     let w = 0;
     let h = 0;
+    let lastCount = -1;
 
     function totalRows() {
       return Math.ceil(h / FONT_SIZE) + 2;
     }
 
-    function makeCol(x: number, gridY?: number): Col {
+    // seeded: pre-fill trail + place head on-screen so the first frame looks full.
+    function makeCol(x: number, seeded: boolean): Col {
       const maxTrail = 10 + Math.floor(Math.random() * 10);
+      const cells = [initialValue()];
+      let gridY: number;
+      if (seeded) {
+        gridY = Math.floor(Math.random() * (totalRows() + maxTrail));
+        const pre = Math.floor(Math.random() * maxTrail);
+        for (let i = 0; i < pre; i++) cells.push(initialValue());
+      } else {
+        gridY = -(1 + Math.floor(Math.random() * 8));
+      }
       return {
         x,
-        gridY: gridY ?? -(1 + Math.floor(Math.random() * 8)),
+        gridY,
         stepFrac: Math.random(),
         speed: 0.2 + Math.random() * 0.35,
-        cells: [initialValue()],
+        cells,
         maxTrail,
       };
     }
 
-    function resize() {
+    function applyResize() {
       w = window.innerWidth;
       h = window.innerHeight - topOffset;
       canvas!.width = Math.floor(w * dpr);
@@ -79,18 +88,26 @@ export function MarketRain({ opacity = 0.15, className = "", topOffset = 64 }: P
       canvas!.style.height = `${h}px`;
       ctx!.setTransform(1, 0, 0, 1, 0, 0);
       ctx!.scale(dpr, dpr);
+      // Only rebuild columns when the column count actually changes (e.g. rotation
+      // or desktop resize). Mobile scroll only changes height via the address bar —
+      // keep the existing columns so the rain doesn't reset on every scroll.
       const count = Math.floor(w / CELL_W);
-      const rows = totalRows();
-      cols = Array.from({ length: count }, (_, i) =>
-        makeCol(
-          i * CELL_W + CELL_W / 2,
-          Math.floor(Math.random() * rows * 1.5) - rows,
-        ),
-      );
+      if (count !== lastCount) {
+        lastCount = count;
+        cols = Array.from({ length: count }, (_, i) =>
+          makeCol(i * CELL_W + CELL_W / 2, true),
+        );
+      }
     }
 
-    resize();
-    window.addEventListener("resize", resize);
+    let resizeTimer = 0;
+    function onResize() {
+      clearTimeout(resizeTimer);
+      resizeTimer = window.setTimeout(applyResize, 150);
+    }
+
+    applyResize();
+    window.addEventListener("resize", onResize);
 
     function drawFrame() {
       ctx!.fillStyle = "#0D0D0D";
@@ -113,7 +130,7 @@ export function MarketRain({ opacity = 0.15, className = "", topOffset = 64 }: P
 
         const len = c.cells.length;
 
-        // Trail (oldest → newest so head renders on top)
+        // Trail (oldest → newest so the head renders on top).
         ctx!.shadowBlur = 0;
         for (let i = len - 1; i >= 1; i--) {
           const rowY = (c.gridY - i) * FONT_SIZE;
@@ -126,7 +143,7 @@ export function MarketRain({ opacity = 0.15, className = "", topOffset = 64 }: P
           ctx!.fillText(label(v), c.x, rowY);
         }
 
-        // Head
+        // Head.
         const headY = c.gridY * FONT_SIZE;
         ctx!.globalAlpha = 1;
         if (headY >= -FONT_SIZE && headY <= h + FONT_SIZE) {
@@ -141,8 +158,9 @@ export function MarketRain({ opacity = 0.15, className = "", topOffset = 64 }: P
           if (useGlow) ctx!.shadowBlur = 0;
         }
 
+        // Respawn above the top once the whole column has fallen off the bottom.
         if (c.gridY - c.cells.length > rows + 1) {
-          const fresh = makeCol(c.x);
+          const fresh = makeCol(c.x, false);
           c.gridY = fresh.gridY;
           c.stepFrac = fresh.stepFrac;
           c.speed = fresh.speed;
@@ -153,9 +171,6 @@ export function MarketRain({ opacity = 0.15, className = "", topOffset = 64 }: P
 
       ctx!.globalAlpha = 1;
     }
-
-    drawFrame();
-    if (reduce) return () => window.removeEventListener("resize", resize);
 
     let raf = 0;
     let last = 0;
@@ -170,7 +185,8 @@ export function MarketRain({ opacity = 0.15, className = "", topOffset = 64 }: P
 
     return () => {
       cancelAnimationFrame(raf);
-      window.removeEventListener("resize", resize);
+      clearTimeout(resizeTimer);
+      window.removeEventListener("resize", onResize);
     };
   }, [topOffset]);
 
