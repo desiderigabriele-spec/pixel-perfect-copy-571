@@ -5,6 +5,16 @@ import { getRequest } from "@tanstack/react-start/server";
 import { createClient } from "@supabase/supabase-js";
 import type { Database } from "./types";
 
+// Il costruttore di RealtimeClient richiede un WebSocket nativo (assente in
+// Node < 22) e lancerebbe un errore ad ogni createClient() in questa middleware
+// (eseguita da ogni server function). Questo client non usa mai il realtime,
+// quindi passiamo un transport finto per evitare il throw nel costruttore.
+class NoopWebSocket {
+  constructor() {
+    throw new Error("Realtime WebSocket non disponibile nella server middleware");
+  }
+}
+
 export const requireSupabaseAuth = createMiddleware({ type: "function" }).server(
   async ({ next }) => {
     const SUPABASE_URL = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL;
@@ -55,6 +65,7 @@ export const requireSupabaseAuth = createMiddleware({ type: "function" }).server
         persistSession: false,
         autoRefreshToken: false,
       },
+      realtime: { transport: NoopWebSocket as never },
     });
 
     const { data, error } = await supabase.auth.getClaims(token);
