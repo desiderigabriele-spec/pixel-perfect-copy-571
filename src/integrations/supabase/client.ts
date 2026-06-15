@@ -5,7 +5,19 @@
 import { createClient } from "@supabase/supabase-js";
 import type { Database } from "./types";
 
+// Transport WebSocket finto, usato solo lato server (SSR Nitro su Node 20).
+// Il costruttore di RealtimeClient richiede un WebSocket; Node < 22 non lo ha
+// nativo e lancerebbe un errore. Il realtime viene usato solo nel browser
+// (dentro useEffect), quindi server-side non si connette mai: basta evitare
+// il throw nel costruttore. Nel bundle browser questo non viene mai usato.
+class NoopWebSocket {
+  constructor() {
+    throw new Error("Realtime WebSocket non disponibile lato server");
+  }
+}
+
 function createSupabaseClient() {
+  const isServer = typeof window === "undefined";
   // import.meta.env per il bundle client (Vite); process.env per l'SSR Nitro.
   const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL;
   const SUPABASE_PUBLISHABLE_KEY =
@@ -23,10 +35,13 @@ function createSupabaseClient() {
 
   return createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
     auth: {
-      storage: typeof window !== "undefined" ? localStorage : undefined,
-      persistSession: true,
-      autoRefreshToken: true,
+      storage: isServer ? undefined : localStorage,
+      persistSession: !isServer,
+      autoRefreshToken: !isServer,
     },
+    // Server-side passa un transport finto per non far esplodere il costruttore
+    // di RealtimeClient (Node 20 senza WebSocket nativo).
+    ...(isServer ? { realtime: { transport: NoopWebSocket as never } } : {}),
   });
 }
 

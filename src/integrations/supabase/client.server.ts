@@ -2,8 +2,16 @@
 // Usare solo per operazioni admin in server functions. Mai nel bundle client.
 // Per query con RLS (utente autenticato) usa requireSupabaseAuth invece.
 import { createClient } from "@supabase/supabase-js";
-import ws from "ws";
 import type { Database } from "./types";
+
+// Il client admin non usa mai Realtime, ma il costruttore di RealtimeClient
+// richiede un WebSocket: Node < 22 non ce l'ha nativo e lancerebbe un errore.
+// Passiamo un transport finto per evitare il throw nel costruttore.
+class NoopWebSocket {
+  constructor() {
+    throw new Error("Realtime WebSocket non disponibile nel client admin");
+  }
+}
 
 function createSupabaseAdminClient() {
   const SUPABASE_URL = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL;
@@ -25,7 +33,7 @@ function createSupabaseAdminClient() {
       persistSession: false,
       autoRefreshToken: false,
     },
-    realtime: { transport: ws },
+    realtime: { transport: NoopWebSocket as never },
   });
 }
 
