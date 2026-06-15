@@ -2,6 +2,7 @@
 // Usare solo per operazioni admin in server functions. Mai nel bundle client.
 // Per query con RLS (utente autenticato) usa requireSupabaseAuth invece.
 import { createClient } from "@supabase/supabase-js";
+import ws from "ws";
 import type { Database } from "./types";
 
 function createSupabaseAdminClient() {
@@ -24,6 +25,7 @@ function createSupabaseAdminClient() {
       persistSession: false,
       autoRefreshToken: false,
     },
+    realtime: { transport: ws },
   });
 }
 

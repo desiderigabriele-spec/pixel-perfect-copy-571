@@ -27,23 +27,12 @@ function genInviteCode(): string {
   return out;
 }
 
-// Solo gli utenti con AvaTrade verificato possono creare/joinare sfide.
-async function assertVerified(adminClient: any, userId: string) {
-  const { data } = await adminClient
-    .from("avatrade_verifications")
-    .select("status")
-    .eq("user_id", userId)
-    .maybeSingle();
-  if (data?.status !== "verified") throw new Error("not_verified");
-}
-
 // Crea una nuova sfida in stato 'waiting'.
 export const createChallenge = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) => createSchema.parse(input))
   .handler(async ({ data, context }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    await assertVerified(supabaseAdmin, context.userId);
 
     const stake_amount = data.stake_type === "points" ? data.stake_amount : 0;
 
@@ -195,7 +184,6 @@ export const joinChallenge = createServerFn({ method: "POST" })
   )
   .handler(async ({ data, context }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    await assertVerified(supabaseAdmin, context.userId);
 
     const query = supabaseAdmin.from("challenges").select("*").eq("status", "waiting");
     const filtered = data.id
