@@ -1,7 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { SIM_ASSETS, getSimAsset, type SimAsset } from "@/lib/market/assets";
-import { useLivePrice } from "@/hooks/useLivePrice";
+import { MarketProvider, useMarketPrice } from "@/components/market/MarketProvider";
+import { CandleChart } from "@/components/market/CandleChart";
 import { usePaperAccount, useOpenTrades, useClosedTrades, useOpenTrade, useCloseTrade } from "@/hooks/usePaperTrading";
 import { formatPnl, formatPips, unrealizedPnl, MIN_SIZE_USD, MAX_SIZE_USD } from "@/lib/paper-trading";
 
@@ -12,7 +13,8 @@ export const Route = createFileRoute("/_authenticated/simulatore")({
 // ── Price tile ────────────────────────────────────────────────────────────────
 
 function PriceTile({ asset, selected, onSelect }: { asset: SimAsset; selected: boolean; onSelect: () => void }) {
-  const { price, loading } = useLivePrice(asset.code);
+  const price = useMarketPrice(asset.code);
+  const loading = price === null;
   return (
     <button
       onClick={onSelect}
@@ -34,7 +36,7 @@ function PriceTile({ asset, selected, onSelect }: { asset: SimAsset; selected: b
 // ── Trade form ────────────────────────────────────────────────────────────────
 
 function TradeForm({ asset }: { asset: SimAsset }) {
-  const { price } = useLivePrice(asset.code);
+  const price = useMarketPrice(asset.code);
   const { data: accountData } = usePaperAccount();
   const openTrade = useOpenTrade();
   const [direction, setDirection] = useState<"buy" | "sell">("buy");
@@ -51,12 +53,14 @@ function TradeForm({ asset }: { asset: SimAsset }) {
     setMsg(null);
     try {
       await openTrade.mutateAsync({
-        symbol: asset.code,
-        direction,
-        size_usd: size,
-        entry_price: price,
-        sl_price: sl ? parseFloat(sl) : undefined,
-        tp_price: tp ? parseFloat(tp) : undefined,
+        data: {
+          symbol: asset.code,
+          direction,
+          size_usd: size,
+          entry_price: price,
+          sl_price: sl ? parseFloat(sl) : undefined,
+          tp_price: tp ? parseFloat(tp) : undefined,
+        },
       });
       setMsg({ type: "ok", text: `Trade aperto a ${price.toFixed(asset.decimals)}` });
       setSl(""); setTp("");
@@ -124,7 +128,7 @@ function TradeForm({ asset }: { asset: SimAsset }) {
 // ── Open position row ─────────────────────────────────────────────────────────
 
 function OpenPositionRow({ trade }: { trade: any }) {
-  const { price } = useLivePrice(trade.symbol);
+  const price = useMarketPrice(trade.symbol);
   const closeTrade = useCloseTrade();
   const asset = getSimAsset(trade.symbol);
 
@@ -133,7 +137,7 @@ function OpenPositionRow({ trade }: { trade: any }) {
 
   async function close() {
     if (!price) return;
-    await closeTrade.mutateAsync({ trade_id: trade.id, exit_price: price });
+    await closeTrade.mutateAsync({ data: { trade_id: trade.id, exit_price: price } });
   }
 
   return (
@@ -179,7 +183,14 @@ function Simulatore() {
   const openTrades = openData?.trades ?? [];
   const closedTrades = closedData?.trades ?? [];
 
+  const gridCodes = useMemo(() => PANEL_ASSETS.map((a) => a.code), []);
+  const focusCodes = useMemo(
+    () => [...new Set([selectedCode, ...openTrades.map((t) => t.symbol)])],
+    [selectedCode, openTrades],
+  );
+
   return (
+    <MarketProvider gridCodes={gridCodes} focusCodes={focusCodes}>
     <div className="min-h-screen bg-[#0D0D0D] text-white font-mono">
       <div className="max-w-6xl mx-auto p-4 space-y-4">
 
@@ -207,6 +218,9 @@ function Simulatore() {
             ))}
           </div>
         </div>
+
+        {/* Grafico a candele */}
+        <CandleChart code={selectedCode} />
 
         {/* Trade form + open positions */}
         <div className="grid md:grid-cols-2 gap-4">
@@ -261,5 +275,6 @@ function Simulatore() {
         )}
       </div>
     </div>
+    </MarketProvider>
   );
 }
