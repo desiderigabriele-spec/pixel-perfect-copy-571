@@ -8,6 +8,73 @@ export type Database = {
   };
   public: {
     Tables: {
+      paper_accounts: {
+        Row: {
+          id: string;
+          user_id: string;
+          balance: number;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          balance?: number;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          balance?: number;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      paper_trades: {
+        Row: {
+          id: string;
+          user_id: string;
+          symbol: string;
+          direction: "buy" | "sell";
+          quantity: number;
+          entry_price: number;
+          exit_price: number | null;
+          sl_price: number | null;
+          tp_price: number | null;
+          pnl: number | null;
+          pips: number | null;
+          status: "open" | "closed";
+          opened_at: string;
+          closed_at: string | null;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          symbol: string;
+          direction: "buy" | "sell";
+          quantity: number;
+          entry_price: number;
+          exit_price?: number | null;
+          sl_price?: number | null;
+          tp_price?: number | null;
+          pnl?: number | null;
+          pips?: number | null;
+          status?: "open" | "closed";
+          opened_at?: string;
+          closed_at?: string | null;
+        };
+        Update: {
+          exit_price?: number | null;
+          sl_price?: number | null;
+          tp_price?: number | null;
+          pnl?: number | null;
+          pips?: number | null;
+          status?: "open" | "closed";
+          closed_at?: string | null;
+        };
+        Relationships: [];
+      };
       avatrade_verifications: {
         Row: {
           avatrade_account_id: string;
