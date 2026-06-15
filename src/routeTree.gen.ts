@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TournamentsRouteImport } from './routes/tournaments'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as PerITraderRouteImport } from './routes/per-i-trader'
 import { Route as LiveDemoRouteImport } from './routes/live-demo'
 import { Route as LeaderboardRouteImport } from './routes/leaderboard'
 import { Route as BootRouteImport } from './routes/boot'
@@ -20,6 +21,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as UUsernameRouteImport } from './routes/u.$username'
 import { Route as TournamentsIdRouteImport } from './routes/tournaments.$id'
 import { Route as LiveIdRouteImport } from './routes/live.$id'
+import { Route as AuthenticatedSimulatoreRouteImport } from './routes/_authenticated/simulatore'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedChallengesRouteImport } from './routes/_authenticated/challenges'
@@ -30,8 +32,6 @@ import { Route as AuthenticatedOnboardingAvatradeRouteImport } from './routes/_a
 import { Route as AuthenticatedChallengesNewRouteImport } from './routes/_authenticated/challenges.new'
 import { Route as AuthenticatedChallengesIdRouteImport } from './routes/_authenticated/challenges.$id'
 import { Route as ApiPublicCardUsernameRouteImport } from './routes/api/public/card.$username'
-import { Route as PerITraderRouteImport } from './routes/per-i-trader'
-import { Route as AuthenticatedSimulatoreRouteImport } from './routes/_authenticated/simulatore'
 
 const TournamentsRoute = TournamentsRouteImport.update({
   id: '/tournaments',
@@ -41,6 +41,11 @@ const TournamentsRoute = TournamentsRouteImport.update({
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
   id: '/reset-password',
   path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PerITraderRoute = PerITraderRouteImport.update({
+  id: '/per-i-trader',
+  path: '/per-i-trader',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LiveDemoRoute = LiveDemoRouteImport.update({
@@ -86,6 +91,11 @@ const LiveIdRoute = LiveIdRouteImport.update({
   id: '/live/$id',
   path: '/live/$id',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedSimulatoreRoute = AuthenticatedSimulatoreRouteImport.update({
+  id: '/simulatore',
+  path: '/simulatore',
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
   id: '/settings',
@@ -142,16 +152,6 @@ const ApiPublicCardUsernameRoute = ApiPublicCardUsernameRouteImport.update({
   path: '/api/public/card/$username',
   getParentRoute: () => rootRouteImport,
 } as any)
-const PerITraderRoute = PerITraderRouteImport.update({
-  id: '/per-i-trader',
-  path: '/per-i-trader',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AuthenticatedSimulatoreRoute = AuthenticatedSimulatoreRouteImport.update({
-  id: '/simulatore',
-  path: '/simulatore',
-  getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -159,12 +159,14 @@ export interface FileRoutesByFullPath {
   '/boot': typeof BootRoute
   '/leaderboard': typeof LeaderboardRoute
   '/live-demo': typeof LiveDemoRoute
+  '/per-i-trader': typeof PerITraderRoute
   '/reset-password': typeof ResetPasswordRoute
   '/tournaments': typeof TournamentsRouteWithChildren
   '/admin': typeof AuthenticatedAdminRoute
   '/challenges': typeof AuthenticatedChallengesRouteWithChildren
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/simulatore': typeof AuthenticatedSimulatoreRoute
   '/live/$id': typeof LiveIdRoute
   '/tournaments/$id': typeof TournamentsIdRoute
   '/u/$username': typeof UUsernameRoute
@@ -174,8 +176,6 @@ export interface FileRoutesByFullPath {
   '/onboarding/verify': typeof AuthenticatedOnboardingVerifyRoute
   '/tournaments/new': typeof AuthenticatedTournamentsNewRoute
   '/api/public/card/$username': typeof ApiPublicCardUsernameRoute
-  '/per-i-trader': typeof PerITraderRoute
-  '/simulatore': typeof AuthenticatedSimulatoreRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -183,12 +183,14 @@ export interface FileRoutesByTo {
   '/boot': typeof BootRoute
   '/leaderboard': typeof LeaderboardRoute
   '/live-demo': typeof LiveDemoRoute
+  '/per-i-trader': typeof PerITraderRoute
   '/reset-password': typeof ResetPasswordRoute
   '/tournaments': typeof TournamentsRouteWithChildren
   '/admin': typeof AuthenticatedAdminRoute
   '/challenges': typeof AuthenticatedChallengesRouteWithChildren
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/simulatore': typeof AuthenticatedSimulatoreRoute
   '/live/$id': typeof LiveIdRoute
   '/tournaments/$id': typeof TournamentsIdRoute
   '/u/$username': typeof UUsernameRoute
@@ -198,8 +200,6 @@ export interface FileRoutesByTo {
   '/onboarding/verify': typeof AuthenticatedOnboardingVerifyRoute
   '/tournaments/new': typeof AuthenticatedTournamentsNewRoute
   '/api/public/card/$username': typeof ApiPublicCardUsernameRoute
-  '/per-i-trader': typeof PerITraderRoute
-  '/simulatore': typeof AuthenticatedSimulatoreRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -209,12 +209,14 @@ export interface FileRoutesById {
   '/boot': typeof BootRoute
   '/leaderboard': typeof LeaderboardRoute
   '/live-demo': typeof LiveDemoRoute
+  '/per-i-trader': typeof PerITraderRoute
   '/reset-password': typeof ResetPasswordRoute
   '/tournaments': typeof TournamentsRouteWithChildren
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/challenges': typeof AuthenticatedChallengesRouteWithChildren
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
+  '/_authenticated/simulatore': typeof AuthenticatedSimulatoreRoute
   '/live/$id': typeof LiveIdRoute
   '/tournaments/$id': typeof TournamentsIdRoute
   '/u/$username': typeof UUsernameRoute
@@ -224,8 +226,6 @@ export interface FileRoutesById {
   '/_authenticated/onboarding/verify': typeof AuthenticatedOnboardingVerifyRoute
   '/_authenticated/tournaments/new': typeof AuthenticatedTournamentsNewRoute
   '/api/public/card/$username': typeof ApiPublicCardUsernameRoute
-  '/per-i-trader': typeof PerITraderRoute
-  '/_authenticated/simulatore': typeof AuthenticatedSimulatoreRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -235,12 +235,14 @@ export interface FileRouteTypes {
     | '/boot'
     | '/leaderboard'
     | '/live-demo'
+    | '/per-i-trader'
     | '/reset-password'
     | '/tournaments'
     | '/admin'
     | '/challenges'
     | '/dashboard'
     | '/settings'
+    | '/simulatore'
     | '/live/$id'
     | '/tournaments/$id'
     | '/u/$username'
@@ -250,8 +252,6 @@ export interface FileRouteTypes {
     | '/onboarding/verify'
     | '/tournaments/new'
     | '/api/public/card/$username'
-    | '/per-i-trader'
-    | '/simulatore'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -259,12 +259,14 @@ export interface FileRouteTypes {
     | '/boot'
     | '/leaderboard'
     | '/live-demo'
+    | '/per-i-trader'
     | '/reset-password'
     | '/tournaments'
     | '/admin'
     | '/challenges'
     | '/dashboard'
     | '/settings'
+    | '/simulatore'
     | '/live/$id'
     | '/tournaments/$id'
     | '/u/$username'
@@ -274,8 +276,6 @@ export interface FileRouteTypes {
     | '/onboarding/verify'
     | '/tournaments/new'
     | '/api/public/card/$username'
-    | '/per-i-trader'
-    | '/simulatore'
   id:
     | '__root__'
     | '/'
@@ -284,12 +284,14 @@ export interface FileRouteTypes {
     | '/boot'
     | '/leaderboard'
     | '/live-demo'
+    | '/per-i-trader'
     | '/reset-password'
     | '/tournaments'
     | '/_authenticated/admin'
     | '/_authenticated/challenges'
     | '/_authenticated/dashboard'
     | '/_authenticated/settings'
+    | '/_authenticated/simulatore'
     | '/live/$id'
     | '/tournaments/$id'
     | '/u/$username'
@@ -299,8 +301,6 @@ export interface FileRouteTypes {
     | '/_authenticated/onboarding/verify'
     | '/_authenticated/tournaments/new'
     | '/api/public/card/$username'
-    | '/per-i-trader'
-    | '/_authenticated/simulatore'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -310,12 +310,12 @@ export interface RootRouteChildren {
   BootRoute: typeof BootRoute
   LeaderboardRoute: typeof LeaderboardRoute
   LiveDemoRoute: typeof LiveDemoRoute
+  PerITraderRoute: typeof PerITraderRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   TournamentsRoute: typeof TournamentsRouteWithChildren
   LiveIdRoute: typeof LiveIdRoute
   UUsernameRoute: typeof UUsernameRoute
   ApiPublicCardUsernameRoute: typeof ApiPublicCardUsernameRoute
-  PerITraderRoute: typeof PerITraderRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -332,6 +332,13 @@ declare module '@tanstack/react-router' {
       path: '/reset-password'
       fullPath: '/reset-password'
       preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/per-i-trader': {
+      id: '/per-i-trader'
+      path: '/per-i-trader'
+      fullPath: '/per-i-trader'
+      preLoaderRoute: typeof PerITraderRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/live-demo': {
@@ -396,6 +403,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/live/$id'
       preLoaderRoute: typeof LiveIdRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/simulatore': {
+      id: '/_authenticated/simulatore'
+      path: '/simulatore'
+      fullPath: '/simulatore'
+      preLoaderRoute: typeof AuthenticatedSimulatoreRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/settings': {
       id: '/_authenticated/settings'
@@ -467,20 +481,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicCardUsernameRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/per-i-trader': {
-      id: '/per-i-trader'
-      path: '/per-i-trader'
-      fullPath: '/per-i-trader'
-      preLoaderRoute: typeof PerITraderRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/_authenticated/simulatore': {
-      id: '/_authenticated/simulatore'
-      path: '/simulatore'
-      fullPath: '/simulatore'
-      preLoaderRoute: typeof AuthenticatedSimulatoreRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
   }
 }
 
@@ -505,10 +505,10 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedChallengesRoute: typeof AuthenticatedChallengesRouteWithChildren
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
+  AuthenticatedSimulatoreRoute: typeof AuthenticatedSimulatoreRoute
   AuthenticatedOnboardingAvatradeRoute: typeof AuthenticatedOnboardingAvatradeRoute
   AuthenticatedOnboardingVerifyRoute: typeof AuthenticatedOnboardingVerifyRoute
   AuthenticatedTournamentsNewRoute: typeof AuthenticatedTournamentsNewRoute
-  AuthenticatedSimulatoreRoute: typeof AuthenticatedSimulatoreRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
@@ -516,10 +516,10 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedChallengesRoute: AuthenticatedChallengesRouteWithChildren,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
+  AuthenticatedSimulatoreRoute: AuthenticatedSimulatoreRoute,
   AuthenticatedOnboardingAvatradeRoute: AuthenticatedOnboardingAvatradeRoute,
   AuthenticatedOnboardingVerifyRoute: AuthenticatedOnboardingVerifyRoute,
   AuthenticatedTournamentsNewRoute: AuthenticatedTournamentsNewRoute,
-  AuthenticatedSimulatoreRoute: AuthenticatedSimulatoreRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
@@ -544,12 +544,12 @@ const rootRouteChildren: RootRouteChildren = {
   BootRoute: BootRoute,
   LeaderboardRoute: LeaderboardRoute,
   LiveDemoRoute: LiveDemoRoute,
+  PerITraderRoute: PerITraderRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   TournamentsRoute: TournamentsRouteWithChildren,
   LiveIdRoute: LiveIdRoute,
   UUsernameRoute: UUsernameRoute,
   ApiPublicCardUsernameRoute: ApiPublicCardUsernameRoute,
-  PerITraderRoute: PerITraderRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
