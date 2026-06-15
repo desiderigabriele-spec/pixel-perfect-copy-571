@@ -35,7 +35,9 @@ export function renderShareCard(opts: {
       const y = 60 + r * (h / 28);
       const digit = (c * 7 + r * 3) % 10;
       const color = (c + r) % 5 === 0 ? "#FF0033" : "#00FF41";
-      rain.push(`<text x="${x.toFixed(0)}" y="${y.toFixed(0)}" font-family="monospace" font-size="18" fill="${color}" opacity="0.08">${digit}</text>`);
+      rain.push(
+        `<text x="${x.toFixed(0)}" y="${y.toFixed(0)}" font-family="monospace" font-size="18" fill="${color}" opacity="0.08">${digit}</text>`,
+      );
     }
   }
 
@@ -52,8 +54,10 @@ export function renderShareCard(opts: {
   ${rain.join("")}
   <!-- griglia decorativa -->
   <g opacity="0.12">
-    ${Array.from({ length: 20 }, (_, i) =>
-      `<line x1="0" y1="${(i * h) / 20}" x2="${w}" y2="${(i * h) / 20}" stroke="#00FF41" stroke-width="0.5"/>`
+    ${Array.from(
+      { length: 20 },
+      (_, i) =>
+        `<line x1="0" y1="${(i * h) / 20}" x2="${w}" y2="${(i * h) / 20}" stroke="#00FF41" stroke-width="0.5"/>`,
     ).join("")}
   </g>
 

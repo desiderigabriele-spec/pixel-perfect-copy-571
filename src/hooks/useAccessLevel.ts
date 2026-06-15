@@ -15,7 +15,9 @@ export function useAccessLevel(): { level: AccessLevel; loading: boolean } {
     let mounted = true;
 
     async function compute() {
-      const { data: { user } } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
       if (!user) {
         if (mounted) {
           setLevel("public");
@@ -34,7 +36,9 @@ export function useAccessLevel(): { level: AccessLevel; loading: boolean } {
     }
     compute();
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event) => {
       if (event === "SIGNED_IN" || event === "SIGNED_OUT" || event === "USER_UPDATED") {
         compute();
       }

@@ -17,9 +17,7 @@ export function LangSwitcher({ className }: { className?: string }) {
   }, [i18n]);
 
   // Durante SSR e prima dell'idratazione, usa sempre "it" (default i18n).
-  const current = mounted
-    ? (i18n.resolvedLanguage ?? "it").startsWith("en") ? "en" : "it"
-    : "it";
+  const current = mounted ? ((i18n.resolvedLanguage ?? "it").startsWith("en") ? "en" : "it") : "it";
 
   function switchTo(lng: "it" | "en") {
     if (typeof window !== "undefined") window.localStorage.setItem("htt_lang", lng);

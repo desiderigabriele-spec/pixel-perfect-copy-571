@@ -41,7 +41,9 @@ function OnboardingAvatrade() {
       <HttHeader />
       <main className="mx-auto max-w-2xl px-4 sm:px-6 py-8 space-y-6">
         <div>
-          <div className="font-mono text-xs uppercase tracking-widest text-[var(--terminal)]">// STEP 03/03</div>
+          <div className="font-mono text-xs uppercase tracking-widest text-[var(--terminal)]">
+            // STEP 03/03
+          </div>
           <h1 className="font-display text-3xl sm:text-4xl tracking-[0.08em] mt-2">
             {t("onboarding.avatradeTitle")}
           </h1>
@@ -80,7 +82,13 @@ function OnboardingAvatrade() {
               required
             />
             {error && <div className="font-mono text-xs text-[var(--alert)]">{error}</div>}
-            <TerminalButton variant="amber" size="lg" type="submit" disabled={loading} className="w-full">
+            <TerminalButton
+              variant="amber"
+              size="lg"
+              type="submit"
+              disabled={loading}
+              className="w-full"
+            >
               {t("onboarding.submit")}
             </TerminalButton>
           </form>

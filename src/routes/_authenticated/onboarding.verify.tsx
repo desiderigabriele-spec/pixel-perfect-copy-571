@@ -22,19 +22,27 @@ function VerifyPage() {
   });
 
   const status = data?.verification?.status ?? "pending";
-  const statusLabel = t(`onboarding.status${status.charAt(0).toUpperCase() + status.slice(1)}` as any);
+  const statusLabel = t(
+    `onboarding.status${status.charAt(0).toUpperCase() + status.slice(1)}` as any,
+  );
 
   return (
     <div className="min-h-screen bg-background htt-grid-bg">
       <HttHeader />
       <main className="mx-auto max-w-xl px-4 sm:px-6 py-12 space-y-6">
-        <TerminalCard label="> VERIFICATION_STATE" glow={status === "verified" ? "green" : "amber"} className="p-8 text-center">
+        <TerminalCard
+          label="> VERIFICATION_STATE"
+          glow={status === "verified" ? "green" : "amber"}
+          className="p-8 text-center"
+        >
           <div className="font-display text-3xl tracking-[0.1em]">
             {t("onboarding.verifyTitle")}
           </div>
           <p className="text-[var(--text-dim)] mt-3 text-sm">{t("onboarding.verifyDesc")}</p>
           {isLoading ? (
-            <div className="mt-6 font-mono text-sm text-[var(--terminal)]">{t("common.loading")}</div>
+            <div className="mt-6 font-mono text-sm text-[var(--terminal)]">
+              {t("common.loading")}
+            </div>
           ) : (
             <div className="mt-6 font-mono text-sm">
               {t("onboarding.verifyStatus", { status: statusLabel })}

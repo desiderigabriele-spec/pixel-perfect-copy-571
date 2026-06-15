@@ -7,7 +7,6 @@ import { TerminalCard } from "@/components/htt/TerminalCard";
 import { TerminalInput } from "@/components/htt/TerminalInput";
 import { TerminalButton } from "@/components/htt/TerminalButton";
 import { supabase } from "@/integrations/supabase/client";
-import { lovable } from "@/integrations/lovable";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({
@@ -21,7 +20,11 @@ export const Route = createFileRoute("/auth")({
 
 const signupSchema = z.object({
   email: z.string().email(),
-  username: z.string().min(3).max(20).regex(/^[a-zA-Z0-9_]+$/),
+  username: z
+    .string()
+    .min(3)
+    .max(20)
+    .regex(/^[a-zA-Z0-9_]+$/),
   password: z.string().min(6).max(72),
 });
 const loginSchema = z.object({
@@ -99,15 +102,15 @@ function AuthPage() {
 
   async function googleSignIn() {
     setError(null);
-    const result = await lovable.auth.signInWithOAuth("google", {
-      redirect_uri: `${window.location.origin}/dashboard`,
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: `${window.location.origin}/dashboard`,
+      },
     });
-    if (result.error) {
-      setError(t("auth.errorGeneric", { message: String(result.error.message ?? result.error) }));
-      return;
+    if (error) {
+      setError(t("auth.errorGeneric", { message: error.message }));
     }
-    if (result.redirected) return;
-    navigate({ to: "/dashboard", replace: true });
   }
 
   return (
@@ -159,7 +162,13 @@ function AuthPage() {
             {error && <div className="font-mono text-xs text-[var(--alert)]">{error}</div>}
             {info && <div className="font-mono text-xs text-[var(--terminal)]">{info}</div>}
 
-            <TerminalButton type="submit" variant="primary" size="lg" disabled={loading} className="w-full">
+            <TerminalButton
+              type="submit"
+              variant="primary"
+              size="lg"
+              disabled={loading}
+              className="w-full"
+            >
               {mode === "signup"
                 ? t("auth.submitSignup")
                 : mode === "forgot"

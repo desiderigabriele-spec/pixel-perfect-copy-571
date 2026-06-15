@@ -1,8 +1,9 @@
 import { createFileRoute, Link, Outlet, useLocation } from "@tanstack/react-router";
-import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useTranslation } from "@/lib/translate";
+import { supabase } from "@/integrations/supabase/client";
 import { HttHeader } from "@/components/htt/HttHeader";
 import { TerminalCard } from "@/components/htt/TerminalCard";
 import { TerminalButton } from "@/components/htt/TerminalButton";
@@ -28,13 +29,36 @@ function ChallengesHub() {
   const [tab, setTab] = useState<"open" | "mine">("open");
   const [joinCode, setJoinCode] = useState("");
   const [joinErr, setJoinErr] = useState<string | null>(null);
+  const queryClient = useQueryClient();
 
   const fetchOpen = useServerFn(listOpenChallenges);
   const fetchMine = useServerFn(listMyChallenges);
   const callJoin = useServerFn(joinChallenge);
 
-  const { data: open } = useQuery({ queryKey: ["challenges-open"], queryFn: () => fetchOpen() });
-  const { data: mine } = useQuery({ queryKey: ["challenges-mine"], queryFn: () => fetchMine() });
+  const { data: open } = useQuery({
+    queryKey: ["challenges-open"],
+    queryFn: () => fetchOpen(),
+    refetchInterval: 15_000,
+  });
+  const { data: mine } = useQuery({
+    queryKey: ["challenges-mine"],
+    queryFn: () => fetchMine(),
+    refetchInterval: 15_000,
+  });
+
+  // Realtime: aggiorna la lobby quando una sfida viene creata, accettata o annullata.
+  useEffect(() => {
+    const channel = supabase
+      .channel("challenges-lobby")
+      .on("postgres_changes", { event: "*", schema: "public", table: "challenges" }, () => {
+        queryClient.invalidateQueries({ queryKey: ["challenges-open"] });
+        queryClient.invalidateQueries({ queryKey: ["challenges-mine"] });
+      })
+      .subscribe();
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [queryClient]);
 
   async function onJoinByCode(e: React.FormEvent) {
     e.preventDefault();
@@ -61,7 +85,9 @@ function ChallengesHub() {
             </h1>
           </div>
           <Link to="/challenges/new">
-            <TerminalButton variant="primary" size="lg">+ {t("challenges.create")}</TerminalButton>
+            <TerminalButton variant="primary" size="lg">
+              + {t("challenges.create")}
+            </TerminalButton>
           </Link>
         </div>
 
@@ -78,7 +104,9 @@ function ChallengesHub() {
                 placeholder="ABC123"
               />
             </div>
-            <TerminalButton variant="amber" type="submit">{t("challenges.join")}</TerminalButton>
+            <TerminalButton variant="amber" type="submit">
+              {t("challenges.join")}
+            </TerminalButton>
           </form>
           {joinErr && <div className="mt-2 font-mono text-xs text-[var(--alert)]">{joinErr}</div>}
         </TerminalCard>
@@ -131,9 +159,8 @@ function OpenList({ items, onJoin }: { items: any[]; onJoin: (a: any) => Promise
                 {sym?.label ?? c.symbol}
               </div>
               <div className="font-mono text-[11px] text-[var(--text-dim)] mt-1">
-                {dur?.label} · {c.stake_type === "points"
-                  ? `${c.stake_amount} HTT`
-                  : t("challenges.honor")}
+                {dur?.label} ·{" "}
+                {c.stake_type === "points" ? `${c.stake_amount} HTT` : t("challenges.honor")}
               </div>
             </div>
             <TerminalButton
@@ -174,26 +201,24 @@ function MineList({ items }: { items: any[] }) {
         const sym = getSymbol(c.symbol);
         const dur = DURATIONS.find((d) => d.value === c.duration_minutes);
         return (
-          <Link
-            key={c.id}
-            to="/challenges/$id"
-            params={{ id: c.id }}
-            className="block"
-          >
+          <Link key={c.id} to="/challenges/$id" params={{ id: c.id }} className="block">
             <TerminalCard className="p-4 flex items-center gap-4 hover:border-[var(--terminal)] transition-colors">
               <div className="flex-1 min-w-0">
                 <div className="font-display text-xl tracking-wider truncate">
                   {sym?.label ?? c.symbol}
                 </div>
                 <div className="font-mono text-[11px] text-[var(--text-dim)] mt-1">
-                  {dur?.label} · {c.stake_type === "points" ? `${c.stake_amount} HTT` : t("challenges.honor")}
+                  {dur?.label} ·{" "}
+                  {c.stake_type === "points" ? `${c.stake_amount} HTT` : t("challenges.honor")}
                   {c.invite_code ? ` · CODE ${c.invite_code}` : ""}
                 </div>
               </div>
-              <span className={cn(
-                "inline-block px-2 py-0.5 border font-mono text-[10px] uppercase tracking-widest",
-                statusColor[c.status] ?? "",
-              )}>
+              <span
+                className={cn(
+                  "inline-block px-2 py-0.5 border font-mono text-[10px] uppercase tracking-widest",
+                  statusColor[c.status] ?? "",
+                )}
+              >
                 {t(`challenges.status.${c.status}`)}
               </span>
             </TerminalCard>

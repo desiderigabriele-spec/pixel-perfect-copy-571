@@ -37,7 +37,12 @@ export function ChallengeChat({ challengeId, canPost, myId, creatorId }: Props) 
       .channel(`chat-${challengeId}`)
       .on(
         "postgres_changes",
-        { event: "INSERT", schema: "public", table: "challenge_messages", filter: `challenge_id=eq.${challengeId}` },
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "challenge_messages",
+          filter: `challenge_id=eq.${challengeId}`,
+        },
         () => qc.invalidateQueries({ queryKey: ["chat", challengeId] }),
       )
       .subscribe();
@@ -73,10 +78,7 @@ export function ChallengeChat({ challengeId, canPost, myId, creatorId }: Props) 
 
   return (
     <TerminalCard label="> CHAT" className="p-0 overflow-hidden">
-      <div
-        ref={scrollRef}
-        className="h-64 overflow-y-auto p-4 space-y-3 border-b border-border"
-      >
+      <div ref={scrollRef} className="h-64 overflow-y-auto p-4 space-y-3 border-b border-border">
         {items.length === 0 ? (
           <p className="font-mono text-[10px] uppercase tracking-widest text-[var(--text-dim)] text-center pt-12">
             {t("chat.empty")}

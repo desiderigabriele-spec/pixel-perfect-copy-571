@@ -20,6 +20,10 @@ dist-ssr
 .wrangler/
 .dev.vars
 
+# Netlify build output
+.netlify/
+netlify/functions/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

@@ -65,11 +65,15 @@ function AdminPage() {
         ) : (
           <div className="space-y-3">
             {pending.map((r: any) => (
-              <TerminalCard key={r.id} className="p-4 flex flex-col sm:flex-row gap-3 sm:items-center justify-between">
+              <TerminalCard
+                key={r.id}
+                className="p-4 flex flex-col sm:flex-row gap-3 sm:items-center justify-between"
+              >
                 <div className="font-mono text-sm space-y-1">
                   <div className="font-display text-lg text-foreground">{r.username}</div>
                   <div className="text-[var(--text-dim)] text-xs">
-                    {t("admin.accountId")}: <span className="text-foreground">{r.avatrade_account_id}</span>
+                    {t("admin.accountId")}:{" "}
+                    <span className="text-foreground">{r.avatrade_account_id}</span>
                   </div>
                   <div className="text-[var(--text-dim)] text-xs">
                     {t("admin.submittedAt")} {new Date(r.submitted_at).toLocaleString()}

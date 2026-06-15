@@ -46,18 +46,34 @@ function PublicProfile() {
   const cells: Array<{ k: string; v: string; tone: "green" | "amber" | "alert" | "dim" }> = [
     { k: "wins", v: String(stats?.wins ?? 0), tone: "green" },
     { k: "losses", v: String(stats?.losses ?? 0), tone: "alert" },
-    { k: "pips", v: (stats?.pips ?? 0) > 0 ? `+${stats!.pips}` : String(stats?.pips ?? 0), tone: (stats?.pips ?? 0) >= 0 ? "green" : "alert" },
-    { k: "streak", v: stats && stats.streak !== 0 ? `${stats.streak > 0 ? "+" : ""}${stats.streak}` : "—", tone: (stats?.streak ?? 0) >= 0 ? "amber" : "alert" },
+    {
+      k: "pips",
+      v: (stats?.pips ?? 0) > 0 ? `+${stats!.pips}` : String(stats?.pips ?? 0),
+      tone: (stats?.pips ?? 0) >= 0 ? "green" : "alert",
+    },
+    {
+      k: "streak",
+      v: stats && stats.streak !== 0 ? `${stats.streak > 0 ? "+" : ""}${stats.streak}` : "—",
+      tone: (stats?.streak ?? 0) >= 0 ? "amber" : "alert",
+    },
   ];
   const toneClass = (t: "green" | "amber" | "alert" | "dim") =>
-    t === "green" ? "text-[var(--terminal)] htt-text-glow-green" :
-    t === "amber" ? "text-[var(--amber)]" :
-    t === "alert" ? "text-[var(--alert)]" : "text-[var(--text-dim)]";
+    t === "green"
+      ? "text-[var(--terminal)] htt-text-glow-green"
+      : t === "amber"
+        ? "text-[var(--amber)]"
+        : t === "alert"
+          ? "text-[var(--alert)]"
+          : "text-[var(--text-dim)]";
   return (
     <div className="min-h-screen bg-background htt-grid-bg">
       <HttHeader />
       <main className="mx-auto max-w-3xl px-4 sm:px-6 py-10 space-y-6">
-        <TerminalCard label="> TRADER_PROFILE" glow="green" className="p-6 sm:p-8 flex items-center gap-6">
+        <TerminalCard
+          label="> TRADER_PROFILE"
+          glow="green"
+          className="p-6 sm:p-8 flex items-center gap-6"
+        >
           <GlitchAvatar name={profile.username} color="green" size={104} />
           <div className="min-w-0">
             <div className="font-mono text-[10px] uppercase tracking-widest text-[var(--text-dim)]">
@@ -79,12 +95,16 @@ function PublicProfile() {
                 <div className="font-mono text-[10px] uppercase tracking-widest text-[var(--text-dim)]">
                   {t(`profile.stats.${c.k}`)}
                 </div>
-                <div className={`font-display text-3xl tabular-nums ${toneClass(c.tone)}`}>{c.v}</div>
+                <div className={`font-display text-3xl tabular-nums ${toneClass(c.tone)}`}>
+                  {c.v}
+                </div>
               </div>
             ))}
           </div>
           {(!stats || stats.played === 0) && (
-            <p className="mt-4 font-mono text-xs text-[var(--text-dim)]">{t("profile.stats.placeholder")}</p>
+            <p className="mt-4 font-mono text-xs text-[var(--text-dim)]">
+              {t("profile.stats.placeholder")}
+            </p>
           )}
           {stats && stats.played > 0 && (
             <p className="mt-4 font-mono text-xs text-[var(--text-dim)]">
@@ -121,7 +141,9 @@ function ProfileError({ message }: { message: string }) {
     <div className="min-h-screen bg-background htt-grid-bg">
       <HttHeader />
       <main className="mx-auto max-w-md px-4 py-20 text-center">
-        <div className="font-mono text-xs uppercase tracking-widest text-[var(--alert)]">// SYSTEM_ERROR</div>
+        <div className="font-mono text-xs uppercase tracking-widest text-[var(--alert)]">
+          // SYSTEM_ERROR
+        </div>
         <p className="mt-2 font-mono text-xs text-[var(--text-dim)]">{message}</p>
       </main>
     </div>

@@ -60,11 +60,7 @@ export interface I18nLike {
 }
 
 export function useTranslation(): { t: TFunction; i18n: I18nLike } {
-  const lang = useSyncExternalStore(
-    subscribe,
-    getLang,
-    () => "it" as const,
-  );
+  const lang = useSyncExternalStore(subscribe, getLang, () => "it" as const);
 
   const t = useCallback<TFunction>(
     (key, vars) => {

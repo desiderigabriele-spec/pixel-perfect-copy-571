@@ -10,10 +10,7 @@ import { supabase } from "@/integrations/supabase/client";
 export const Route = createFileRoute("/reset-password")({
   ssr: false,
   head: () => ({
-    meta: [
-      { title: "Reset Password — HTT" },
-      { name: "robots", content: "noindex" },
-    ],
+    meta: [{ title: "Reset Password — HTT" }, { name: "robots", content: "noindex" }],
   }),
   component: ResetPasswordPage,
 });
@@ -83,7 +80,13 @@ function ResetPasswordPage() {
             />
             {error && <div className="font-mono text-xs text-[var(--alert)]">{error}</div>}
             {info && <div className="font-mono text-xs text-[var(--terminal)]">{info}</div>}
-            <TerminalButton type="submit" variant="primary" size="lg" disabled={loading || !ready} className="w-full">
+            <TerminalButton
+              type="submit"
+              variant="primary"
+              size="lg"
+              disabled={loading || !ready}
+              className="w-full"
+            >
               {t("auth.updatePassword")}
             </TerminalButton>
           </form>

@@ -24,11 +24,11 @@ function mulberry32(seed: number): () => number {
 
 export type TraderStats = {
   trades_count: number;
-  win_rate: number;       // 0..1
-  profit_factor: number;  // >0
-  sharpe: number;         // ~0..3
+  win_rate: number; // 0..1
+  profit_factor: number; // >0
+  sharpe: number; // ~0..3
   max_drawdown_pct: number; // 0..1
-  avg_rr: number;         // ~0.5..3
+  avg_rr: number; // ~0.5..3
   track_record_days: number;
   equity_curve: number[]; // 24 punti normalizzati intorno a 100
   consistency_score: number; // 0..100
@@ -36,9 +36,9 @@ export type TraderStats = {
 
 // Score di consistenza: combinazione pesata.
 function computeConsistency(s: Omit<TraderStats, "consistency_score">): number {
-  const wr = s.win_rate;                       // 0..1
+  const wr = s.win_rate; // 0..1
   const dd = 1 - Math.min(1, s.max_drawdown_pct / 0.4); // 0..1 (40% dd = 0)
-  const sh = Math.min(1, s.sharpe / 3);        // 0..1
+  const sh = Math.min(1, s.sharpe / 3); // 0..1
   const tr = Math.min(1, s.track_record_days / 365); // 0..1
   const raw = 0.4 * wr + 0.3 * dd + 0.2 * sh + 0.1 * tr;
   return Math.round(raw * 100);
@@ -47,11 +47,11 @@ function computeConsistency(s: Omit<TraderStats, "consistency_score">): number {
 export function getMockStats(userId: string): TraderStats {
   const rng = mulberry32(hashString(userId));
   const trades_count = Math.floor(40 + rng() * 280);
-  const win_rate = 0.42 + rng() * 0.28;        // 42-70%
-  const profit_factor = 0.9 + rng() * 1.8;     // 0.9-2.7
-  const sharpe = 0.4 + rng() * 2.2;            // 0.4-2.6
+  const win_rate = 0.42 + rng() * 0.28; // 42-70%
+  const profit_factor = 0.9 + rng() * 1.8; // 0.9-2.7
+  const sharpe = 0.4 + rng() * 2.2; // 0.4-2.6
   const max_drawdown_pct = 0.05 + rng() * 0.3; // 5-35%
-  const avg_rr = 0.8 + rng() * 1.8;            // 0.8-2.6
+  const avg_rr = 0.8 + rng() * 1.8; // 0.8-2.6
   const track_record_days = Math.floor(30 + rng() * 600);
 
   // Equity curve: 24 punti, drift positivo proporzionale al PF.

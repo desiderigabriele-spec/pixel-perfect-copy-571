@@ -30,18 +30,29 @@ export const Route = createFileRoute("/live/$id")({
     return {
       meta: [
         { title },
-        { name: "description", content: "Sfida HTT live — guarda i trader gareggiare in tempo reale, dati verificati AvaTrade." },
+        {
+          name: "description",
+          content:
+            "Sfida HTT live — guarda i trader gareggiare in tempo reale, dati verificati AvaTrade.",
+        },
         { property: "og:title", content: title },
       ],
     };
   },
-  errorComponent: ({ error }) => <div className="p-8 font-mono text-[var(--alert)]">// {error.message}</div>,
+  errorComponent: ({ error }) => (
+    <div className="p-8 font-mono text-[var(--alert)]">// {error.message}</div>
+  ),
   notFoundComponent: () => (
     <div className="min-h-screen bg-background htt-grid-bg">
       <HttHeader />
       <main className="mx-auto max-w-2xl p-10 text-center">
         <h1 className="font-display text-3xl text-foreground">Live non trovata</h1>
-        <Link to="/live-demo" className="mt-4 inline-block font-mono text-xs text-[var(--terminal)]">← torna alle live</Link>
+        <Link
+          to="/live-demo"
+          className="mt-4 inline-block font-mono text-xs text-[var(--terminal)]"
+        >
+          ← torna alle live
+        </Link>
       </main>
     </div>
   ),
@@ -85,12 +96,20 @@ function LivePage() {
             @{match.creator?.username} vs @{match.opponent?.username}
           </h1>
           <div className="mt-1 font-mono text-xs text-[var(--text-dim)] tabular-nums">
-            {livePrice.toLocaleString("en-US", { minimumFractionDigits: decimals, maximumFractionDigits: decimals })} · VERIFICATO AVATRADE
+            {livePrice.toLocaleString("en-US", {
+              minimumFractionDigits: decimals,
+              maximumFractionDigits: decimals,
+            })}{" "}
+            · VERIFICATO AVATRADE
           </div>
         </div>
         <div className="text-right font-mono text-xs">
-          <div className="text-[var(--text-dim)] uppercase tracking-widest">{t("live.timeLeft")}</div>
-          <div className="text-foreground text-2xl tabular-nums">{hh}:{mm}:{ss}</div>
+          <div className="text-[var(--text-dim)] uppercase tracking-widest">
+            {t("live.timeLeft")}
+          </div>
+          <div className="text-foreground text-2xl tabular-nums">
+            {hh}:{mm}:{ss}
+          </div>
         </div>
       </div>
 
@@ -160,7 +179,9 @@ function LivePage() {
               <TraderWebcam username={match.opponent?.username ?? "?"} side={match.opponent_side} />
             </div>
           ) : (
-            <div className="h-[60vh]"><SpectatorChat challengeId={match.id} /></div>
+            <div className="h-[60vh]">
+              <SpectatorChat challengeId={match.id} />
+            </div>
           )}
         </div>
       </main>

@@ -16,9 +16,14 @@ export const Route = createFileRoute("/api/public/card/$username")({
         const url = new URL(request.url);
         const format = url.searchParams.get("format") === "post" ? "post" : "story";
         const typeParam = url.searchParams.get("type") ?? "challenge";
-        const type = (["challenge","top10","win","rank","milestone"] as const).includes(typeParam as any)
-          ? (typeParam as any) : "challenge";
-        const rank = url.searchParams.get("rank") ? Number(url.searchParams.get("rank")) : undefined;
+        const type = (["challenge", "top10", "win", "rank", "milestone"] as const).includes(
+          typeParam as any,
+        )
+          ? (typeParam as any)
+          : "challenge";
+        const rank = url.searchParams.get("rank")
+          ? Number(url.searchParams.get("rank"))
+          : undefined;
 
         const username = params.username.replace(/[^a-zA-Z0-9_]/g, "").slice(0, 20);
         if (!username) return new Response("Bad username", { status: 400 });
