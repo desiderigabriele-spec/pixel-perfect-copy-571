@@ -19,6 +19,10 @@ export function useMarketPrice(code: string): number | null {
   return prices[code] ?? null;
 }
 
+export function useAllPrices(): Record<string, number> {
+  return useContext(MarketCtx).prices;
+}
+
 export function MarketProvider({
   gridCodes,
   focusCodes,

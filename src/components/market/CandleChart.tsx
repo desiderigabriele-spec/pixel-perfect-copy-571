@@ -21,24 +21,26 @@ const TIMEFRAMES = [
 
 type Tf = (typeof TIMEFRAMES)[number]["value"];
 
-export function CandleChart({ code }: { code: string }) {
+function CandleChartInner({ code }: { code: string }) {
   const [tf, setTf] = useState<Tf>("5min");
   const { candles, loading, error } = useCandles(code, tf, 150);
   const live = useMarketPrice(code);
   const asset = getSimAsset(code);
+  const decimals = asset?.decimals ?? 2;
 
   const containerRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<IChartApi | null>(null);
   const seriesRef = useRef<ISeriesApi<"Candlestick"> | null>(null);
   const lastBarRef = useRef<CandlestickData | null>(null);
 
-  const decimals = asset?.decimals ?? 2;
-
-  // Crea il grafico (ricreato se cambia asset: cambia la precisione del prezzo)
+  // Create chart once on mount
   useEffect(() => {
-    if (!containerRef.current) return;
-    const chart = createChart(containerRef.current, {
-      autoSize: true,
+    const el = containerRef.current;
+    if (!el) return;
+
+    const chart = createChart(el, {
+      width: el.clientWidth,
+      height: 340,
       layout: {
         background: { type: ColorType.Solid, color: "#0D0D0D" },
         textColor: "rgba(0,255,65,0.6)",
@@ -56,6 +58,7 @@ export function CandleChart({ code }: { code: string }) {
       rightPriceScale: { borderColor: "rgba(0,255,65,0.2)" },
       crosshair: { mode: 0 },
     });
+
     const series = chart.addCandlestickSeries({
       upColor: "#00FF41",
       downColor: "#FF0033",
@@ -69,33 +72,41 @@ export function CandleChart({ code }: { code: string }) {
         minMove: Math.pow(10, -decimals),
       },
     });
+
     chartRef.current = chart;
     seriesRef.current = series;
+
+    const ro = new ResizeObserver(() => {
+      if (el) chart.applyOptions({ width: el.clientWidth });
+    });
+    ro.observe(el);
+
     return () => {
+      ro.disconnect();
       chart.remove();
       chartRef.current = null;
       seriesRef.current = null;
       lastBarRef.current = null;
     };
-  }, [code, decimals]);
+  }, []); // mount once — component remounts via key when code/decimals change
 
-  // Carica le candele
+  // Load candles into chart
   useEffect(() => {
     const series = seriesRef.current;
     if (!series || !candles.length) return;
-    const data: CandlestickData[] = candles.map((c) => ({
+    const mapped: CandlestickData[] = candles.map((c) => ({
       time: c.time as Time,
       open: c.open,
       high: c.high,
       low: c.low,
       close: c.close,
     }));
-    series.setData(data);
-    lastBarRef.current = data[data.length - 1] ?? null;
+    series.setData(mapped);
+    lastBarRef.current = mapped[mapped.length - 1] ?? null;
     chartRef.current?.timeScale().fitContent();
   }, [candles]);
 
-  // Aggiorna l'ultima candela col prezzo live
+  // Update last candle with live price
   useEffect(() => {
     const series = seriesRef.current;
     const last = lastBarRef.current;
@@ -136,19 +147,25 @@ export function CandleChart({ code }: { code: string }) {
           ))}
         </div>
       </div>
-      <div className="relative">
-        <div ref={containerRef} className="w-full h-[340px]" />
+      <div className="relative overflow-hidden">
+        <div ref={containerRef} style={{ height: 340 }} />
         {loading && (
-          <div className="absolute inset-0 flex items-center justify-center text-[#00FF41]/40 text-xs animate-pulse">
+          <div className="absolute inset-0 flex items-center justify-center bg-[#0D0D0D]/80 text-[#00FF41]/40 text-xs animate-pulse">
             caricamento grafico…
           </div>
         )}
         {!loading && error && (
-          <div className="absolute inset-0 flex items-center justify-center text-red-400/60 text-xs">
+          <div className="absolute inset-0 flex items-center justify-center bg-[#0D0D0D]/80 text-red-400/60 text-xs">
             {error}
           </div>
         )}
       </div>
     </div>
   );
+}
+
+// key prop on this wrapper forces full remount when code changes,
+// giving the chart a clean container with correct price precision
+export function CandleChart({ code }: { code: string }) {
+  return <CandleChartInner key={code} code={code} />;
 }

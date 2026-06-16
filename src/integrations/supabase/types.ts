@@ -38,6 +38,7 @@ export type Database = {
           symbol: string;
           direction: "buy" | "sell";
           quantity: number;
+          leverage: number;
           entry_price: number;
           exit_price: number | null;
           sl_price: number | null;
@@ -54,6 +55,7 @@ export type Database = {
           symbol: string;
           direction: "buy" | "sell";
           quantity: number;
+          leverage?: number;
           entry_price: number;
           exit_price?: number | null;
           sl_price?: number | null;
@@ -72,6 +74,40 @@ export type Database = {
           pips?: number | null;
           status?: "open" | "closed";
           closed_at?: string | null;
+        };
+        Relationships: [];
+      };
+      paper_pending_orders: {
+        Row: {
+          id: string;
+          user_id: string;
+          symbol: string;
+          direction: "buy" | "sell";
+          size_usd: number;
+          leverage: number;
+          entry_price: number;
+          sl_price: number | null;
+          tp_price: number | null;
+          price_above: boolean;
+          status: "pending" | "filled" | "cancelled";
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          symbol: string;
+          direction: "buy" | "sell";
+          size_usd: number;
+          leverage?: number;
+          entry_price: number;
+          sl_price?: number | null;
+          tp_price?: number | null;
+          price_above: boolean;
+          status?: "pending" | "filled" | "cancelled";
+          created_at?: string;
+        };
+        Update: {
+          status?: "pending" | "filled" | "cancelled";
         };
         Relationships: [];
       };
